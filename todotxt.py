@@ -8,7 +8,7 @@ class Todo:
     # TODO retain offsets of all matches, so they can easily be used for a highlighter
     
     class REGEX:
-        # TODO require whitesapce at beginning
+        # TODO require whitespace at beginning
         DONE = re.compile(r'^\s*(x)\s')
         CONTEXTS = re.compile(r'@(\w+)')
         PROJECTS = re.compile(r'\+(\w+)')
@@ -27,7 +27,6 @@ class Todo:
     @classmethod
     def from_lines(cls, lines):
         "Tasks become children of Tasks when they are indented by two spaces after another task."
-        # REFACT would like to remove duplication of matching code between this and add_child()
         todos = []
         for line in lines.strip().split('\n'):
             todo = Todo(line)
@@ -81,6 +80,37 @@ class Todo:
     
     def is_more_indented_than(self, other):
         return len(self.prefix) > len(other.prefix)
+    
+    def children_tagged(self, *tags):
+        for child in self.children:
+            if child.has_tags(*tags):
+                yield child
+    
+    def children_not_tagged(self, *tags):
+        "Does not have any of the tags given"
+        for child in self.children:
+            if child.has_no_tags(*tags):
+                yield child
+    
+    def has_tags(self, *tags):
+        "Accepts 'tag:' if the value doesn't matter or 'tag:foo' for specific values"
+        for tag in tags:
+            if tag.endswith(':'): # value doesn't matter:
+                if tag not in self.tags.keys():
+                    return False
+            else:
+                key, value = tag.split(':')
+                if self.tags.get(key, None) != value:
+                    return False
+        return True
+    
+    def has_no_tags(self, *tags):
+        "Accepts 'tag:' if the value doesn't matter or 'tag:foo' for specific values"
+        for tag in tags:
+            if self.has_tags(tag):
+                return False
+        
+        return True
 
 from pyexpect import expect
 from unittest import TestCase
@@ -116,6 +146,7 @@ class TodoTest(TestCase):
     def test_tags_with_spaces(self):
         expect(Todo('foo foo:bar sprint:"fnordy fnord roughnecks"').tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
         expect(Todo("foo foo:bar sprint:'fnordy fnord roughnecks'").tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
+    
 
 from textwrap import dedent
 class MultipleTodosTest(TestCase):
@@ -162,6 +193,25 @@ class MultipleTodosTest(TestCase):
         expect(parent.children[0].children[0].tags) == { 'id': '2346', 'sprint': 'fnordy fnord roughnecks' }
         expect(parent.children[1].projects) == ['project1']
     
+    def test_children_tagged(self):
+        parent = Todo.from_lines(dedent("""
+        parent
+            child1 status:doing
+            child2
+            child3 status:doing
+            child4 status:done
+        """))[0]
+        
+        expect(parent.line).contains('parent')
+        doing = list(parent.children_tagged('status:doing'))
+        expect(doing).has_length(2)
+        expect(doing[0].line).contains('child1')
+        expect(doing[1].line).contains('child3')
+        
+        waiting = list(parent.children_not_tagged('status:doing', 'status:done'))
+        expect(waiting).has_length(1)
+        expect(waiting[0].line).contains('child2')
+        
     def _test_expanded_stories(self):
         """
         The idea here is that we want tasks to be expanded, so we can write their description down.
