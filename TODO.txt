@@ -36,3 +36,10 @@ Wie müsste denn eine Vuejs implementierung von dem Task Tracker aussehen?
     * https://github.com/samuelsnyder/outline-todo.txt for ideas about inheritance of info so you don't have to rewrite everything on child lines
         * id:1234 for ticket ids
     * use tag:value syntax for metadata
+
+
+https://github.com/AnthonyDiGirolamo/todotxt-machine/blob/master/todotxt_machine/todo.py
+https://github.com/samuelsnyder/outline-todo.txt
+https://github.com/todotxt/todo.txt-cli/wiki/Tips-and-Tricks
+https://github.com/todotxt/todo.txt-cli/wiki/How-To's
+https://github.com/todotxt/todo.txt
