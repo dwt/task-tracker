@@ -1,0 +1,92 @@
+<html>
+<head>
+  <title>Fnord</title>
+</head>
+<body>
+  <h1>Todos</h1>
+  <textarea cols=150 rows=14>
+    {%- for todo in todos %}
+{{ todo.__str__() }}
+    {%- endfor -%}
+  </textarea>
+  <div class=whiteboard>
+    {# REFACT consider using definition lists as we only want to go one level deep here #}
+    {% for todo in todos %}
+      <div class="task row">
+        <div class=metadata>
+          <h2>{{ todo.line }}</h2> {# add link, add status #}
+        </div>
+        <div class=columns>
+          <div class="waiting column left">
+            {% for child in todo.children_not_tagged('status:', 'status:doing', 'status:done') %}
+              <div class=subtask>
+                {# add id and status propperly #}
+                <h3>{{child.line}}</h3>
+              </div>
+            {% endfor %}
+          </div>
+          <div class="doing column middle">
+            {% for child in todo.children_tagged('status:doing') %}
+              <div class=subtask>
+                {# add id and status propperly #}
+                <h3>{{child.line}}</h3>
+              </div>
+            {% endfor %}
+          </div>
+          <div class="done column right" id=right>
+            {% for child in todo.children_tagged('status:done') %}
+              <div class=subtask>
+                {# add id and status propperly #}
+                <h3>{{child.line}}</h3>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+<style>
+
+.whiteboard {
+  width: 100%;
+  height: 50%;
+}
+
+.row {
+  width: 100%;
+  min-height: 200px;
+/*  position: relative;*/
+/* mit display flex bearbeiten */
+}
+
+.column {
+  display: inline-block;
+  width: 32%;
+  border: 1px solid rgb(200, 200, 200);
+  min-height: 100px;
+}
+
+.column.left, .column.right {
+  background-color: rgb(200, 200, 200);
+}
+
+.column.middle {
+  background-color: rgb(220, 220, 220);
+}
+
+.subtask {
+  display: inline-block;
+  width: 100px;
+  height: 50px;
+  
+  border: 1px solid rgb(170, 170, 170);
+}
+
+.subtask h3 {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+</style>
+</body>
+</html>
