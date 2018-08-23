@@ -18,15 +18,25 @@
         </div>
         <div class=columns>
           <div class="waiting column left">
-            {% for child in todo.children_not_tagged('status:', 'status:doing', 'status:done') %}
+            {% for child in todo.children.tagged.new %}
               <div class=subtask>
                 {# add id and status propperly #}
                 <h3>{{child.line}}</h3>
               </div>
             {% endfor %}
           </div>
+          {% if todo.children.tagged.unknown | length > 0 %}
+            <div class="unknown column left">
+              {% for child in todo.children.tagged.unknown %}
+                <div class=subtask>
+                  {# add id and status propperly #}
+                  <h3>{{child.line}}</h3>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
           <div class="doing column middle">
-            {% for child in todo.children_tagged('status:doing') %}
+            {% for child in todo.children.tagged.doing %}
               <div class=subtask>
                 {# add id and status propperly #}
                 <h3>{{child.line}}</h3>
@@ -34,7 +44,7 @@
             {% endfor %}
           </div>
           <div class="done column right" id=right>
-            {% for child in todo.children_tagged('status:done') %}
+            {% for child in todo.children.tagged.done %}
               <div class=subtask>
                 {# add id and status propperly #}
                 <h3>{{child.line}}</h3>
@@ -45,6 +55,11 @@
       </div>
     {% endfor %}
   </div>
+  <!-- development version, includes helpful console warnings -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+  
+</script>
 <style>
 
 .whiteboard {
