@@ -139,7 +139,12 @@ class Todo:
             contexts=self.contexts, 
             projects=self.projects, 
             tags=self.tags, 
-            children=list(map(_.each.json, self.children)),
+            children=dict(
+                new=_(self.children.tagged.new).map(_.each.json)._,
+                unknown=_(self.children.tagged.unknown).map(_.each.json)._,
+                doing=_(self.children.tagged.doing).map(_.each.json)._,
+                done=_(self.children.tagged.done).map(_.each.json)._,
+            ),
         )
     json = property(__to_json__)
     
@@ -286,12 +291,12 @@ class TodoTest(TestCase):
         expect(Todo("foo foo:bar sprint:'fnordy fnord roughnecks'").tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
     
     def test_to_json(self):
-        expect(Todo('foo').json) == dict(line='foo', is_done=False, contexts=[], projects=[], tags={}, children=[])
-        expect(Todo('x foo @context tag:value, +project').json) == dict(
+        expect(Todo('foo').json) == dict(line='foo', is_done=False, contexts=[], projects=[], tags={}, 
+            children=dict(new=tuple(), unknown=tuple(), doing=tuple(), done=tuple()))
+        expect(Todo('x foo @context tag:value, +project').json).has_subdict(
             line='x foo @context tag:value, +project', 
             is_done=True, contexts=['context'], 
             projects=['project'], tags={'tag': 'value'}, 
-            children=[],
         )
         expect(Todo('foo status:done').json).has_subdict(is_done=True)
 
@@ -302,7 +307,7 @@ class TodoTest(TestCase):
             contexts=['context'], 
             projects=['project'], 
             tags={'key': 'value', 'state': 'done'}, 
-            children=[],
+            children={},
         )
         expect(todo.is_done).is_true()
         expect(todo.contexts) == ['context']
@@ -400,12 +405,12 @@ class MultipleTodosTest(TestCase):
 
         expect(parent.children.tagged.unknown).has_length(2)
     
-    def test_serialize_to_json(self):
+    def test_json_serialization(self):
         parent = Todo.from_lines(dedent('''
             parent
                 child
         '''))[0]
-        expect(parent.json.get('children')[0]).has_subdict(line='    child')
+        expect(parent.json.get('children').get('new')[0]).has_subdict(line='    child')
 
 
         todos = Todo.from_lines(dedent('''
