@@ -142,11 +142,13 @@ class Todo:
     def is_more_indented_than(self, other):
         return len(self.prefix) > len(other.prefix)
     
+    @tupelize
     def children_tagged(self, *tags):
         for child in self.children:
             if child.has_tags(*tags):
                 yield child
     
+    @tupelize
     def children_not_tagged(self, *tags):
         "Does not have any of the tags given"
         for child in self.children:
@@ -264,12 +266,12 @@ class MultipleTodosTest(TestCase):
         """))[0]
         
         expect(parent.line).contains('parent')
-        doing = list(parent.children_tagged('status:doing'))
+        doing = parent.children_tagged('status:doing')
         expect(doing).has_length(2)
         expect(doing[0].line).contains('child1')
         expect(doing[1].line).contains('child3')
         
-        waiting = list(parent.children_not_tagged('status:doing', 'status:done'))
+        waiting = parent.children_not_tagged('status:doing', 'status:done')
         expect(waiting).has_length(1)
         expect(waiting[0].line).contains('child2')
         
