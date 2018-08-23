@@ -23,6 +23,46 @@ def json_dumps(something):
     return json.dumps(something, default=serialize_with__to_json__)
 
 
+class FilterableList(list):
+    def __init__(self, parent):
+        super()
+        self._parent = parent
+    
+    @property
+    def tagged(self):
+        return self
+    
+    # REFACT consider putting them on their own class, to have a smaller interface
+
+    @property
+    @tupelize
+    def new(self):
+        candidates = self._parent.children_tagged('status:new') \
+            + self._parent.children_not_tagged('status:')
+        done = self._parent.children.tagged.done
+        for child in self:
+            if child in candidates and child not in done:
+                yield child
+    
+    @property
+    def doing(self):
+        return self._parent.children_tagged('status:doing')
+    
+    @property
+    @tupelize
+    def done(self):
+        done_tasks = _(self._parent.children).filter(_.each.is_done)._ + self._parent.children_tagged('status:done')
+        for child in self._parent.children:
+            if child in done_tasks:
+                yield child
+    
+    @property
+    @tupelize
+    def unknown(self):
+        known_tagged = self.new + self.doing + self.done
+        for child in self:
+            if child not in known_tagged:
+                yield child
 
 class Todo:
     
@@ -43,7 +83,7 @@ class Todo:
     
     def __init__(self, line):
         self.line = line
-        self.children = []
+        self.children = FilterableList(self)
     
     @classmethod
     def from_lines(cls, lines):
