@@ -1,0 +1,5 @@
+.pytest_cache/
+.vscode/
+
+# ignored for now, while I am experimenting
+vendor/
