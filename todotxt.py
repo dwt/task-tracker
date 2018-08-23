@@ -105,7 +105,8 @@ class Todo:
     
     @property
     def is_done(self):
-        return not not self.REGEX.DONE.match(self.line)
+        return bool(self.REGEX.IS_DONE.match(self.line)) \
+            or self.has_tags('status:done')
     
     @property
     def contexts(self):
@@ -274,7 +275,29 @@ class MultipleTodosTest(TestCase):
         waiting = parent.children_not_tagged('status:doing', 'status:done')
         expect(waiting).has_length(1)
         expect(waiting[0].line).contains('child2')
-        
+    
+    def test_access_relevant_task_states_as_properties(self):
+        parent = Todo.from_lines(dedent('''
+            parent
+                new1
+                new2 status:new
+                unknown1 status:something
+                unknown2 status:something
+                doing status:doing
+                x done1
+                x done2 status:done
+        '''))[0]
+
+        expect(parent.line).contains('parent')
+        expect(parent.children.tagged.new).has_length(2)
+        expect(parent.children.tagged.new[0].line).contains('new1')
+        expect(parent.children.tagged.new[1].line).contains('new2')
+
+        expect(parent.children.tagged.doing).has_length(1)
+        expect(parent.children.tagged.done).has_length(2)
+
+        expect(parent.children.tagged.unknown).has_length(2)
+    
     def _test_expanded_stories(self):
         """
         The idea here is that we want tasks to be expanded, so we can write their description down.
