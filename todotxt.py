@@ -160,11 +160,11 @@ class Todo:
     def has_tags(self, *tags):
         "Accepts 'tag:' if the value doesn't matter or 'tag:foo' for specific values"
         for tag in tags:
-            if tag.endswith(':'): # value doesn't matter:
-                if tag not in self.tags.keys():
+            key, value = tag.split(':')
+            if value == '': # value doesn't matter:
+                if key not in self.tags:
                     return False
             else:
-                key, value = tag.split(':')
                 if self.tags.get(key, None) != value:
                     return False
         return True
@@ -192,6 +192,7 @@ class TodoTest(TestCase):
     def test_done_item(self):
         expect(Todo('fnord').is_done).is_false()
         expect(Todo('x fnord').is_done).is_true()
+        expect(Todo('fnord status:done').is_done).is_true()
     
     def test_contexts(self):
         expect(Todo('foo').contexts) == []
@@ -207,7 +208,16 @@ class TodoTest(TestCase):
             id='234',
             tag2='val2',
         )
-    
+        expect(Todo('foo').has_tags('tag:')).is_false()
+        expect(Todo('foo bar:baz').has_tags('bar:')).is_true()
+        expect(Todo('foo bar:baz').has_tags('bar:quoox')).is_false()
+        expect(Todo('foo bar:baz').has_tags('bar:baz')).is_true()
+
+        expect(Todo('foo').has_no_tags('tag:')).is_true()
+        expect(Todo('foo bar:baz').has_no_tags('bar:')).is_false()
+        expect(Todo('foo bar:baz').has_no_tags('bar:quoox')).is_true()
+        expect(Todo('foo bar:baz').has_no_tags('bar:baz')).is_false()
+
     def test_tags_with_spaces(self):
         expect(Todo('foo foo:bar sprint:"fnordy fnord roughnecks"').tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
         expect(Todo("foo foo:bar sprint:'fnordy fnord roughnecks'").tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
