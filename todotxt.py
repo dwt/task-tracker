@@ -70,9 +70,10 @@ class Todo:
     
     class REGEX:
         # TODO require whitespace at beginning
-        DONE = re.compile(r'^\s*(x)\s')
+        IS_DONE = re.compile(r'^\s*(x)\s')
         CONTEXTS = re.compile(r'@(\w+)')
         PROJECTS = re.compile(r'\+(\w+)')
+        # TODO consider allowing escaped ' and " in the strings. Perhaps easier to allow ''' and """.
         TAGS = re.compile(r'''
             (\w+):
             (?:(?P<simple>\w+)
