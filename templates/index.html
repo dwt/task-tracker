@@ -1,64 +1,100 @@
 <html>
 <head>
   <title>Fnord</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 <body>
   <h1>Todos</h1>
   <textarea cols=150 rows=14>
-    {%- for todo in todos %}
-{{ todo.__str__() }}
+    {%- for task in tasks %}
+{{ task.__str__() }}
     {%- endfor -%}
   </textarea>
-  <div class=whiteboard>
+  <div class="whiteboard" style="display: none;">
     {# REFACT consider using definition lists as we only want to go one level deep here #}
-    {% for todo in todos %}
-      <div class="task row">
+    {% for task in tasks %}
+      <div class="task">
         <div class=metadata>
-          <h2>{{ todo.line }}</h2> {# add link, add status #}
+          {# add link, add status #}
+          <h2>{{ task.line }}</h2>
         </div>
-        <div class=columns>
-          <div class="waiting column left">
-            {% for child in todo.children.tagged.new %}
-              <div class=subtask>
-                {# add id and status propperly #}
-                <h3>{{child.line}}</h3>
-              </div>
-            {% endfor %}
-          </div>
-          {% if todo.children.tagged.unknown | length > 0 %}
-            <div class="unknown column left">
-              {% for child in todo.children.tagged.unknown %}
+        <div class="container-fluid">
+          <div class="row">
+            <div class="waiting col">
+              {% for child in task.children.tagged.new %}
                 <div class=subtask>
                   {# add id and status propperly #}
                   <h3>{{child.line}}</h3>
                 </div>
               {% endfor %}
             </div>
-          {% endif %}
-          <div class="doing column middle">
-            {% for child in todo.children.tagged.doing %}
-              <div class=subtask>
-                {# add id and status propperly #}
-                <h3>{{child.line}}</h3>
+            {% if task.children.tagged.unknown | length > 0 %}
+              <div class="unknown col">
+                {% for child in task.children.tagged.unknown %}
+                  <div class=subtask>
+                    {# add id and status propperly #}
+                    <h3>{{child.line}}</h3>
+                  </div>
+                {% endfor %}
               </div>
-            {% endfor %}
-          </div>
-          <div class="done column right" id=right>
-            {% for child in todo.children.tagged.done %}
-              <div class=subtask>
-                {# add id and status propperly #}
-                <h3>{{child.line}}</h3>
-              </div>
-            {% endfor %}
+            {% endif %}
+            <div class="doing col">
+              {% for child in task.children.tagged.doing %}
+                <div class=subtask>
+                  {# add id and status propperly #}
+                  <h3>{{child.line}}</h3>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="done col">
+              {% for child in task.children.tagged.done %}
+                <div class=subtask>
+                  {# add id and status propperly #}
+                  <h3>{{child.line}}</h3>
+                </div>
+              {% endfor %}
+            </div>
           </div>
         </div>
       </div>
     {% endfor %}
   </div>
+  <div id=app>
+    <div class="whiteboard">
+      <div class="task" v-for="task in tasks">
+        <div class=metadata>
+          {# add link, add status #}
+          <h2 v-text="task.line"></h2>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col" 
+              v-for="columnName in ['new', 'unknown', 'doing', 'done']"
+              v-if="columnName !== 'unknown' || task.children[columnName].length > 0" 
+              v-bind:class="[columnName]"
+            >
+              <div class=subtask v-for="child in task.children[columnName]">
+                {# add id and status propperly #}
+                <h3 v-text="child.line"></h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- development version, includes helpful console warnings -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script>
-  
+    var app = new Vue({
+      el: '#app',
+      data: {
+        tasks: {{ tasks_json | tojson | safe }},
+      }
+    })
 </script>
 <style>
 
@@ -75,8 +111,6 @@
 }
 
 .column {
-  display: inline-block;
-  width: 32%;
   border: 1px solid rgb(200, 200, 200);
   min-height: 100px;
 }
