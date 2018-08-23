@@ -132,6 +132,69 @@ class Todo:
     def has_prefix(self):
         return len(self.prefix) > 0
     
+    def __to_json__(self):
+        return dict(
+            line=self.line, 
+            is_done=self.is_done, 
+            contexts=self.contexts, 
+            projects=self.projects, 
+            tags=self.tags, 
+            children=list(map(_.each.json, self.children)),
+        )
+    json = property(__to_json__)
+    
+    @json.setter
+    def json(self, json):
+        "Updates the line from the json properties"
+        # REFACT Gnarly code, not sure how to write this more beautifull
+        self.line = json.get('line', '')
+
+        if json.get('projects', []):
+            for existing_project in self.projects:
+                if existing_project not in json.get('projects', []):
+                    self.edit(remove=f'+{existing_project}')
+            
+            existing_projects = self.projects
+            for project in json.get('projects', []):
+                if project not in existing_projects:
+                    self.line += f' +{project}'
+        
+        if json.get('contexts'):
+            for existing_context in self.contexts:
+                if existing_context not in json.get('contexts', []):
+                    self.edit(remove=f'@{existing_context}')
+                
+                existing_contexts = self.contexts
+                for context in json.get('contexts', []):
+                    if context not in existing_contexts:
+                        self.line += f' @{context}'
+        
+        if json.get('tags', {}):
+            for existing_key, existing_value in self.tags.items():
+                if existing_key not in json.get('tags', {}) or existing_value != json.get('tags', {}).get(existing_key):
+                    self.edit(remove=f'{existing_key}:{existing_value}') # FIXME handle quoting
+            
+            existing_tags = self.tags
+            for key, value in json.get('tags', {}).items():
+                if key not in existing_tags:
+                    self.line += f' {key}:{value}' # FIXME handle quoting
+        
+        if json.get('is_done', False) or json.get('tags', {}).get('state') == 'done':
+            if self.has_tags('state:done'):
+                self.edit(remove='state:done')
+            if not self.is_done:
+                self.line = re.sub(r'(^\s*)(.*$)', r'\1x \2', self.line)
+        
+        if not json.get('is_done', False) and self.is_done:
+                self.line = re.sub(r'(^\s*)x\s+\b(.*$)', r'\1\2', self.line)
+    
+    def edit(self, remove=None, remove_re=None, replace_with=' '):
+        if remove is not None:
+            self.line, ignored = re.subn(r'\s+' + re.escape(remove) + r'(\s+|$)', replace_with, self.line)
+        if remove_re is not None:
+            self.line, ignored = re.subn(remove_re, replace_with, self.line)
+        self.line = self.line.rstrip()
+    
     def has_children(self):
         return len(self.children) > 0
     
@@ -222,6 +285,34 @@ class TodoTest(TestCase):
         expect(Todo('foo foo:bar sprint:"fnordy fnord roughnecks"').tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
         expect(Todo("foo foo:bar sprint:'fnordy fnord roughnecks'").tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
     
+    def test_to_json(self):
+        expect(Todo('foo').json) == dict(line='foo', is_done=False, contexts=[], projects=[], tags={}, children=[])
+        expect(Todo('x foo @context tag:value, +project').json) == dict(
+            line='x foo @context tag:value, +project', 
+            is_done=True, contexts=['context'], 
+            projects=['project'], tags={'tag': 'value'}, 
+            children=[],
+        )
+        expect(Todo('foo status:done').json).has_subdict(is_done=True)
+
+        todo = Todo('')
+        todo.json = dict(
+            line='foo @removed_context removed:tag +removed_project', 
+            is_done=True, 
+            contexts=['context'], 
+            projects=['project'], 
+            tags={'key': 'value', 'state': 'done'}, 
+            children=[],
+        )
+        expect(todo.is_done).is_true()
+        expect(todo.contexts) == ['context']
+        expect(todo.projects) == ['project']
+        expect(todo.tags) == {'key': 'value'}
+        expect(todo.line) == 'x foo +project @context key:value'
+
+        todo = Todo('')
+        todo.json = dict(line='x foo', is_done=False)
+        expect(todo.line) == 'foo'
 
 from textwrap import dedent
 class MultipleTodosTest(TestCase):
@@ -309,6 +400,25 @@ class MultipleTodosTest(TestCase):
 
         expect(parent.children.tagged.unknown).has_length(2)
     
+    def test_serialize_to_json(self):
+        parent = Todo.from_lines(dedent('''
+            parent
+                child
+        '''))[0]
+        expect(parent.json.get('children')[0]).has_subdict(line='    child')
+
+
+        todos = Todo.from_lines(dedent('''
+            parent
+                new1
+                new2 status:new @phone
+                doing status:doing
+                x done1
+        '''))
+
+        expect(json_dumps(todos)) \
+            == json.dumps([todos[0].json])
+
     def _test_expanded_stories(self):
         """
         The idea here is that we want tasks to be expanded, so we can write their description down.
