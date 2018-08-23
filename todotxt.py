@@ -2,6 +2,27 @@
 
 
 import re
+from functools import wraps
+import fluentpy as _
+import inspect
+import json
+
+def tupelize(method):
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        return tuple(method(*args, **kwargs))
+    return wrapper
+
+def json_dumps(something):
+    def serialize_with__to_json__(an_object):
+        if '__to_json__' not in dir(an_object) or not inspect.ismethod(an_object.__to_json__):
+            raise TypeError()
+        
+        return an_object.__to_json__()
+    
+    return json.dumps(something, default=serialize_with__to_json__)
+
+
 
 class Todo:
     
