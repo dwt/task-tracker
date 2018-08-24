@@ -10,73 +10,27 @@
 {{ task.__str__() }}
     {%- endfor -%}
   </textarea>
-  <div class="whiteboard" style="display: none;">
-    {# REFACT consider using definition lists as we only want to go one level deep here #}
-    {% for task in tasks %}
-      <div class="task">
-        <div class=metadata>
-          {# add link, add status #}
-          <h2>{{ task.line }}</h2>
-        </div>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="waiting col">
-              {% for child in task.children.tagged.new %}
-                <div class=subtask>
-                  {# add id and status propperly #}
-                  <h3>{{child.line}}</h3>
-                </div>
-              {% endfor %}
-            </div>
-            {% if task.children.tagged.unknown | length > 0 %}
-              <div class="unknown col">
-                {% for child in task.children.tagged.unknown %}
-                  <div class=subtask>
-                    {# add id and status propperly #}
-                    <h3>{{child.line}}</h3>
-                  </div>
-                {% endfor %}
-              </div>
-            {% endif %}
-            <div class="doing col">
-              {% for child in task.children.tagged.doing %}
-                <div class=subtask>
-                  {# add id and status propperly #}
-                  <h3>{{child.line}}</h3>
-                </div>
-              {% endfor %}
-            </div>
-            <div class="done col">
-              {% for child in task.children.tagged.done %}
-                <div class=subtask>
-                  {# add id and status propperly #}
-                  <h3>{{child.line}}</h3>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-      </div>
-    {% endfor %}
-  </div>
-  <div id=app>
-    <div class="whiteboard">
-      <div class="task" v-for="task in tasks">
-        <div class=metadata>
-          {# add link, add status #}
-          <h2 v-text="task.line"></h2>
-        </div>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col" 
-              v-for="columnName in ['new', 'unknown', 'doing', 'done']"
-              v-if="columnName !== 'unknown' || task.children[columnName].length > 0" 
-              v-bind:class="[columnName]"
-            >
-              <div class=subtask v-for="child in task.children[columnName]">
-                {# add id and status propperly #}
-                <h3 v-text="child.line"></h3>
-              </div>
+  <div id=vue-app class="whiteboard">
+    <div class="task" v-for="task in tasks">
+      <h1 class=metadata v-bind:title="task.line">
+        <a href="#" class="id" v-text="'#' + task.id"></a>
+        <span class="title" v-text="task.line"></h2>
+      </h1>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col status" 
+            v-for="columnName in ['new', 'unknown', 'doing', 'done']"
+            v-if="columnName !== 'unknown' || task.children[columnName].length > 0" 
+            v-bind:class="[columnName]"
+          >
+            <div class=subtask v-for="child in task.children[columnName]" v-bind:title="child.line">
+              <h2>
+                <span class="metadata">
+                    <a href="#" class="edit" title="Edit this task"></a>
+                    <a href="#" class="id" v-text="'#' + child.id" title="External Link to task"></a>
+                </span>
+                <span class="title" v-text="child.line"></span>
+              </h2>
             </div>
           </div>
         </div>
@@ -90,7 +44,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script>
     var app = new Vue({
-      el: '#app',
+      el: '#vue-app',
       data: {
         tasks: {{ tasks_json | tojson | safe }},
       }
@@ -103,38 +57,109 @@
   height: 50%;
 }
 
-.row {
+.task {
   width: 100%;
   min-height: 200px;
-/*  position: relative;*/
-/* mit display flex bearbeiten */
+  position: relative;
 }
 
-.column {
-  border: 1px solid rgb(200, 200, 200);
+.task .metadata {
+  position: absolute;
+  z-index: 100;
+  font-size: 12px;
+  line-height: 18px;
+  height: 18px;
+  text-shadow: rgb(255, 255, 255) 0px 1px 0px;
+}
+
+.task .metadata .id {
+  font-size: 10px;
+  border: 1px solid rgb(221, 221, 221);
+  color: rgb(102, 102, 102);
+  padding: 0px 2px;
+  background-color: rgb(248, 248, 248);
+}
+
+.task .status {
   min-height: 100px;
+  border: 1px solid rgb(153, 153, 153);
+  border-left: none;
+  padding-top: 18px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
-.column.left, .column.right {
-  background-color: rgb(200, 200, 200);
+.task .status.new, .task .status.done {
+  background-color: #F2F2F2;
 }
 
-.column.middle {
-  background-color: rgb(220, 220, 220);
+.task .status.doing {
+  background-color: rgba(0, 0, 0, 0);
 }
 
-.subtask {
+.task .subtask {
   display: inline-block;
-  width: 100px;
-  height: 50px;
-  
-  border: 1px solid rgb(170, 170, 170);
+  height: 80px;
+  width: 104px;
+  cursor: move;
+  border: 1px solid rgb(204, 204, 204);
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgb(153, 153, 153) 0px 1px 2px 0px;
+  font-size: 12px;
+  position: relative;
+
+  padding-top: 20px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 15px;
+
+  overflow: hidden;
+
 }
 
-.subtask h3 {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+.task .subtask .metadata {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 18px;
+  background-color: #EEE;
+  font-size: 10px;
+  line-height: 18px;
+  display: inline-block;
+  width: 100%;
+}
+
+.task .subtask .metadata .id {
+  color: rgb(102, 102, 102);
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+}
+
+.task .subtask .metadata .edit::before {
+  content: 'i';
+  width: 14px;
+  height: 14px;
+  line-height: 12px;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  padding-left: 5px;
+  font-size: 12px;
+  color: #6E94B8;
+  border: 1px solid #CDCDCD;
+  box-shadow: inset 0px 0px 4px white;
+  font-style: italic;
+}
+
+.task .subtask .metadata .edit:hover::before {
+  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.11);
+}
+
+.task .subtask .title {
+  font-size: 12px;
+  height: 36px;
+  line-height: 18px;
 }
 </style>
 </body>
