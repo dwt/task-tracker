@@ -105,6 +105,10 @@ class Todo:
         return f'<Todo(line={self.line!r}, children={self.children!r})>'
     
     @property
+    def id(self):
+        return self.tags.get('id', '')
+    
+    @property
     def is_done(self):
         return bool(self.REGEX.IS_DONE.match(self.line)) \
             or self.has_tags('status:done')
@@ -135,6 +139,7 @@ class Todo:
     def __to_json__(self):
         return dict(
             line=self.line, 
+            id=self.id,
             is_done=self.is_done, 
             contexts=self.contexts, 
             projects=self.projects, 
@@ -291,12 +296,12 @@ class TodoTest(TestCase):
         expect(Todo("foo foo:bar sprint:'fnordy fnord roughnecks'").tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
     
     def test_to_json(self):
-        expect(Todo('foo').json) == dict(line='foo', is_done=False, contexts=[], projects=[], tags={}, 
+        expect(Todo('foo').json) == dict(line='foo', id='', is_done=False, contexts=[], projects=[], tags={}, 
             children=dict(new=tuple(), unknown=tuple(), doing=tuple(), done=tuple()))
-        expect(Todo('x foo @context tag:value, +project').json).has_subdict(
-            line='x foo @context tag:value, +project', 
-            is_done=True, contexts=['context'], 
-            projects=['project'], tags={'tag': 'value'}, 
+        expect(Todo('x foo @context tag:value, +project id:1').json).has_subdict(
+            line='x foo @context tag:value, +project id:1', 
+            id='1', is_done=True, contexts=['context'], 
+            projects=['project'], tags={'tag': 'value', 'id': '1', }, 
         )
         expect(Todo('foo status:done').json).has_subdict(is_done=True)
 
