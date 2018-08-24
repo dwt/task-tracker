@@ -23,13 +23,14 @@
             v-if="columnName !== 'unknown' || task.children[columnName].length > 0" 
             v-bind:class="[columnName]"
           >
-            <div class=subtask v-for="child in task.children[columnName]" v-bind:title="child.line">
+            <div class="col subtask" v-for="child in task.children[columnName]" v-bind:title="child.line">
               <h2>
                 <span class="metadata">
                     <a href="#" class="edit" title="Edit this task"></a>
                     <a href="#" class="id" v-text="'#' + child.id" title="External Link to task"></a>
                 </span>
                 <span class="title" v-text="child.line"></span>
+                <span class="contexts" v-text="child.contexts.join(', ')"></span>
               </h2>
             </div>
           </div>
@@ -59,7 +60,6 @@
 
 .task {
   width: 100%;
-  min-height: 200px;
   position: relative;
 }
 
@@ -99,6 +99,8 @@
 
 .task .subtask {
   display: inline-block;
+  float: left;
+  margin: 2px;
   height: 80px;
   width: 104px;
   cursor: move;
@@ -114,8 +116,8 @@
   padding-bottom: 15px;
 
   overflow: hidden;
-
 }
+
 
 .task .subtask .metadata {
   position: absolute;
@@ -156,9 +158,24 @@
   box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.11);
 }
 
-.task .subtask .title {
+.task .subtask > * {
   font-size: 12px;
   height: 36px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.task .subtask .contexts {
+  color: rgb(102, 102, 102);
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+  font-size: 10px;
   line-height: 18px;
 }
 </style>
