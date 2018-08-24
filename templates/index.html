@@ -11,7 +11,7 @@
     {%- endfor -%}
   </textarea>
   <div id=vue-app class="whiteboard">
-    <div class="task" v-for="task in tasks">
+    <div class="task" v-for="task in tasks" v-bind:title="task.line" >
       <div class="container-fluid">
         <div class="row">
           <div class="col status" 
@@ -19,11 +19,16 @@
             v-if="columnName !== 'unknown' || task.children[columnName].length > 0" 
             v-bind:class="[columnName]"
           >
-            <h1 class=metadata v-bind:title="task.line" v-if="columnName === 'new'">
+            <h1 class=metadata v-if="columnName === 'new'">
               <a href="#" class="id" v-text="'#' + task.id"></a>
               <span class="title" v-text="task.line"></span>
               <a href="#" class="add" title="Add subtask"></a>
             </h1>
+
+            <h1 class=metadata  v-if="columnName === 'done'">
+                <span class="stats" v-text="task.children.done.length + '/' + (task.children.new.length + task.children.unknown.length + task.children.doing.length + task.children.done.length)"></span>
+              </h1>
+  
             <div class="col subtask" v-for="child in task.children[columnName]" v-bind:title="child.line">
               <h2>
                 <span class="metadata">
@@ -91,6 +96,11 @@
   color: rgb(102, 102, 102);
   padding: 0px 2px;
   background-color: rgb(248, 248, 248);
+}
+
+.task .metadata .stats {
+  float: right;
+  color: rgb(153, 153, 153);
 }
 
 .task .metadata .add::before {
