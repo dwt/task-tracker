@@ -26,8 +26,8 @@
             </h1>
 
             <h1 class=metadata  v-if="columnName === 'done'">
-                <span class="stats" v-text="task.children.done.length + '/' + (task.children.new.length + task.children.unknown.length + task.children.doing.length + task.children.done.length)"></span>
-              </h1>
+              <span class="stats" v-text="task.children.done.length + '/' + (task.children.new.length + task.children.unknown.length + task.children.doing.length + task.children.done.length)"></span>
+            </h1>
   
             <div class="col subtask" v-for="child in task.children[columnName]" v-bind:title="child.line">
               <h2>
