@@ -10,7 +10,7 @@
   {% raw %}
   <div id=vue-app class="whiteboard" v-bind:title="task.line">
     <div class="header">
-      <h1 v-text="task.line"></h1>
+      <h1><a v-if="task.id" href="#" class="id" v-text="'#' + task.id"></a>{{ task.line }}</h1>
       <div class="column-headers">
         <h2 class="column header" 
           v-for="columnName in ['new', 'unknown', 'doing', 'done']"
