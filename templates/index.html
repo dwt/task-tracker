@@ -20,7 +20,10 @@
         >{{ columnName }} <span class="grandchild-count" v-text="countOfGrandChildrenInStatus(task, columnName)"></span></h2>
       </div>
     </div>
-    <div class="task" v-for="child in children(task)" v-bind:title="child.line" >
+    <div class="task"
+      v-for="child in children(task)"
+      v-bind:title="child.line"
+    >
       <div class="container-fluid">
         <div class="row">
           <div class="col status" 
@@ -28,7 +31,10 @@
             v-if="columnName !== 'unknown' || countOfGrandChildrenInStatus(task, 'unknown') > 0" 
             v-bind:class="[columnName]"
           >
-            <h2 class=metadata v-if="columnName === 'new'">
+            <h2 class=metadata 
+              v-if="columnName === 'new'"
+              v-on:click="toggleCollapsed($event, child); $event.preventDefault()"
+            >
               <a href="#" class="id" v-text="'#' + child.id"></a>
               <span class="title" v-text="child.line"></span>
               <a v-on:click="addChildTask(child); $event.preventDefault()" href="#" class="add" title="Add subtask"></a>
@@ -125,6 +131,13 @@
           children: { new: [], unknown: [], doing: [], done: []},
         })
       },
+      toggleCollapsed: function($event, task) {
+        var currentElement = $event.currentTarget
+        while ( ! currentElement.classList.contains('task')) {
+          currentElement = currentElement.parentNode
+        }
+        currentElement.classList.toggle('collapsed')
+      },
       cuid: function(task) {
         if (undefined === task.cuid) {
           task.cuid = generateClientUniqueID()
@@ -134,6 +147,11 @@
     },
   })
 </script>
+
+<script>
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')
+</script>
+
 <style>
 
 .whiteboard {
@@ -163,6 +181,15 @@
 .task {
   width: 100%;
   position: relative;
+}
+
+.task.collapsed {
+  height: 20px;
+  overflow: hidden;
+}
+
+.task .col > .metadata {
+  cursor: ns-resize;
 }
 
 .task .status.new {
@@ -207,7 +234,7 @@
   position: absolute;
   top: 1px;
   right: 1px;
-  padding-left: 3px;
+  padding: 2px 3px;
   font-size: 12px;
   color: #6E94B8;
   box-shadow: inset 0px 0px 4px white;
@@ -284,17 +311,16 @@
 }
 
 .task .subtask .metadata .edit::before {
-  content: 'i';
+  content: '✎';
   width: 14px;
   height: 14px;
   line-height: 12px;
   position: absolute;
   top: 1px;
   right: 1px;
-  padding-left: 5px;
+  padding: 2px 3px; 
   font-size: 12px;
   color: #6E94B8;
-  font-style: italic;
   box-shadow: inset 0px 0px 4px white;
 
 }

@@ -5,16 +5,16 @@
   * indikator dass ein task children hat
     * Will ich den auf den children oder auf den grandchildren haben? Eigentlich will man ja ebene 
       um ebene navigieren - vielleicht manchmal aber auch direkt ganz nach innen?
-    
-* Task spalten einklappen
-  * click / double click on task header?
-  * button
-  * wenn nicht via button, dann sollte es einen cursor als affordability geben
-  * collapsed state würde ich gerne irgendwo speichern - maybe collapsed:true?
-  * evtl. auto collapse wenn alle tasks done sind
+
+* Tasks bearbeiten mittels content editable auf doppelklick?
+  * evtl. auch via status change und enter als commit?
+  * in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann
 
 * Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert
   * Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen
+
+* Async Flask app und sync mit dem server on browser changes
+  * socket.io? was benutzt man da am besten für websockets?
 
 # Gedanken
 

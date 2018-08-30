@@ -14,7 +14,7 @@ def index():
                 with children id:4
             seventh task status:done id:5 @mh
             eight task status:doing id:6 @rb @juergen_klein
-            unknown task status:foo
+            unknown task
         fourth task id:7
             fifth task id:8
                 sixth task id:9
