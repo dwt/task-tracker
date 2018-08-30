@@ -161,7 +161,7 @@
           this.parents.push(task)
         }
         else {
-          // don't remove last element, as it's already the current one
+          // don't remove the clicked element, as it's needs to remain tip of the stack
           this.parents.splice(index + 1)
         }
         this.task = task
