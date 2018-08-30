@@ -30,7 +30,7 @@
             <h2 class=metadata v-if="columnName === 'new'">
               <a href="#" class="id" v-text="'#' + task.id"></a>
               <span class="title" v-text="task.line"></span>
-              <a href="#" class="add" title="Add subtask"></a>
+              <a v-on:click="addChildTask(task); $event.preventDefault()" href="#" class="add" title="Add subtask"></a>
             </h2>
 
             <h2 class=metadata  v-if="columnName === 'done'">
@@ -62,6 +62,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script>
+  // REFACT consider to allow only viewing either the text or the gui interface - tabbed style?
   var taskJson = {{ task.json | tojson(indent=2) }}
   var app = new Vue({
     el: '#vue-app',
@@ -87,6 +88,19 @@
         return this.children(task)
           .map( (each) => each.children[status].length )
           .reduce( (accumulator, each) => accumulator + each)
+      },
+      addChildTask: function(task) {
+        // TODO add UI to enter text
+        // REFACT consider to require using the text interface to do this
+        task.children.new.push({
+          line: '',
+          id: '',
+          is_done: false,
+          projects: [],
+          contexts: [],
+          tags: {},
+          children: { new: [], unknown: [], doing: [], done: []},
+        })
       },
     },
   })
