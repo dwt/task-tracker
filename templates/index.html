@@ -33,11 +33,11 @@
           >
             <h2 class=metadata 
               v-if="columnName === 'new'"
-              v-on:click="toggleCollapsed($event, child); $event.preventDefault()"
+              v-on:click.prevent="toggleCollapsed($event, child)"
             >
               <a href="#" class="id" v-text="'#' + child.id"></a>
               <span class="title" v-text="child.line"></span>
-              <a v-on:click="addChildTask(child); $event.preventDefault()" href="#" class="add" title="Add subtask"></a>
+              <a v-on:click.prevent.stop="addChildTask(child)" href="#" class="add" title="Add subtask"></a>
             </h2>
 
             <h2 class=metadata  v-if="columnName === 'done'">
