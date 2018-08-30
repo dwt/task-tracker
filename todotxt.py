@@ -13,16 +13,6 @@ def tupelize(method):
         return tuple(method(*args, **kwargs))
     return wrapper
 
-def json_dumps(something):
-    def serialize_with__to_json__(an_object):
-        if '__to_json__' not in dir(an_object) or not inspect.ismethod(an_object.__to_json__):
-            raise TypeError()
-        
-        return an_object.__to_json__()
-    
-    return json.dumps(something, default=serialize_with__to_json__)
-
-
 class FilterableList(list):
     def __init__(self, parent):
         super()
@@ -66,7 +56,7 @@ class FilterableList(list):
 
 class Todo:
     
-    # TODO retain offsets of all matches, so they can easily be used for a highlighter
+    # TODO consider to retain offsets of all matches, so they can easily be used for a highlighter
     
     class REGEX:
         # TODO require whitespace at beginning
@@ -82,8 +72,8 @@ class Todo:
         ''', flags=re.X
         )
     
-    def __init__(self, line):
-        self.line = line
+    def __init__(self, line=None):
+        self.line = line or ''
         self.children = FilterableList(self)
     
     @classmethod
@@ -96,13 +86,28 @@ class Todo:
                 todos[-1].add_child(todo)
             else:
                 todos.append(todo)
-        return todos
-    
+        
+        if len(todos) == 1:
+            return todos[0]
+        else:
+            virtual_todo = Todo()
+            virtual_todo.children.extend(todos)
+            return virtual_todo
+        
     def __str__(self):
-        return '\n'.join([self.line] + list(map(str, self.children)))
+        lines = list(map(str, self.children))
+        
+        if not self.is_virtual:
+            lines.insert(0, self.line)
+        
+        return '\n'.join(lines)
     
     def __repr__(self):
         return f'<Todo(line={self.line!r}, children={self.children!r})>'
+    
+    @property
+    def is_virtual(self):
+        return self.line == ''
     
     @property
     def id(self):
@@ -136,7 +141,8 @@ class Todo:
     def has_prefix(self):
         return len(self.prefix) > 0
     
-    def __to_json__(self):
+    @property
+    def json(self):
         return dict(
             line=self.line, 
             id=self.id,
@@ -151,7 +157,6 @@ class Todo:
                 done=_(self.children.tagged.done).map(_.each.json)._,
             ),
         )
-    json = property(__to_json__)
     
     @json.setter
     def json(self, json):
@@ -169,7 +174,7 @@ class Todo:
                 if project not in existing_projects:
                     self.line += f' +{project}'
         
-        if json.get('contexts'):
+        if json.get('contexts', []):
             for existing_context in self.contexts:
                 if existing_context not in json.get('contexts', []):
                     self.edit(remove=f'@{existing_context}')
@@ -197,6 +202,21 @@ class Todo:
         
         if not json.get('is_done', False) and self.is_done:
                 self.line = re.sub(r'(^\s*)x\s+\b(.*$)', r'\1\2', self.line)
+        
+        if json.get('children', {}):
+            json_children = json.get('children', {}).get('new') \
+                + json.get('children', {}).get('unknown') \
+                + json.get('children', {}).get('doing') \
+                + json.get('children', {}).get('done')
+            
+            if len(json_children) > len(self.children):
+                for _ in range((len(json_children) - len(self.children))):
+                    self.children.append(Todo())
+            elif len(json_children) < len(self.children):
+                self.children = self.children[:len(json_children)]
+            
+            for child, child_json in zip(self.children, json_children):
+                child.json = child_json
     
     def edit(self, remove=None, remove_re=None, replace_with=' '):
         if remove is not None:
@@ -295,6 +315,10 @@ class TodoTest(TestCase):
         expect(Todo('foo foo:bar sprint:"fnordy fnord roughnecks"').tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
         expect(Todo("foo foo:bar sprint:'fnordy fnord roughnecks'").tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
     
+    def test_empty_todo_knows_it_is_virtual(self):
+        todo = Todo()
+        expect(todo.is_virtual) == True
+    
     def test_to_json(self):
         expect(Todo('foo').json) == dict(line='foo', id='', is_done=False, contexts=[], projects=[], tags={}, 
             children=dict(new=tuple(), unknown=tuple(), doing=tuple(), done=tuple()))
@@ -328,16 +352,19 @@ from textwrap import dedent
 class MultipleTodosTest(TestCase):
     
     def test_multi_lines(self):
-        todos = Todo.from_lines(dedent("""
+        lines = dedent("""
         first
         x second
         third id:2346 sprint:'fnordy fnord roughnecks'
-        """))
+        """)
+        todo = Todo.from_lines(lines)
         
-        expect(todos).has_length(3)
-        expect(str(todos[0])) == 'first'
-        expect(todos[1].is_done).is_true()
-        expect(todos[2].tags) == { 'id': '2346', 'sprint': 'fnordy fnord roughnecks' }
+        expect(todo.is_virtual).is_true()
+        expect(todo.children).has_length(3)
+        expect(str(todo.children[0])) == 'first'
+        expect(todo.children[1].is_done).is_true()
+        expect(todo.children[2].tags) == { 'id': '2346', 'sprint': 'fnordy fnord roughnecks' }
+        expect(str(todo)) == lines.strip()
     
     def test_sub_tasks(self):
         lines = dedent("""
@@ -345,25 +372,21 @@ class MultipleTodosTest(TestCase):
           x second
           third id:2346 sprint:'fnordy fnord roughnecks'
         """)
-        todos = Todo.from_lines(lines)
+        parent = Todo.from_lines(lines)
         
-        expect(todos).has_length(1)
-        parent = todos[0]
         expect(parent.line) == 'first'
         expect(str(parent)) == lines.strip()
         expect(parent.children[0].is_done).is_true()
         expect(parent.children[1].tags) == { 'id': '2346', 'sprint': 'fnordy fnord roughnecks' }
     
     def test_sub_sub_tasks(self):
-        todos = Todo.from_lines(dedent("""
+        parent = Todo.from_lines(dedent("""
         first
           x second
             third id:2346 sprint:'fnordy fnord roughnecks'
           fourth +project1
         """))
         
-        expect(todos).has_length(1)
-        parent = todos[0]
         expect(parent.line).contains('first')
         expect(parent.children).has_length(2)
         expect(parent.children[0].children[0].tags) == { 'id': '2346', 'sprint': 'fnordy fnord roughnecks' }
@@ -376,7 +399,7 @@ class MultipleTodosTest(TestCase):
             child2
             child3 status:doing
             child4 status:done
-        """))[0]
+        """))
         
         expect(parent.line).contains('parent')
         doing = parent.children_tagged('status:doing')
@@ -398,7 +421,7 @@ class MultipleTodosTest(TestCase):
                 doing status:doing
                 x done1
                 x done2 status:done
-        '''))[0]
+        '''))
 
         expect(parent.line).contains('parent')
         expect(parent.children.tagged.new).has_length(2)
@@ -414,20 +437,24 @@ class MultipleTodosTest(TestCase):
         parent = Todo.from_lines(dedent('''
             parent
                 child
-        '''))[0]
+        '''))
         expect(parent.json.get('children').get('new')[0]).has_subdict(line='    child')
 
 
-        todos = Todo.from_lines(dedent('''
+        todo = Todo.from_lines(dedent('''
             parent
                 new1
                 new2 status:new @phone
                 doing status:doing
                 x done1
         '''))
-
-        expect(json_dumps(todos)) \
-            == json.dumps([todos[0].json])
+        
+        recreated_todo = Todo()
+        recreated_todo.json = json.loads(json.dumps(todo.json))
+        
+        expect(recreated_todo.line) == todo.line
+        for index, child in enumerate(todo.children):
+            expect(recreated_todo.children[index].line) == child.line
 
     def _test_expanded_stories(self):
         """

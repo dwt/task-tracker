@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/') # methods=['GET', 'POST']
 def index():
-    tasks = Todo.from_lines(dedent("""
+    task = Todo.from_lines(dedent("""
         first task id:1
             second task with a longer description that would surely be shortened id:2
             third task id:3
@@ -19,4 +19,4 @@ def index():
             ninth task status:doing id:10 @fh
         lets have a really long task so the overflowing is nicely demonstrated for the top layer id:11
     """))
-    return render_template('index.html', tasks=tasks, tasks_json=list(map(lambda each: each.json, tasks)))
+    return render_template('index.html', task=task)
