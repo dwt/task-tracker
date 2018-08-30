@@ -1,5 +1,11 @@
 # Relativ konkrete Todos
 
+* Navigation in die hierarchie
+  * breadcrumbs anzeigen um zurück zu können
+  * indikator dass ein task children hat
+    * Will ich den auf den children oder auf den grandchildren haben? Eigentlich will man ja ebene 
+      um ebene navigieren - vielleicht manchmal aber auch direkt ganz nach innen?
+    
 * Task spalten einklappen
   * click / double click on task header?
   * button
