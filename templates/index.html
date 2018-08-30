@@ -10,6 +10,17 @@
   {% raw %}
   <div id=vue-app class="whiteboard" v-bind:title="task.line">
     <div class="header">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"
+            v-for="parent in parents"
+            v-on:click.prevent.stop="browse(parent)"
+          >
+            <a href="#"><span class="id" v-if="parent.id">#{{ parent.id}}</span>{{ parent.line }}</a>
+          </li>
+        </ol>
+      </nav>
+      </nav>
       <h1 v-if="task.line.length"><a v-if="task.id" href="#" class="id" v-text="'#' + task.id"></a>{{ task.line }}</h1>
       <div class="column-headers">
         <h2 class="column header" 
@@ -37,6 +48,7 @@
             >
               <a href="#" class="id" v-text="'#' + child.id"></a>
               <span class="title" v-text="child.line"></span>
+              <a v-on:click.prevent.stop="browse(child)" href="#" class="browse" title="Browse grandchildren Tasks"></a>
               <a v-on:click.prevent.stop="addChildTask(child)" href="#" class="add" title="Add subtask"></a>
             </h2>
 
@@ -86,8 +98,12 @@
   
   var app = new Vue({
     el: '#vue-app',
-    data: {
-      task: taskJSON,
+    data: function() {
+      const data = {
+        task: taskJSON,
+      }
+      data.parents = [data.task]
+      return data
     },
     computed: {
       numberOfColumns: function() {
@@ -138,6 +154,17 @@
           currentElement = currentElement.parentNode
         }
         currentElement.classList.toggle('collapsed')
+      },
+      browse: function(task) {
+        const index = this.parents.indexOf(task)
+        if (-1 === index) {
+          this.parents.push(task)
+        }
+        else {
+          // don't remove last element, as it's already the current one
+          this.parents.splice(index + 1)
+        }
+        this.task = task
       },
       cuid: function(task) {
         if (undefined === task.cuid) {
@@ -205,7 +232,7 @@
   line-height: 18px;
   height: 18px;
   text-shadow: rgb(255, 255, 255) 0px 1px 0px;
-  padding-right: 12px;
+  padding-right: 28px;
 
   top: 0;
   left: 0;
@@ -246,6 +273,19 @@
 .task .metadata .add:hover::before {
   border: 1px solid #CDCDCD;
   box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.11);
+}
+
+.task .metadata .browse::before {
+  content: '⏎';
+  width: 14px;
+  height: 14px;
+  line-height: 10px;
+  position: absolute;
+  top: 1px;
+  right: 18px;
+  padding: 2px 3px;
+  font-size: 12px;
+  color: #6E94B8;
 }
 
 .task .metadata .child-indicator::before {
