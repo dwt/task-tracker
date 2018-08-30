@@ -36,17 +36,23 @@
             <h2 class=metadata  v-if="columnName === 'done'">
               <span class="stats" v-text="task.children.done.length + '/' + subtaskCount(task)"></span>
             </h2>
-  
-            <div class="col subtask" v-for="child in task.children[columnName]" v-bind:title="child.line">
-              <h3>
-                <span class="metadata">
-                    <a href="#" class="edit" title="Edit this task"></a>
-                    <a href="#" class="id" v-text="'#' + child.id" title="External Link to task"></a>
-                </span>
-                <span class="title" v-text="child.line"></span>
-                <span class="contexts" v-text="child.contexts.join(', ')"></span>
-              </h3>
-            </div>
+            <draggable class="drag-container"
+              v-model="task.children[columnName]"
+              v-bind:options="{group:String(cuid(task))}"
+              v-on:start="drag=true"
+              v-on:end="drag=false"
+            >
+              <div class="col subtask" v-for="child in task.children[columnName]" v-bind:title="child.line">
+                <h3>
+                  <span class="metadata">
+                      <a href="#" class="edit" title="Edit this task"></a>
+                      <a href="#" class="id" v-text="'#' + child.id" title="External Link to task"></a>
+                  </span>
+                  <span class="title" v-text="child.line"></span>
+                  <span class="contexts" v-text="child.contexts.join(', ')"></span>
+                </h3>
+              </div>
+            </draggable>
           </div>
         </div>
       </div>
@@ -55,19 +61,25 @@
   {% endraw %}
   <!-- development version, includes helpful console warnings -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-{# <script src="//cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script> #}
-{# <script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.15.0/vuedraggable.min.js"></script> #}
+<script src="//cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.15.0/vuedraggable.min.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script>
   // REFACT consider to allow only viewing either the text or the gui interface - tabbed style?
-  var taskJson = {{ task.json | tojson(indent=2) }}
+  const taskJson = {{ task.json | tojson(indent=2) }}
+  
+  var cuid = 0;
+  function generateClientUniqueID() {
+    return cuid++;
+  }
   var app = new Vue({
     el: '#vue-app',
     data: {
       task: taskJson,
+      drag: false,
     },
     methods: {
       subtaskCount: function(task) {
@@ -101,6 +113,12 @@
           tags: {},
           children: { new: [], unknown: [], doing: [], done: []},
         })
+      },
+      cuid: function(task) {
+        if (undefined === task.cuid) {
+          task.cuid = generateClientUniqueID()
+        }
+        return task.cuid;
       },
     },
   })
@@ -207,6 +225,11 @@
 
 .task .status.doing {
   background-color: rgba(0, 0, 0, 0);
+}
+
+.task .drag-container {
+  width: 100%;
+  min-height: 80px;
 }
 
 .task .subtask {
