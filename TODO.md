@@ -1,11 +1,5 @@
 # Relativ konkrete Todos
 
-* Navigation in die hierarchie
-  * breadcrumbs anzeigen um zurück zu können
-  * indikator dass ein task children hat
-    * Will ich den auf den children oder auf den grandchildren haben? Eigentlich will man ja ebene 
-      um ebene navigieren - vielleicht manchmal aber auch direkt ganz nach innen?
-
 * Tasks bearbeiten mittels content editable auf doppelklick?
   * evtl. auch via status change und enter als commit?
   * in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann
