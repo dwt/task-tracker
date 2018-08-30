@@ -7,7 +7,18 @@
   <textarea cols=150 rows=14>
 {{ task.__str__() }}
   </textarea>
+  {% raw %}
   <div id=vue-app class="whiteboard" v-bind:title="task.line">
+    <div class="header">
+      <h1 v-text="task.line"></h1>
+      <div class="column-headers">
+        <h2 class="column header" 
+          v-for="columnName in ['new', 'unknown', 'doing', 'done']"
+          v-if="columnName !== 'unknown' || task.children[columnName].length > 0" 
+          v-bind:class="[columnName]"
+        >{{ columnName}} <span class="grandchild-count" v-text="countOfGrandChildrenInStatus(task, columnName)"></span></h2>
+      </div>
+    </div>
     <div class="task" v-for="task in children(task)" v-bind:title="task.line" >
       <div class="container-fluid">
         <div class="row">
@@ -41,6 +52,7 @@
       </div>
     </div>
   </div>
+  {% endraw %}
   <!-- development version, includes helpful console warnings -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {# <script src="//cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script> #}
@@ -71,6 +83,11 @@
         children.push.apply(children, task.children.done)
         return children
       },
+      countOfGrandChildrenInStatus: function(task, status) {
+        return this.children(task)
+          .map( (each) => each.children[status].length )
+          .reduce( (accumulator, each) => accumulator + each)
+      },
     },
   })
 </script>
@@ -79,6 +96,26 @@
 .whiteboard {
   width: 100%;
   height: 50%;
+}
+
+.whiteboard .header h1 {
+  font-size: 24px;
+  text-align: center;
+}
+
+.whiteboard .header h2.column {
+  font-size: 12px;
+  color: rgb(102, 102, 102);
+  display: inline-block;
+  width: 33%;
+  text-align: center;
+}
+
+.grandchild-count {
+  background-color: rgb(153, 153, 153);
+  color: rgb(255, 255, 255);
+  padding: 0 8px;
+  border-radius: 8px;
 }
 
 .task {
