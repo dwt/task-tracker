@@ -77,10 +77,13 @@
   // REFACT consider to allow only viewing either the text or the gui interface - tabbed style?
   const taskJSON = {{ task.json | tojson(indent=2) }}
   
-  var cuid = 0;
   function generateClientUniqueID() {
-    return cuid++;
+    if (undefined === generateClientUniqueID.cuid) {
+      generateClientUniqueID.cuid = 0
+    }
+    return generateClientUniqueID.cuid++;
   }
+  
   var app = new Vue({
     el: '#vue-app',
     data: {
