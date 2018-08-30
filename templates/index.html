@@ -53,6 +53,7 @@
                 <h3>
                   <span class="metadata">
                       <a href="#" class="edit" title="Edit this task"></a>
+                      <span class="child-indicator" title="Has child tasks" v-if="children(grandChild).length > 0"></span>
                       <a href="#" class="id" v-text="'#' + grandChild.id" title="External Link to task"></a>
                   </span>
                   <span class="title" v-text="grandChild.line"></span>
@@ -214,6 +215,7 @@
   overflow: hidden;
 }
 
+/* TODO switch to non absolute layout for the metadata bar and pull out unifications */
 .task .metadata .id {
   font-size: 10px;
   border: 1px solid rgb(221, 221, 221);
@@ -244,6 +246,19 @@
 .task .metadata .add:hover::before {
   border: 1px solid #CDCDCD;
   box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.11);
+}
+
+.task .metadata .child-indicator::before {
+  content: '…';
+  width: 14px;
+  height: 14px;
+  line-height: 10px;
+  position: absolute;
+  top: 1px;
+  right: 18px;
+  padding: 2px 3px;
+  font-size: 12px;
+  color:  #6E94B8;
 }
 
 
