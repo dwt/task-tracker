@@ -46,8 +46,6 @@
             <draggable class="drag-container"
               v-model="child.children[columnName]"
               v-bind:options="{group:String(cuid(child))}"
-              v-on:start="drag=true"
-              v-on:end="drag=false"
             >
               <div class="col subtask" v-for="grandChild in child.children[columnName]" v-bind:title="grandChild.line">
                 <h3>
@@ -87,7 +85,6 @@
     el: '#vue-app',
     data: {
       task: taskJSON,
-      drag: false,
     },
     computed: {
       numberOfColumns: function() {
