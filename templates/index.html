@@ -33,6 +33,7 @@
     <div class="task"
       v-for="child in children(task)"
       v-bind:title="child.line"
+      v-bind:class="{ is_done: child.is_done }"
     >
       <div class="container-fluid">
         <div class="row">
@@ -211,9 +212,14 @@
   position: relative;
 }
 
-.task.collapsed {
+.task.toggle-collapsed, .task.is_done {
   height: 20px;
   overflow: hidden;
+}
+
+.task.is_done.toggle-collapsed {
+  height: 100%;
+  overflow: default;
 }
 
 .task .col > .metadata {
