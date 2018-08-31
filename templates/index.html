@@ -105,6 +105,18 @@
       data.breadcrumbs = [data.task]
       return data
     },
+    watch: {
+      task: {
+        handler: function(val) {
+          $.ajax({
+            url: '/api/v1/update_todos', type: 'POST', 
+            data: JSON.stringify(this.task), 
+            contentType: 'application/json'
+          }).then(response => this.data = response.json)
+        },
+        deep: true,
+      },
+    },
     computed: {
       numberOfColumns: function() {
         if (this.countOfGrandChildrenInStatus(this.task, 'unknown') > 0) {
