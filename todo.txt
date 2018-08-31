@@ -14,6 +14,7 @@ Dogfooding via txt Datei als Storage
         sobald eine echte id existiert wird die uid verworfen
     
     Collapse done stories by default @mh
+        do
     
     render stories in the order they are written in the todotxt file
             especially not the done stories at the end
