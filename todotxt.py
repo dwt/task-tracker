@@ -153,6 +153,7 @@ class Todo:
     def json(self):
         return dict(
             line=self.line, 
+            body=self.body,
             id=self.id,
             is_done=self.is_done, 
             contexts=self.contexts, 
@@ -171,7 +172,8 @@ class Todo:
         "Updates the line from the json properties"
         # REFACT Gnarly code, not sure how to write this more beautifull
         self.line = json.get('line', '')
-
+        self.body = json.get('body', '')
+        
         if json.get('projects', []):
             for existing_project in self.projects:
                 if existing_project not in json.get('projects', []):
@@ -371,7 +373,7 @@ class TodoTest(TestCase):
             ''').strip()
 
     def test_to_json(self):
-        expect(Todo('foo').json) == dict(line='foo', id='', is_done=False, contexts=[], projects=[], tags={}, 
+        expect(Todo('foo').json) == dict(line='foo', body='', id='', is_done=False, contexts=[], projects=[], tags={}, 
             children=dict(new=tuple(), unknown=tuple(), doing=tuple(), done=tuple()))
         expect(Todo('x foo @context tag:value, +project id:1').json).has_subdict(
             line='x foo @context tag:value, +project id:1', 
@@ -383,6 +385,7 @@ class TodoTest(TestCase):
         todo = Todo('')
         todo.json = dict(
             line='foo @removed_context removed:tag +removed_project', 
+            body='      baz quoox',
             is_done=True, 
             contexts=['context'], 
             projects=['project'], 
@@ -394,6 +397,7 @@ class TodoTest(TestCase):
         expect(todo.projects) == ['project']
         expect(todo.tags) == {'key': 'value'}
         expect(todo.line) == 'x foo +project @context key:value'
+        expect(todo.body) == '      baz quoox'
 
         todo = Todo('')
         todo.json = dict(line='x foo', is_done=False)
