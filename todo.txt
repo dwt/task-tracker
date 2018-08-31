@@ -21,8 +21,6 @@ Dogfooding via txt Datei als Storage
             But: that could be a really great way to maintain the readability of the todotxt format
         research if possible without changing the json format
         research how to represent the children in one list while still getting drag'n'drop to work
-            
-    
     
     hash-path um bei reload den ausgewählten task beizubehalten
         save current path to hash
@@ -30,6 +28,7 @@ Dogfooding via txt Datei als Storage
     
     sichern als flat-file nach jeder änderung
         x Schreiben der txt Datei aus dem Modell
+        Fix saving API to always send up the root object instead of the current task
         mit monitoring der datei ob sie sich extern ändert
     
     json talk to async server on each client action
