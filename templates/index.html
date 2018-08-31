@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 <body>
-  <textarea cols=150 rows=14>
+  <textarea class="task-source">
 {{ task.__str__() }}
   </textarea>
   {% raw %}
@@ -410,6 +410,17 @@
   font-size: 10px;
   line-height: 18px;
 }
+
+textarea {
+  font-size: 13px;
+  font-family: "Source Code Pro", monospace;
+}
+
+textarea.task-source {
+  width: 100%;
+  min-height: 300px;
+}
+
 </style>
 </body>
 </html>
