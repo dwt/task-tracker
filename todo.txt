@@ -15,6 +15,14 @@ Dogfooding via txt Datei als Storage
     
     Collapse done stories by default @mh
     
+    render stories in the order they are written in the todotxt file
+            especially not the done stories at the end
+            But: that could be a really great way to maintain the readability of the todotxt format
+        research if possible without changing the json format
+        research how to represent the children in one list while still getting drag'n'drop to work
+            
+    
+    
     hash-path um bei reload den ausgewählten task beizubehalten
         save current path to hash
         restore state on load from hash
@@ -41,7 +49,7 @@ Breadcrumbs
     Bug: Virtuelles Root-Element in Breadcrumbs
 
 Text parsing / Textformat
-    Wie escapen wir Symbole mit syntaktischer Bedeuting? (@, +, a:b) status:discuss
+    discuss: Wie escapen wir Symbole mit syntaktischer Bedeuting? (@, +, a:b)
 
 Tasks bearbeiten mittels content editable auf doppelklick?
     ganz klassich, submit on change und/ oder bei enter
