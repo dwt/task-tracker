@@ -148,11 +148,8 @@
         })
       },
       toggleCollapsed: function($event, task) {
-        var currentElement = $event.currentTarget
-        while ( ! currentElement.classList.contains('task')) {
-          currentElement = currentElement.parentNode
-        }
-        currentElement.classList.toggle('collapsed')
+        var $task = $($event.currentTarget).closest('.task')
+        $task.toggleClass('toggle-collapsed')
       },
       browse: function(task) {
         const index = this.breadcrumbs.indexOf(task)
