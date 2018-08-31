@@ -13,8 +13,8 @@ Dogfooding via txt Datei als Storage
         wenn ein client einen task erstellt, wird serverseitig die uid vergeben
         sobald eine echte id existiert wird die uid verworfen
     
-    Collapse done stories by default @mh
-        do
+    x Collapse done stories by default @mh
+        x do status:doing @mh
     
     render stories in the order they are written in the todotxt file
             especially not the done stories at the end
