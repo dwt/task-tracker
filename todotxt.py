@@ -56,6 +56,9 @@ class FilterableList(list):
 
 class Todo:
     
+    "int: how many spaces is one level of indentation."
+    INDENT = 4
+    
     # TODO consider to retain offsets of all matches, so they can easily be used for a highlighter
     
     class REGEX:
@@ -72,17 +75,19 @@ class Todo:
         ''', flags=re.X
         )
     
-    def __init__(self, line=None):
+    def __init__(self, line=None, body=None):
         self.line = line or ''
+        self.body = body or ''
         self.children = FilterableList(self)
     
     @classmethod
     def from_lines(cls, lines):
-        "Tasks become children of Tasks when they are indented by two spaces after another task."
+        """Tasks become children of Tasks when they are indented by two spaces after another task.
+        """
         todos = []
         for line in lines.strip().split('\n'):
             todo = Todo(line)
-            if todo.has_prefix():
+            if todo.has_prefix() or todo.is_virtual:
                 todos[-1].add_child(todo)
             else:
                 todos.append(todo)
@@ -100,14 +105,17 @@ class Todo:
         if not self.is_virtual:
             lines.insert(0, self.line)
         
+        if self.body:
+            lines.append(self.body)
+        
         return '\n'.join(lines)
     
     def __repr__(self):
-        return f'<Todo(line={self.line!r}, children={self.children!r})>'
+        return f'<Todo(line={self.line!r}, body={self.body!r} children={self.children!r})>'
     
     @property
     def is_virtual(self):
-        return self.line == ''
+        return self.line.strip() == ''
     
     @property
     def id(self):
@@ -228,14 +236,35 @@ class Todo:
     def has_children(self):
         return len(self.children) > 0
     
+    def is_body_of(self, other):
+        if other.has_children():
+            return False
+        
+        return self.is_virtual or self.is_twice_more_indented_than(other)
+    
+    def is_child_or_body_of(self, other):
+        return self.is_more_indented_than(other) or self.is_virtual
+    
+    # REFACT rename add_child_or_body
     def add_child(self, child):
-        if self.has_children() and child.is_more_indented_than(self.children[-1]):
+        if child.is_body_of(self):
+            self.add_body_line(child.line)
+        elif self.has_children() and child.is_child_or_body_of(self.children[-1]):
             self.children[-1].add_child(child)
         else:
             self.children.append(child)
     
+    @property
+    def indentation_level(self):
+        return (len(self.prefix) // self.INDENT)
+    
     def is_more_indented_than(self, other):
-        return len(self.prefix) > len(other.prefix)
+        return self.indentation_level \
+            > other.indentation_level
+    
+    def is_twice_more_indented_than(self, other):
+        return self.indentation_level \
+            > 1 + other.indentation_level
     
     @tupelize
     def children_tagged(self, *tags):
@@ -269,6 +298,14 @@ class Todo:
                 return False
         
         return True
+    
+    def add_body_line(self, line):
+        if '' == self.body:
+            self.body = line
+            return
+        
+        self.body += '\n' + line
+
 
 from pyexpect import expect
 from unittest import TestCase
@@ -319,6 +356,20 @@ class TodoTest(TestCase):
         todo = Todo()
         expect(todo.is_virtual) == True
     
+    def test_body(self):
+        todo = Todo(line='foo', body='        foo\n        bar')
+        expect(todo.body) == '        foo\n        bar'
+        
+        todo.add_body_line('        baz')
+        expect(todo.body) == '        foo\n        bar\n        baz'
+        
+        expect(str(todo)) == dedent('''
+            foo
+                    foo
+                    bar
+                    baz
+            ''').strip()
+
     def test_to_json(self):
         expect(Todo('foo').json) == dict(line='foo', id='', is_done=False, contexts=[], projects=[], tags={}, 
             children=dict(new=tuple(), unknown=tuple(), doing=tuple(), done=tuple()))
@@ -422,7 +473,7 @@ class MultipleTodosTest(TestCase):
                 x done1
                 x done2 status:done
         '''))
-
+        
         expect(parent.line).contains('parent')
         expect(parent.children.tagged.new).has_length(2)
         expect(parent.children.tagged.new[0].line).contains('new1')
@@ -455,9 +506,40 @@ class MultipleTodosTest(TestCase):
         expect(recreated_todo.line) == todo.line
         for index, child in enumerate(todo.children):
             expect(recreated_todo.children[index].line) == child.line
+    
+    def test_expanded_stories_eat_empty_lines(self):
+        # Sadly dedent will kill _all_ whitespace in empty lines, so can't use it here
+        lines = """
+foo
+    bar
+    
+    baz
 
-    def _test_expanded_stories(self):
+quoox
+        """.strip()
+        
+        virtual = Todo.from_lines(lines)
+        foo = virtual.children[0]
+        bar = foo.children[0]
+        expect(bar.body) == '    '
+        
+        baz = foo.children[1]
+        expect(baz.body) == ''
+    
+    def test_expanded_stories_eat_twice_indented_lines(self):
+        todo = Todo.from_lines(dedent('''
+        foo
+                foo body
+                
+                and more body
+            bar
+                    bar content
+        '''))
+        expect(todo.body) == '        foo body\n\n        and more body'
+    
+    def test_expanded_stories_can_be_collapsed(self):
         """
+        TODO
         The idea here is that we want tasks to be expanded, so we can write their description down.
         
         This should be
