@@ -29,7 +29,7 @@ Dogfooding via txt Datei als Storage
         restore state on load from hash
     
     sichern als flat-file nach jeder änderung
-        Schreiben der txt Datei aus dem Modell
+        x Schreiben der txt Datei aus dem Modell
         mit monitoring der datei ob sie sich extern ändert
     
     json talk to async server on each client action
