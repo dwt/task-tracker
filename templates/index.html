@@ -13,10 +13,10 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"
-            v-for="parent in parents"
-            v-on:click.prevent.stop="browse(parent)"
+            v-for="crumb in breadcrumbs"
+            v-on:click.prevent.stop="browse(crumb)"
           >
-            <a href="#"><span class="id" v-if="parent.id">#{{ parent.id}}</span>{{ parent.line }}</a>
+            <a href="#"><span class="id" v-if="crumb.id">#{{ crumb.id}}</span>{{ crumb.line }}</a>
           </li>
         </ol>
       </nav>
@@ -102,7 +102,7 @@
       const data = {
         task: taskJSON,
       }
-      data.parents = [data.task]
+      data.breadcrumbs = [data.task]
       return data
     },
     computed: {
@@ -156,13 +156,13 @@
         currentElement.classList.toggle('collapsed')
       },
       browse: function(task) {
-        const index = this.parents.indexOf(task)
+        const index = this.breadcrumbs.indexOf(task)
         if (-1 === index) {
-          this.parents.push(task)
+          this.breadcrumbs.push(task)
         }
         else {
           // don't remove the clicked element, as it's needs to remain tip of the stack
-          this.parents.splice(index + 1)
+          this.breadcrumbs.splice(index + 1)
         }
         this.task = task
       },
