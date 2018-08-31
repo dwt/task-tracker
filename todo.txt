@@ -1,0 +1,48 @@
+dogfooding via txt datei als storage
+    
+    hash-path um bei reload den ausgewählten task beizubehalten
+        save current path to hash
+        restore state on load from hash
+        
+    
+    handling von empty lines
+        nicht darstellen in der ui
+        erhalten zwischen edits, damit die files schön bleiben
+    
+    sichern als flat-file nach jeder änderung
+        mit monitoring der datei ob sie sich extern ändert
+    
+    json talk to async server on each client action
+        push full json to server
+        server pushes full json back to all clients
+    
+    text edit wird (erstmal) manuell gepusht und pusht dann als json zurück
+        klassich tabs mit bootstrap zwischen den zwei interfaces
+        ganz klassisches jquery change basiertes server push
+
+    schicker js text editor clientseitig einbinden, damit bearbeiten erst mal spaß macht
+        markdown als syntax? Vielleicht eigene syntax? todotxt könnte es geben
+
+    Change tracking dass tasks die gelöscht werden in einem `trash` bereich verschiebt.
+        explizites löschen aus dem trasch? Oder doch Zeit-Basiert?
+
+Content von tasks im text format via zweifacher einrückung
+    Kären: ist zweifache einrückung klar genug?
+    clientsieitig content erst mal nicht darstellen
+    expand nur wenn tag gesetzt ist (später wird content vielleicht erst dann aus dem backend gezogen?)
+    uid:1...n serverseitig vergeben wenn es keine id gibt
+    wenn ein client einen task erstellt, wird serverseitig die uid vergeben
+    sobald eine echte id existiert wird die uid verworfen
+
+Tasks bearbeiten mittels content editable auf doppelklick?
+    ganz klassich, submit on change und/ oder bei enter
+    in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann
+
+Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert
+    Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen
+
+Trac importer / exporter
+    ansatz von robert für den daily reporter verwenden?
+
+Async Flask app und sync mit dem server on browser changes
+    socket.io? was benutzt man da am besten für websockets?

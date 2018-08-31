@@ -1,15 +1,3 @@
-# Relativ konkrete Todos
-
-* Tasks bearbeiten mittels content editable auf doppelklick?
-  * evtl. auch via status change und enter als commit?
-  * in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann
-
-* Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert
-  * Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen
-
-* Async Flask app und sync mit dem server on browser changes
-  * socket.io? was benutzt man da am besten für websockets?
-
 # Gedanken
 
 Wie müsste denn eine Vuejs implementierung von dem Task Tracker aussehen?
@@ -50,6 +38,19 @@ Wie müsste denn eine Vuejs implementierung von dem Task Tracker aussehen?
     * https://github.com/samuelsnyder/outline-todo.txt for ideas about inheritance of info so you don't have to rewrite everything on child lines
         * id:1234 for ticket ids
     * use tag:value syntax for metadata
+
+* Super-Bonus: ein Text-format das aus markdown eine todotxt sektion extrahiert
+    ```todotxt
+    task 1
+    task 2
+      subtask 1
+      subtask 2
+    ```
+    
+    quasi als markdown processor?
+    Damit könnte man ein formatiertes dokument haben, das auch die todo-liste des projektes enthällt
+    Um das zu skalieren müsste man vermutlich alle sub tasks ab einer bestimmten ebene in einem anderen file (datenbank?) ablegen
+    Extra bonus wenn man so eine Projekt-Dokuemntation verwalten / extrahieren kann - stichwort change-notes
 
 
 https://github.com/AnthonyDiGirolamo/todotxt-machine/blob/master/todotxt_machine/todo.py
