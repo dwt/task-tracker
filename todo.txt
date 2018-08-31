@@ -5,7 +5,7 @@ dogfooding via txt datei als storage
         restore state on load from hash
         
     
-    handling von empty lines
+    handling von empty lines @mh
         nicht darstellen in der ui
         erhalten zwischen edits, damit die files schön bleiben
     
