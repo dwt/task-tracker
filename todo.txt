@@ -26,7 +26,7 @@ dogfooding via txt datei als storage
     Change tracking dass tasks die gelöscht werden in einem `trash` bereich verschiebt.
         explizites löschen aus dem trasch? Oder doch Zeit-Basiert?
 
-Content von tasks im text format via zweifacher einrückung
+Content von tasks im text format via zweifacher einrückung @mh
     Kären: ist zweifache einrückung klar genug?
     clientsieitig content erst mal nicht darstellen
     expand nur wenn tag gesetzt ist (später wird content vielleicht erst dann aus dem backend gezogen?)
