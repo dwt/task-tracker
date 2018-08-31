@@ -4,7 +4,7 @@ Dogfooding via txt Datei als Storage
         x nicht darstellen in der ui
         x erhalten zwischen edits, damit die files schön bleiben
         
-    x Content von tasks im textformat via zweifacher einrückung @mh
+    Content von tasks im textformat via zweifacher einrückung @mh
         x Kären: ist zweifache einrückung klar genug?
         x clientsieitig content erst mal nicht darstellen
         Darstellung von content auch in der textform clientseitig verhindern können?
@@ -12,7 +12,8 @@ Dogfooding via txt Datei als Storage
         "uid:1...n" serverseitig vergeben wenn es keine id gibt
         wenn ein client einen task erstellt, wird serverseitig die uid vergeben
         sobald eine echte id existiert wird die uid verworfen
-
+    
+    Collapse done stories by default @mh
     
     hash-path um bei reload den ausgewählten task beizubehalten
         save current path to hash
