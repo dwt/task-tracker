@@ -30,9 +30,15 @@ Content von tasks im textformat via zweifacher einrückung @mh
     Kären: ist zweifache einrückung klar genug?
     clientsieitig content erst mal nicht darstellen
     expand nur wenn tag gesetzt ist (später wird content vielleicht erst dann aus dem backend gezogen?)
-    uid:1...n serverseitig vergeben wenn es keine id gibt
+    "uid:1...n" serverseitig vergeben wenn es keine id gibt
     wenn ein client einen task erstellt, wird serverseitig die uid vergeben
     sobald eine echte id existiert wird die uid verworfen
+
+Breadcrumbs
+    Bug: Virtuelles Root-Element in Breadcrumbs
+
+Text parsing / Textformat
+    Wie escapen wir Symbole mit syntaktischer Bedeuting? (@, +, a:b) status:discuss
 
 Tasks bearbeiten mittels content editable auf doppelklick?
     ganz klassich, submit on change und/ oder bei enter
