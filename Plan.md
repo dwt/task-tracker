@@ -1,5 +1,17 @@
 # Gedanken
 
+jeder task soll immer eine ID haben
+  man will aber jederzeit erkennen können ob die id von einem bug-tracker kommt (und dazu eine seite verlinkt ist)
+  
+negative zahlen für lokale ids
+
+command pattern um die änderungen semantisch als aktionsliste abzuspeichern und auszutauschen
+* undo queue dadurch gut ausdrückbar
+  * undo erst mal nur für meine änderunen, änderungen von anderen leuten zurücknehmen ist ein unabhängiges kommando
+* text-änderungen anhand von semantischem verständnis in undo aktionen einteilen
+  * das könnte ein gutes interface zu den operational transforms sein, die in ihrer natur viel feinkörniger sind
+
+
 Wie müsste denn eine Vuejs implementierung von dem Task Tracker aussehen?
 
 * Syntax sollte wo möglich an markdown angelehnt sein, damit die lernkurve kleiner ist
