@@ -9,10 +9,11 @@ def index():
     task = Todo.from_lines(open('todo.txt', encoding='utf8').read())
     return render_template('index.html', task=task)
 
-@app.route('/api/v1/update_todos', methods=['POST'])
-def update_todos():
-    task = Todo()
-    task.json = request.json
-    with open('todo.txt', encoding='utf8', mode='w') as f:
-        f.write(str(task))
+@app.route('/api/v1/todos', methods=['GET', 'POST'])
+def todos():
+    task = Todo.from_lines(open('todo.txt', encoding='utf8').read())
+    if 'POST' == request.method:
+        task.json = request.json
+        with open('todo.txt', encoding='utf8', mode='w') as f:
+            f.write(str(task))
     return jsonify(dict(json=task.json, txt=str(task)))
