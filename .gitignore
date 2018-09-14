@@ -1,5 +1,10 @@
 .pytest_cache/
 .vscode/
+yarn-error.log
+
+# Generated code
+node_modules/
+static/
 
 # ignored for now, while I am experimenting
 vendor/
