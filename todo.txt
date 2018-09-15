@@ -64,3 +64,6 @@ Trac importer / exporter
 
 Async Flask app und sync mit dem server on browser changes
     socket.io? was benutzt man da am besten für websockets?
+
+Erzeuge backlinks für issue tracker
+    the pattern for the URL probably needs to be a configuration option?
