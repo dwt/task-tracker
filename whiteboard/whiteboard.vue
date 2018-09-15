@@ -4,7 +4,7 @@
       <nav aria-label=breadcrumb>
         <ol class=breadcrumb>
           <li class="breadcrumb-item"
-            v-for="crumb in [task].concat(breadcrumbs)"
+            v-for="crumb in breadcrumbs"
             v-on:click.prevent.stop="browse(crumb)"
             v-bind:key="crumb.id || generateClientUniqueID()"
           >
