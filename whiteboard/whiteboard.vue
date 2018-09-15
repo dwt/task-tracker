@@ -6,7 +6,7 @@
           <li class="breadcrumb-item"
             v-for="crumb in [task].concat(breadcrumbs)"
             v-on:click.prevent.stop="browse(crumb)"
-            v-bind:key="crumb.id"
+            v-bind:key="crumb.id || generateClientUniqueID()"
           >
             <a href="#"><span class="id" v-if="crumb.id">#{{ crumb.id}}</span>{{ crumb.line }}</a>
           </li>
@@ -27,7 +27,7 @@
       v-for="child in children(task)"
       v-bind:title="child.line"
       v-bind:class="{ is_done: child.is_done }"
-      v-bind:key="child.id"
+      v-bind:key="child.id || generateClientUniqueID()"
     >
       <div class="container-fluid">
         <div class="row">
@@ -58,7 +58,7 @@
               <div class="col subtask" 
                 v-for="grandChild in child.children[columnName]" 
                 v-bind:title="grandChild.line"
-                v-bind:key="grandChild.id"
+                v-bind:key="grandChild.id || generateClientUniqueID()"
             >
                 <h3>
                   <span class="metadata">
@@ -128,6 +128,7 @@ export default {
     },
     
     methods: {
+        generateClientUniqueID: generateClientUniqueID,
         
         subtaskCount: function(task) {
             return task.children.new.length
