@@ -1,9 +1,15 @@
+Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert
+    Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen
+    css -> scss und gemeinsamkeiten rausziehen @mh status:doing
+
+
 Dogfooding via txt Datei als Storage
     
     x handling von empty lines @mh
         x nicht darstellen in der ui
         x erhalten zwischen edits, damit die files schön bleiben
-        
+    
+    
     Content von tasks im textformat via zweifacher einrückung @mh
         x Kären: ist zweifache einrückung klar genug?
         x clientsieitig content erst mal nicht darstellen
@@ -55,9 +61,6 @@ Text parsing / Textformat
 Tasks bearbeiten mittels content editable auf doppelklick?
     ganz klassich, submit on change und/ oder bei enter
     in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann
-
-Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert
-    Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen
 
 Trac importer / exporter
     ansatz von robert für den daily reporter verwenden?
