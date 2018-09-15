@@ -2,8 +2,8 @@
 
 jeder task soll immer eine ID haben
   man will aber jederzeit erkennen können ob die id von einem bug-tracker kommt (und dazu eine seite verlinkt ist)
-  
-negative zahlen für lokale ids
+  negative zahlen für lokale ids
+    inline, aber kind of nicht inline.
 
 command pattern um die änderungen semantisch als aktionsliste abzuspeichern und auszutauschen
 * undo queue dadurch gut ausdrückbar
