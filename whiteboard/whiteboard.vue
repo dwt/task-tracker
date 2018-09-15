@@ -50,6 +50,7 @@
             </h2>
 
             <h2 class=metadata  v-if="columnName === 'done'">
+              <span class=flexspace></span>
               <span class="stats" v-text="child.children.done.length + '/' + subtaskCount(child)"></span>
             </h2>
             <draggable class="drag-container"
@@ -196,6 +197,9 @@ export default {
 
 <style lang="scss" scoped>
 
+$dark_grey: rgb(102, 102, 102);
+$light_grey: rgb(153, 153, 153);
+
 .whiteboard {
   width: 100%;
   height: 50%;
@@ -208,189 +212,204 @@ export default {
   
   .header h2.column {
     font-size: 12px;
-    color: rgb(102, 102, 102);
+    color: $dark_grey;
     display: inline-block;
     text-align: center;
   }
-}
+  
+  .grandchild-count {
+    background-color: $light_grey;
+    color: white; // REFACT $inverse_text_color?
+    padding: 0 8px;
+    border-radius: 8px;
+  }
 
-.grandchild-count {
-  background-color: rgb(153, 153, 153);
-  color: rgb(255, 255, 255);
-  padding: 0 8px;
-  border-radius: 8px;
-}
-
-.task {
-  width: 100%;
-  position: relative;
-  
-  &.toggle-collapsed, &.is_done {
-    height: 20px;
-    overflow: hidden;
-  }
-  
-  &.is_done.toggle-collapsed {
-    height: 100%;
-    overflow: default;
-  }
-  
-  .col > .metadata {
-    cursor: ns-resize;
-  }
-  
-  .status.new {
-    position: relative;
-  }
-  
-  .metadata {
-    position: absolute;
-    z-index: 100;
-    font-size: 12px;
-    line-height: 18px;
-    height: 18px;
-    text-shadow: rgb(255, 255, 255) 0px 1px 0px;
-    padding-right: 28px;
-  
-    top: 0;
-    left: 0;
-    right: 0;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    
-    /* TODO switch to non absolute layout for the metadata bar and pull out unifications */
-    .id {
-      font-size: 10px;
-      border: 1px solid rgb(221, 221, 221);
-      color: rgb(102, 102, 102);
-      padding: 0px 2px;
-      background-color: rgb(248, 248, 248);
-    }
-    
-    .stats {
-      float: right;
-      color: rgb(153, 153, 153);
-    }
-    
-    .button {
-      height: 14px;
-      line-height: 10px;
-      float: right;
-      padding: 2px 3px;
-      font-size: 12px;
-      color: #6E94B8;
-      box-shadow: inset 0px 0px 4px white;
-      border: 1px solid transparent;
-    }
-    
-    .button:hover {
-      border: 1px solid #CDCDCD;
-      box-shadow: inset 0px 0px 4px rgba($light_grey, .11);
-    }
-    
-    .child-indicator::before {
-      content: '…';
-      width: 14px;
-      height: 14px;
-      line-height: 10px;
-      position: absolute;
-      top: 1px;
-      right: 18px;
-      padding: 2px 3px;
-      font-size: 12px;
-      color:  #6E94B8;
-    }
-    
-  }
-  
-  .status {
-    min-height: 100px;
-    border: 1px solid rgb(153, 153, 153);
-    border-left: none;
-    border-bottom: none;
-    padding-top: 18px;
-    padding-left: 2px;
-    padding-right: 2px;
-  }
-  
-  .status.new, .status.done {
-    background-color: #F2F2F2;
-  }
-  
-  .status.doing {
-    background-color: rgba(0, 0, 0, 0);
-  }
-  
-  .status.done .metadata {
-    padding-right: 10px;
-  }
-  
-  .drag-container {
+  .task {
     width: 100%;
-    min-height: 80px;
-  }
-  
-  .subtask {
-    display: inline-block;
-    float: left;
-    margin: 2px;
-    height: 80px;
-    width: 104px;
-    cursor: move;
-    border: 1px solid rgb(204, 204, 204);
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgb(153, 153, 153) 0px 1px 2px 0px;
-    font-size: 12px;
     position: relative;
-  
-    padding-top: 20px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-bottom: 15px;
-  
-    overflow: hidden;
+    
+    &.toggle-collapsed, &.is_done {
+      height: 20px;
+      overflow: hidden;
+    }
+    
+    &.is_done.toggle-collapsed {
+      height: 100%;
+      overflow: default;
+    }
+    
+    .col > .metadata {
+      cursor: ns-resize;
+    }
+    
+    .status.new {
+      position: relative;
+    }
     
     .metadata {
       position: absolute;
+      z-index: 100;
+      font-size: 12px;
+      line-height: 18px;
+      height: 18px;
+      text-shadow: white 0px 1px 0px;
+    
       top: 0;
       left: 0;
       right: 0;
-      height: 18px;
-      background-color: #EEE;
-      font-size: 10px;
-      line-height: 18px;
-      display: inline-block;
-      width: 100%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
       
+      display: flex;
+      
+      .flexspace {
+        flex: auto;
+      }
+      
+      .title {
+        // display: none
+        flex: 1;
+        overflow: hidden;
+        text-overflow: none;
+        text-overflow: '-';
+      }
+      
+      /* TODO switch to non absolute layout for the metadata bar and pull out unifications */
       .id {
+        font-size: 10px;
+        color: $dark_grey; // fix link color
+        padding: 0px 2px;
+      }
+      
+      .stats {
+        color: $light_grey;
+        margin-right: 10px;
+      }
+      
+      .button {
+        height: 14px;
+        line-height: 10px;
+        float: right;
+        padding: 2px 3px;
+        font-size: 12px;
+        color: #6E94B8;
+        box-shadow: inset 0px 0px 4px white;
+        border: 1px solid transparent;
+      }
+      
+      .button:hover {
+        border: 1px solid #CDCDCD;
+        box-shadow: inset 0px 0px 4px rgba($light_grey, .11);
+      }
+      
+      .child-indicator::before {
+        content: '…';
+        width: 14px;
+        height: 14px;
+        line-height: 10px;
+        position: absolute;
+        top: 1px;
+        right: 18px;
+        padding: 2px 3px;
+        font-size: 12px;
+        color:  #6E94B8;
       }
       
     }
     
-    > * {
-      font-size: 12px;
-      height: 36px;
-      line-height: 18px;
-      text-overflow: ellipsis;
-      overflow: hidden;
+    .status {
+      min-height: 100px;
+      border: 1px solid $light_grey;
+      border-left: none;
+      border-bottom: none;
+      padding-top: 18px;
+      padding-left: 2px;
+      padding-right: 2px;
+      
+      &.new, &.done {
+       background-color: #F2F2F2;
+      }
+      
+      &.doing {
+        background-color: rgba(0, 0, 0, 0);
+      }
+      
+      &.done .metadata {
+        justify-content: end;
+      }
+      
     }
     
-    .contexts {
-      color: rgb(102, 102, 102);
-      position: absolute;
-      left: 5px;
-      right: 5px;
-      bottom: 5px;
-      white-space:nowrap;
-      text-overflow:ellipsis;
-      overflow:hidden;
-      font-size: 10px;
-      line-height: 18px;
+    .drag-container {
+      width: 100%;
+      min-height: 80px;
+    }
+    
+    .subtask {
+      display: inline-block;
+      float: left;
+      margin: 2px;
+      height: 80px;
+      width: 104px;
+      cursor: move;
+      border: 1px solid rgb(204, 204, 204);
+      background-color: rgb(255, 255, 255);
+      box-shadow: $light_grey 0px 1px 2px 0px;
+      font-size: 12px;
+      position: relative;
+    
+      padding-top: 20px;
+      padding-left: 5px;
+      padding-right: 5px;
+      padding-bottom: 15px;
+    
+      overflow: hidden;
+      
+      .metadata {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 18px;
+        background-color: #EEE;
+        font-size: 10px;
+        line-height: 18px;
+        display: inline-block;
+        width: 100%;
+        
+        .id {
+          color: $dark_grey;
+        }
+        
+      }
+      
+      > * {
+        font-size: 12px;
+        height: 36px;
+        line-height: 18px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      
+      .contexts {
+        color: $dark_grey;
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        overflow:hidden;
+        font-size: 10px;
+        line-height: 18px;
+      }
+      
     }
     
   }
-  
 }
+
+
 
 </style>
