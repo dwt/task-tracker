@@ -9,7 +9,7 @@
             v-bind:key="crumb.id || generateClientUniqueID()"
           >
             <!-- FIXME href should point to actual ticket in tracker -->
-            <a href=# ><span class=id v-if=crumb.id>#{{ crumb.id}}</span>{{ crumb.line }}</a>
+            <a href=#><span class=id v-if=crumb.id>#{{ crumb.id}}</span>{{ crumb.line || 'root' }}</a>
           </li>
         </ol>
       </nav>
@@ -200,10 +200,17 @@ export default {
 $dark_grey: rgb(102, 102, 102);
 $light_grey: rgb(153, 153, 153);
 
+$button_color: #6E94B8;
+$accent_background_color: #F2F2F2;
+
 .whiteboard {
   width: 100%;
   height: 50%;
   padding-top: 10px;
+  
+  .breadcrumb {
+    background-color: $accent_background_color;
+  }
   
   .header h1 {
     font-size: 24px;
@@ -293,7 +300,7 @@ $light_grey: rgb(153, 153, 153);
         float: right;
         padding: 2px 3px;
         font-size: 12px;
-        color: #6E94B8;
+        color: $button_color;
         box-shadow: inset 0px 0px 4px white;
         border: 1px solid transparent;
       }
@@ -313,7 +320,7 @@ $light_grey: rgb(153, 153, 153);
         right: 18px;
         padding: 2px 3px;
         font-size: 12px;
-        color:  #6E94B8;
+        color:  $button_color;
       }
       
     }
@@ -328,11 +335,11 @@ $light_grey: rgb(153, 153, 153);
       padding-right: 2px;
       
       &.new, &.done {
-       background-color: #F2F2F2;
+       background-color: $accent_background_color;
       }
       
       &.doing {
-        background-color: rgba(0, 0, 0, 0);
+        background-color: white;
       }
       
       &.done .metadata {
@@ -354,7 +361,7 @@ $light_grey: rgb(153, 153, 153);
       width: 104px;
       cursor: move;
       border: 1px solid rgb(204, 204, 204);
-      background-color: rgb(255, 255, 255);
+      background-color: white;
       box-shadow: $light_grey 0px 1px 2px 0px;
       font-size: 12px;
       position: relative;
@@ -372,11 +379,11 @@ $light_grey: rgb(153, 153, 153);
         left: 0;
         right: 0;
         height: 18px;
-        background-color: #EEE;
         font-size: 10px;
         line-height: 18px;
         display: inline-block;
         width: 100%;
+        background-color: $accent_background_color;
         
         .id {
           color: $dark_grey;
