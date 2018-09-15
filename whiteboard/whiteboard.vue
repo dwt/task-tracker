@@ -8,7 +8,8 @@
             v-on:click.prevent.stop="browse(crumb)"
             v-bind:key="crumb.id || generateClientUniqueID()"
           >
-            <a href="#"><span class="id" v-if="crumb.id">#{{ crumb.id}}</span>{{ crumb.line }}</a>
+            <!-- FIXME href should point to actual ticket in tracker -->
+            <a href=# ><span class=id v-if=crumb.id>#{{ crumb.id}}</span>{{ crumb.line }}</a>
           </li>
         </ol>
       </nav>
@@ -41,10 +42,11 @@
               v-if="columnName === 'new'"
               v-on:click.prevent="toggleCollapsed($event, child)"
             >
+              <!-- FIXME herf should point to bugtracker url -->
               <a href="#" class="id" v-text="'#' + child.id"></a>
               <span class="title" v-text="child.line"></span>
-              <a v-on:click.prevent.stop="browse(child)" href="#" class="browse" title="Browse grandchildren Tasks"></a>
-              <a v-on:click.prevent.stop="addChildTask(child)" href="#" class="add" title="Add subtask"></a>
+              <a v-on:click.prevent.stop="browse(child)" href="#" class="browse button" title="Browse grandchildren Tasks">⏎</a>
+              <a v-on:click.prevent.stop="addChildTask(child)" href="#" class="add button" title="Add subtask">+</a>
             </h2>
 
             <h2 class=metadata  v-if="columnName === 'done'">
@@ -62,7 +64,7 @@
             >
                 <h3>
                   <span class="metadata">
-                      <a href="#" class="edit" title="Edit this task"></a>
+                      <a href="#" class="edit button" title="Edit this task">✎</a>
                       <span class="child-indicator" title="Has child tasks" v-if="children(grandChild).length > 0"></span>
                       <a href="#" class="id" v-text="'#' + grandChild.id" title="External Link to task"></a>
                   </span>
@@ -271,36 +273,20 @@ export default {
       color: rgb(153, 153, 153);
     }
     
-    .add::before {
-      content: '+';
-      width: 14px;
+    .button {
       height: 14px;
       line-height: 10px;
-      position: absolute;
-      top: 1px;
-      right: 1px;
+      float: right;
       padding: 2px 3px;
       font-size: 12px;
       color: #6E94B8;
       box-shadow: inset 0px 0px 4px white;
+      border: 1px solid transparent;
     }
     
-    .add:hover::before {
+    .button:hover {
       border: 1px solid #CDCDCD;
-      box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.11);
-    }
-    
-    .browse::before {
-      content: '⏎';
-      width: 14px;
-      height: 14px;
-      line-height: 10px;
-      position: absolute;
-      top: 1px;
-      right: 18px;
-      padding: 2px 3px;
-      font-size: 12px;
-      color: #6E94B8;
+      box-shadow: inset 0px 0px 4px rgba($light_grey, .11);
     }
     
     .child-indicator::before {
@@ -378,28 +364,6 @@ export default {
       width: 100%;
       
       .id {
-        color: rgb(102, 102, 102);
-        background-color: rgba(0, 0, 0, 0);
-        border: none;
-      }
-      
-      .edit::before {
-        content: '✎';
-        width: 14px;
-        height: 14px;
-        line-height: 12px;
-        position: absolute;
-        top: 1px;
-        right: 1px;
-        padding: 2px 3px; 
-        font-size: 12px;
-        color: #6E94B8;
-        box-shadow: inset 0px 0px 4px white;
-      }
-      
-      .edit:hover::before {
-        box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.11);
-        border: 1px solid #CDCDCD;
       }
       
     }
