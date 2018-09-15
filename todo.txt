@@ -18,6 +18,20 @@ Dogfooding via txt Datei als Storage
         "uid:1...n" serverseitig vergeben wenn es keine id gibt
         wenn ein client einen task erstellt, wird serverseitig die uid vergeben
         sobald eine echte id existiert wird die uid verworfen
+        text-modifikationen klären
+            wie soll sich drag'n'drop auswirken?
+                reordering sollte gehen
+                drag in eine andere spalte -> nur tag setzen?
+                    aber dabei sollte ja auch eine sortierung möglich sein?
+                alternativ: reordering _nur_ im textfeld (for now)
+            wird ein task in der datei verschoben wenn er fertig ist?
+                bin versucht umsortieren erst mal nicht automatisch zu machen
+                    dann muss ich aber vermutlich die darstellung in json aufgeben
+                    und es ist immer noch nicht klar wie sich verschieben von doing -> done auf die position auswirkt
+                ist das ein eigenes kommando?
+                wenn ja wohin?
+                    jeweils ans ende seines containers
+                    vor oder nach schon andere beendete tasks
     
     x Collapse done stories by default @mh
         x do status:doing @mh
