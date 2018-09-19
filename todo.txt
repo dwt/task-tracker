@@ -1,7 +1,8 @@
-Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert
-    Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen
-    css -> scss und gemeinsamkeiten rausziehen @mh status:doing
+x Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert
+    x Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen
+    x css -> scss und gemeinsamkeiten rausziehen @mh
 
+setup js unit testing for vue app
 
 Dogfooding via txt Datei als Storage
     
@@ -9,6 +10,21 @@ Dogfooding via txt Datei als Storage
         x nicht darstellen in der ui
         x erhalten zwischen edits, damit die files schön bleiben
     
+    jeder task soll immer eine ID haben
+            man will aber jederzeit erkennen können ob die id von einem bug-tracker kommt (und dazu eine seite verlinkt ist)
+            negative zahlen als inline, aber kind of nicht inline lokale IDs vergeben?
+        negative zahlen für lokale ids serverseitig vergeben, sobald ein Task zum ersten mal gesehen wird
+    
+    kein reordering via drag'n'drop
+            default kein reordering via whiteboard
+            nur tagging via drag'n'drop zwischen collumns
+            reordering _nur_ via text-view
+            evtl. später ein 'sort task' button, der zeilen reordered
+            done nach hinten, new nach vorne, in progress dazwischen
+            einfach erweiterbar auf N-Spalten
+        json format verändern, tasks als normales array, nicht mehr als dict
+        vue function um die spalten-tasks zu kriegen (unit test this)
+        vue figure out how to integrate the drag'drop component without reordering
     
     Content von tasks im textformat via zweifacher einrückung @mh
         x Kären: ist zweifache einrückung klar genug?
@@ -65,9 +81,14 @@ Dogfooding via txt Datei als Storage
     Change tracking dass tasks die gelöscht werden in einem `trash` bereich verschiebt.
         explizites löschen aus dem trasch? Oder doch Zeit-Basiert?
 
+Trac importer / exporter
+    ansatz von robert für den daily reporter verwenden?
+    link generierung in backends konfigurierbar machen
+    negative (lokale) ids nicht verlinken
 
-Breadcrumbs
-    Bug: Virtuelles Root-Element in Breadcrumbs
+Live Multi-User Web App
+        Async Flask app und sync mit dem server on browser changes
+        socket.io? was benutzt man da am besten für websockets?
 
 Text parsing / Textformat
     discuss: Wie escapen wir Symbole mit syntaktischer Bedeuting? (@, +, a:b)
@@ -75,12 +96,3 @@ Text parsing / Textformat
 Tasks bearbeiten mittels content editable auf doppelklick?
     ganz klassich, submit on change und/ oder bei enter
     in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann
-
-Trac importer / exporter
-    ansatz von robert für den daily reporter verwenden?
-
-Async Flask app und sync mit dem server on browser changes
-    socket.io? was benutzt man da am besten für websockets?
-
-Erzeuge backlinks für issue tracker
-    the pattern for the URL probably needs to be a configuration option?
