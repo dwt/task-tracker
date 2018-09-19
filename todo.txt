@@ -2,7 +2,7 @@ x Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im e
     x Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen
     x css -> scss und gemeinsamkeiten rausziehen @mh
 
-setup js unit testing for vue app
+setup js unit testing for vue app @mh status:doing
 
 Dogfooding via txt Datei als Storage
     
@@ -96,3 +96,8 @@ Text parsing / Textformat
 Tasks bearbeiten mittels content editable auf doppelklick?
     ganz klassich, submit on change und/ oder bei enter
     in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann
+
+Fixup JS Dependencies
+    Separate out dev and production js dependencies
+    Fix babel warnings when installing anything
+            warning "@vue/cli-service-global > @vue/babel-preset-app > @babel/preset-env > @babel/plugin-transform-template-literals@7.0.0-beta.47" has incorrect peer dependency "@babel/core@7.0.0-beta.47".

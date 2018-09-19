@@ -1,5 +1,9 @@
 # Gedanken
 
+simplify text-only interaction
+  when adding @user or @role switch status to status:doing
+  consider a as short as possible status task display. maybe is:doing is better than status:doing?
+
 tree hierarchy navigation plan
   die Anzeige das ein Task kinder hat ist in der metadata bar der subtasks
   das ist momentan etwas komisch, weil alle anderen elemente dort buttons sind
