@@ -1,6 +1,6 @@
 x Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert
-    x Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen
     x css -> scss und gemeinsamkeiten rausziehen @mh
+    Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen @mh status:doing
 
 setup js unit testing for vue app @mh status:doing
 
