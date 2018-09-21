@@ -188,6 +188,10 @@ class Todo:
         Currently very basic, in that it only really updates the status
         Everything else needs to happen later
         TODO allow updating all parts via json
+        
+        To make this method viable, it probably needs that the client files
+        minimal update bundles, that are then applied as an update that only changes one aspect?
+        Not sure how this is to work with child tasks.
         """
         # REFACT Gnarly code, not sure how to write this more beautifull
         
