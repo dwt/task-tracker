@@ -11,6 +11,7 @@ describe('Whiteboard', () => {
             id: task.count++,
             status:'new',
             children:[],
+            contexts: [],
         }
         return Object.assign({}, standard, overrides)
     }
@@ -35,7 +36,7 @@ describe('Whiteboard', () => {
         const vm = new Whiteboard({ propsData: { rootTask: {} }}).$mount()
     })
     
-    describe('accessing children with specific tags', () => {
+    describe('data access functions', () => {
         
         it('should access children by status', () => {
             let board = new Whiteboard({ propsData: { rootTask: task() } }).$mount()
@@ -48,12 +49,12 @@ describe('Whiteboard', () => {
         })
     })
     
-    describe('rendering tasks', () => {
+    describe('rendering', () => {
         beforeEach(function() {
             let data = {
                 propsData: {
                     rootTask: task({
-                        line: 'fresh task',
+                        line: 'root task',
                         children: [
                             task({ children: [task(), task({ status: 'doing' })] }),
                             task(),
@@ -64,30 +65,64 @@ describe('Whiteboard', () => {
             this.board = new Whiteboard(data).$mount()
         })
         
-        it('should render the title', function() {
-            expect(this.board.$el.querySelector('.header h1').textContent).toContain('fresh task')
-        })
-        
-        it('should render column headers', function() {
-            expect(this.board.$el.querySelector('.header .column-headers .column.header.new').textContent).toContain('new')
-        })
-        it('should render the number of tasks in each status', async function() {
-            expect(this.board.$el.querySelector('.header .column-headers .column.header.new').textContent).toContain('1')
-            this.board.task.children[0].children.push(task())
-            await Vue.nextTick().then(() => {
-                expect(this.board.$el.querySelector('.header .column-headers .column.header.new').textContent).toContain('2')
+        describe('header', () => {
+            
+            it('should render the title', function() {
+                expect(this.board.$el.querySelector('.header h1').textContent).toContain('root task')
+            })
+            
+            it('should render column headers', function() {
+                expect(this.board.$el.querySelector('.header .column-headers .column.header.new').textContent).toContain('new')
+            })
+            it('should render the number of tasks in each status', async function() {
+                expect(this.board.$el.querySelector('.header .column-headers .column.header.new').textContent).toContain('1')
+                this.board.task.children[0].children.push(task())
+                await Vue.nextTick().then(() => {
+                    expect(this.board.$el.querySelector('.header .column-headers .column.header.new').textContent).toContain('2')
+                })
+            })
+            
+            it('should only show the unknown column if neccessary', async function() {
+                expect(this.board.$el.querySelector('.header .column-headers .column.header.unknown')).toBeNull()
+                this.board.task.children[0].children.push(task({ status: 'unknown' }))
+                await Vue.nextTick().then(() => {
+                    expect(this.board.$el.querySelector('.header .column-headers .column.header.unknown').textContent).toContain('unknown 1')
+                })
+            })
+            
+            it('should show breadcrumbs', async function() {
+                expect(this.board.$el.querySelectorAll('.header .breadcrumb-item').length).toBe(1)
+                expect(this.board.$el.querySelector('.header .breadcrumb-item').textContent).toContain('root task')
+                this.board.breadcrumbs.push(task({ line: 'second task'}))
+                await Vue.nextTick().then(() => {
+                    expect(this.board.$el.querySelectorAll('.header .breadcrumb-item').length).toBe(2)
+                    expect(this.board.$el.querySelector('.header .breadcrumb-item').textContent).toContain('root task')
+                })
             })
         })
         
-        it('should only show the unknown column if neccessary', async function() {
-            expect(this.board.$el.querySelector('.header .column-headers .column.header.unknown')).toBeNull()
-            this.board.task.children[0].children.push(task({ status: 'unknown' }))
-            await Vue.nextTick().then(() => {
-                expect(this.board.$el.querySelector('.header .column-headers .column.header.unknown').textContent).toContain('unknown 1')
+        describe('task rows', () => {
+            
+            it('should render one row per task', function() {
+                expect(this.board.$el.querySelectorAll('.task').length).toBe(2)
+            })
+            
+            it('should show task metadata')
+            
+            it('should render child-tasks in the correct row', async function() {
+                expect(this.board.$el.querySelectorAll('.status.new .subtask').length).toBe(1)
+                expect(this.board.$el.querySelectorAll('.status.doing .subtask').length).toBe(1)
+                
+                this.board.task.children[0].children[1].status = 'new'
+                await Vue.nextTick().then(() => {
+                    expect(this.board.$el.querySelectorAll('.status.new .subtask').length).toBe(2)
+                    expect(this.board.$el.querySelectorAll('.status.doing .subtask').length).toBe(0)
+                })
+            })
+            
+            it("should update only status, not position when doing drag'n'drop", async function() {
+                
             })
         })
-        
-        it('shold render one row per task')
-        it('should ')
     })
 })
