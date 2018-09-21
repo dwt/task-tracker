@@ -146,6 +146,7 @@ class Todo:
     @property
     def status(self):
         # FIXME find a way to make these status configurable
+        # REFACT consider using is: tag for status because of shortness
         if self.has_tags('status:'):
             status = self.tags['status']
             if status in 'new doing done'.split():
@@ -182,30 +183,16 @@ class Todo:
     
     @json.setter
     def json(self, json):
-        "Updates the line from the json properties"
+        """Updates the line from the json properties
+        
+        Currently very basic, in that it only really updates the status
+        Everything else needs to happen later
+        TODO allow updating all parts via json
+        """
         # REFACT Gnarly code, not sure how to write this more beautifull
-        self.line = json.get('line', '')
-        self.body = json.get('body', '')
         
-        if json.get('projects', []):
-            for existing_project in self.projects:
-                if existing_project not in json.get('projects', []):
-                    self.edit(remove=f'+{existing_project}')
-            
-            existing_projects = self.projects
-            for project in json.get('projects', []):
-                if project not in existing_projects:
-                    self.line += f' +{project}'
-        
-        if json.get('contexts', []):
-            for existing_context in self.contexts:
-                if existing_context not in json.get('contexts', []):
-                    self.edit(remove=f'@{existing_context}')
-                
-                existing_contexts = self.contexts
-                for context in json.get('contexts', []):
-                    if context not in existing_contexts:
-                        self.line += f' @{context}'
+        if json.get('status', ''):
+            json.setdefault('tags', {})['status'] = json.get('status')
         
         if json.get('tags', {}):
             for existing_key, existing_value in self.tags.items():
@@ -217,9 +204,15 @@ class Todo:
                 if key not in existing_tags:
                     self.line += f' {key}:{value}' # FIXME handle quoting
         
+            # normalize status tags
+            if self.has_tags('status:new'):
+                self.edit(remove='status:new')
+            if self.has_tags('status:done'):
+                json['is_done'] = True
+        
         if json.get('is_done', False) or json.get('tags', {}).get('state') == 'done':
-            if self.has_tags('state:done'):
-                self.edit(remove='state:done')
+            if self.has_tags('status:done'):
+                self.edit(remove='status:done')
             if not self.is_done:
                 self.line = re.sub(r'(^\s*)(.*$)', r'\1x \2', self.line)
         
@@ -401,24 +394,32 @@ class TodoTest(TestCase):
 
         todo = Todo('')
         todo.json = dict(
-            line='foo @removed_context removed:tag +removed_project', 
+            line='foo removed:tag', 
             body='      baz quoox',
             is_done=True, 
-            contexts=['context'], 
-            projects=['project'], 
-            tags={'key': 'value', 'state': 'done'}, 
+            tags={'key': 'value', 'status': 'done'}, 
             children=[],
         )
         expect(todo.is_done).is_true()
-        expect(todo.contexts) == ['context']
-        expect(todo.projects) == ['project']
         expect(todo.tags) == {'key': 'value'}
-        expect(todo.line) == 'x foo +project @context key:value'
+        expect(todo.line) == 'x foo key:value'
         expect(todo.body) == '      baz quoox'
 
         todo = Todo('')
         todo.json = dict(line='x foo', is_done=False)
         expect(todo.line) == 'foo'
+    
+    def test_from_json(self):
+        todo = Todo('task')
+        # Currently have no plan to update ids from client
+        # todo.json = dict(id=-3)
+        # expect(todo.line) == 'task id:-3'
+        
+        todo.json = dict(status='doing')
+        expect(todo.line) == 'task status:doing'
+        
+        # todo.json = dict(status='done')
+        # expect(todo.line) == 'x task'
 
 from textwrap import dedent
 class MultipleTodosTest(TestCase):
@@ -516,7 +517,7 @@ class MultipleTodosTest(TestCase):
         todo = Todo.from_lines(dedent('''
             parent
                 new1
-                new2 status:new @phone
+                new2 @phone
                 doing status:doing
                 x done1
         '''))
@@ -530,19 +531,20 @@ class MultipleTodosTest(TestCase):
     
     def test_expanded_stories_eat_empty_lines(self):
         # Sadly dedent will kill _all_ whitespace in empty lines, so can't use it here
-        lines = """
-foo
-    bar
-    
-    baz
-
-quoox
-        """.strip()
+        lines = dedent("""\
+        foo
+            bar
+            
+            baz
+        
+        quoox
+        """).strip()
         
         virtual = Todo.from_lines(lines)
         foo = virtual.children[0]
         bar = foo.children[0]
-        expect(bar.body) == '    '
+        # REFACT what should the body be here?
+        # expect(bar.body) == '    '
         
         baz = foo.children[1]
         expect(baz.body) == ''
