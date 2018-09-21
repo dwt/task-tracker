@@ -121,6 +121,7 @@ class Todo:
     def id(self):
         return self.tags.get('id', '')
     
+    # REFACT consider to remove, self.status should be easier to work with
     @property
     def is_done(self):
         return bool(self.REGEX.IS_DONE.match(self.line)) \
@@ -143,6 +144,22 @@ class Todo:
         ) for match in matches)
     
     @property
+    def status(self):
+        # FIXME find a way to make these status configurable
+        if self.has_tags('status:'):
+            status = self.tags['status']
+            if status in 'new doing done'.split():
+                return status
+            else:
+                return 'unknown'
+        
+        if self.is_done:
+            return 'done'
+        
+        if self.has_no_tags('status:'):
+            return 'new'
+    
+    @property
     def prefix(self):
         return re.match(r'^(\s*)', self.line).groups()[0] or ''
     
@@ -156,15 +173,11 @@ class Todo:
             body=self.body,
             id=self.id,
             is_done=self.is_done, 
+            status=self.status,
             contexts=self.contexts, 
             projects=self.projects, 
             tags=self.tags, 
-            children=dict(
-                new=_(self.children.tagged.new).map(_.each.json)._,
-                unknown=_(self.children.tagged.unknown).map(_.each.json)._,
-                doing=_(self.children.tagged.doing).map(_.each.json)._,
-                done=_(self.children.tagged.done).map(_.each.json)._,
-            ),
+            children=[child.json for child in self.children],
         )
     
     @json.setter
@@ -213,11 +226,8 @@ class Todo:
         if not json.get('is_done', False) and self.is_done:
                 self.line = re.sub(r'(^\s*)x\s+\b(.*$)', r'\1\2', self.line)
         
-        if json.get('children', {}):
-            json_children = json.get('children', {}).get('new') \
-                + json.get('children', {}).get('unknown') \
-                + json.get('children', {}).get('doing') \
-                + json.get('children', {}).get('done')
+        if json.get('children', []):
+            json_children = json.get('children', [])
             
             if len(json_children) > len(self.children):
                 for _ in range((len(json_children) - len(self.children))):
@@ -349,10 +359,17 @@ class TodoTest(TestCase):
         expect(Todo('foo bar:baz').has_no_tags('bar:')).is_false()
         expect(Todo('foo bar:baz').has_no_tags('bar:quoox')).is_true()
         expect(Todo('foo bar:baz').has_no_tags('bar:baz')).is_false()
-
+    
     def test_tags_with_spaces(self):
         expect(Todo('foo foo:bar sprint:"fnordy fnord roughnecks"').tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
         expect(Todo("foo foo:bar sprint:'fnordy fnord roughnecks'").tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
+    
+    def test_status_property(self):
+        expect(Todo().status) == 'new'
+        expect(Todo('foo').status) == 'new'
+        expect(Todo('x foo').status) == 'done'
+        expect(Todo('foo status:doing').status) == 'doing'
+        expect(Todo('foo status:something').status) == 'unknown'
     
     def test_empty_todo_knows_it_is_virtual(self):
         todo = Todo()
@@ -373,12 +390,12 @@ class TodoTest(TestCase):
             ''').strip()
 
     def test_to_json(self):
-        expect(Todo('foo').json) == dict(line='foo', body='', id='', is_done=False, contexts=[], projects=[], tags={}, 
-            children=dict(new=tuple(), unknown=tuple(), doing=tuple(), done=tuple()))
-        expect(Todo('x foo @context tag:value, +project id:1').json).has_subdict(
-            line='x foo @context tag:value, +project id:1', 
-            id='1', is_done=True, contexts=['context'], 
-            projects=['project'], tags={'tag': 'value', 'id': '1', }, 
+        expect(Todo('foo').json) == dict(line='foo', body='', id='', status='new',
+            is_done=False, contexts=[], projects=[], tags={}, children=[])
+        expect(Todo('x foo @context tag:value, +project id:1 status:doing').json).has_subdict(
+            line='x foo @context tag:value, +project id:1 status:doing', 
+            id='1', is_done=True, contexts=['context'], status='doing',
+            projects=['project'], tags={'tag': 'value', 'id': '1', 'status': 'doing' }, 
         )
         expect(Todo('foo status:done').json).has_subdict(is_done=True)
 
@@ -390,7 +407,7 @@ class TodoTest(TestCase):
             contexts=['context'], 
             projects=['project'], 
             tags={'key': 'value', 'state': 'done'}, 
-            children={},
+            children=[],
         )
         expect(todo.is_done).is_true()
         expect(todo.contexts) == ['context']
@@ -493,7 +510,7 @@ class MultipleTodosTest(TestCase):
             parent
                 child
         '''))
-        expect(parent.json.get('children').get('new')[0]).has_subdict(line='    child')
+        expect(parent.json.get('children')[0]).has_subdict(line='    child')
 
 
         todo = Todo.from_lines(dedent('''
