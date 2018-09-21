@@ -7,19 +7,26 @@
   "author": "Martin Häcker <mhaecker@mac.com>",
   "license": "MIT",
   "scripts": {
-    "build": "vue-cli-service build  --target lib --dest static  --watch whiteboard/whiteboard.vue"
+    "build": "vue-cli-service build  --target lib --dest static  --watch whiteboard/whiteboard.vue",
+    "test": "karma start karma.conf.js"
   },
   "dependencies": {
-    "@babel/core": "^7.0.1",
+    "vue": "^2.5.17"
+  },
+  "devDependencies": {
     "@vue/cli": "^3.0.3",
     "@vue/cli-service": "^3.0.3",
     "@vue/cli-service-global": "^3.0.3",
-    "babel-loader": "^8.0.2",
-    "jquery": "^3.3.1",
-    "jshint": "^2.9.6",
     "lodash": "^4.17.10",
     "node-sass": "^4.9.3",
     "sass-loader": "^7.1.0",
-    "vue": "^2.5.17"
+    
+    "jshint": "^2.9.6",
+    
+    "karma-safari-launcher": "^1.0.0",
+    "karma": "^3.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.2",
+    "jasmine-core": "^3.2.1"
   }
 }
