@@ -111,3 +111,4 @@ Fixup JS Dependencies
 add filters to show
     only tasks that are completely done (children)
     only tasks that have some done tasks (children)
+    only tasks without content (text format)
