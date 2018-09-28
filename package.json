@@ -20,9 +20,6 @@
     "lodash": "^4.17.10",
     "node-sass": "^4.9.3",
     "sass-loader": "^7.1.0",
-    
-    "jshint": "^2.9.6",
-    
     "karma-safari-launcher": "^1.0.0",
     "karma": "^3.0.0",
     "karma-chrome-launcher": "^2.2.0",
