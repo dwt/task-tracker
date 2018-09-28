@@ -1,5 +1,5 @@
 import importSCSS from './utils.js'
-importSCSS('/static/whiteboard.sass')
+importSCSS('/static/whiteboard.scss')
 
 // REFACT consider to allow only viewing either the text or the gui interface - tabbed style?
 
