@@ -1,8 +1,8 @@
 x Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert
     x css -> scss und gemeinsamkeiten rausziehen @mh
-    Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen @mh status:doing
+    x Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen @mh
 
-setup js unit testing for vue app @mh status:doing
+x setup js unit testing for vue app @mh
 
 Dogfooding via txt Datei als Storage
     
@@ -10,21 +10,16 @@ Dogfooding via txt Datei als Storage
         x nicht darstellen in der ui
         x erhalten zwischen edits, damit die files schön bleiben
     
-    jeder task soll immer eine ID haben
-            man will aber jederzeit erkennen können ob die id von einem bug-tracker kommt (und dazu eine seite verlinkt ist)
-            negative zahlen als inline, aber kind of nicht inline lokale IDs vergeben?
-        negative zahlen für lokale ids serverseitig vergeben, sobald ein Task zum ersten mal gesehen wird
-    
-    kein reordering via drag'n'drop
+    x kein reordering via drag'n'drop
             default kein reordering via whiteboard
             nur tagging via drag'n'drop zwischen collumns
             reordering _nur_ via text-view
             evtl. später ein 'sort task' button, der zeilen reordered
             done nach hinten, new nach vorne, in progress dazwischen
             einfach erweiterbar auf N-Spalten
-        json format verändern, tasks als normales array, nicht mehr als dict
-        vue function um die spalten-tasks zu kriegen (unit test this)
-        vue figure out how to integrate the drag'drop component without reordering
+        x json format verändern, tasks als normales array, nicht mehr als dict
+        x vue function um die spalten-tasks zu kriegen (unit test this)
+        x vue figure out how to integrate the drag'drop component without reordering
     
     Content von tasks im textformat via zweifacher einrückung @mh
         x Kären: ist zweifache einrückung klar genug?
@@ -52,20 +47,25 @@ Dogfooding via txt Datei als Storage
     x Collapse done stories by default @mh
         x do status:doing @mh
     
-    render stories in the order they are written in the todotxt file
+    x render stories in the order they are written in the todotxt file
             especially not the done stories at the end
             But: that could be a really great way to maintain the readability of the todotxt format
-        research if possible without changing the json format
-        research how to represent the children in one list while still getting drag'n'drop to work
-    
-    hash-path um bei reload den ausgewählten task beizubehalten
-        save current path to hash
-        restore state on load from hash
+        x research if possible without changing the json format
+        x research how to represent the children in one list while still getting drag'n'drop to work
     
     sichern als flat-file nach jeder änderung
         x Schreiben der txt Datei aus dem Modell
         Fix saving API to always send up the root object instead of the current task
         mit monitoring der datei ob sie sich extern ändert
+    
+    retain whiteboard navigation across reloads
+        jeder task muss immer eine ID haben
+            man will aber jederzeit erkennen können ob die id von einem bug-tracker kommt (und dazu eine seite verlinkt ist)
+            negative zahlen als inline, aber kind of nicht inline lokale IDs vergeben?
+        negative zahlen für lokale ids serverseitig vergeben, sobald ein Task zum ersten mal gesehen wird?
+        hash-path um bei reload den ausgewählten task beizubehalten
+        save current path to hash
+        restore whiteboard state on load from hash
     
     json talk to async server on each client action
         push full json to server
@@ -74,7 +74,13 @@ Dogfooding via txt Datei als Storage
     text edit wird (erstmal) manuell gepusht und pusht dann als json zurück
         klassich tabs mit bootstrap zwischen den zwei interfaces
         ganz klassisches jquery change basiertes server push
-
+    
+    Allow switching between text and grahpical editor
+        text editor should load from server (or serialize clientside model) on switching
+        Explicit submit of text changes (for now)
+        research if there is an easy way to resolve conflicts
+            maybe use a linear time stamp?
+    
     schicker js text editor clientseitig einbinden, damit bearbeiten erst mal spaß macht
         markdown als syntax? Vielleicht eigene syntax? todotxt könnte es geben
 
