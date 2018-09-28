@@ -101,3 +101,7 @@ Fixup JS Dependencies
     Separate out dev and production js dependencies
     Fix babel warnings when installing anything
             warning "@vue/cli-service-global > @vue/babel-preset-app > @babel/preset-env > @babel/plugin-transform-template-literals@7.0.0-beta.47" has incorrect peer dependency "@babel/core@7.0.0-beta.47".
+
+add filters to show
+    only tasks that are completely done (children)
+    only tasks that have some done tasks (children)
