@@ -83,9 +83,17 @@ Dogfooding via txt Datei als Storage
     
     schicker js text editor clientseitig einbinden, damit bearbeiten erst mal spaß macht
         markdown als syntax? Vielleicht eigene syntax? todotxt könnte es geben
-
+    
+    UI Niceties
+        dragging a task to in progress should allocate it to me
+        research does this require a login? Can my git identity be used?
+    
     Change tracking dass tasks die gelöscht werden in einem `trash` bereich verschiebt.
         explizites löschen aus dem trasch? Oder doch Zeit-Basiert?
+
+consider change tracking and undo
+    research good way to actually record changes as objects (server? client?, what about page reloads?)
+    research operational transforms and how that could go together
 
 Trac importer / exporter
     ansatz von robert für den daily reporter verwenden?
@@ -98,6 +106,7 @@ Live Multi-User Web App
 
 Text parsing / Textformat
     discuss: Wie escapen wir Symbole mit syntaktischer Bedeuting? (@, +, a:b)
+    Consider inheriting some things, i.e. if a task is tagged @mh, maybe all children should be auto tagged the same way?
 
 Tasks bearbeiten mittels content editable auf doppelklick?
     ganz klassich, submit on change und/ oder bei enter
