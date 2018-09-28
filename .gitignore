@@ -6,4 +6,4 @@ yarn-error.log
 node_modules/
 
 # ignored for now, while I am experimenting
-vendor/
+vendor/codimd
