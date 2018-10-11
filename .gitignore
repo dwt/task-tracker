@@ -1,5 +1,7 @@
 .pytest_cache/
 .vscode/
+.coverage
+coverage.xml
 yarn-error.log
 
 # Generated code
