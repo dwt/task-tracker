@@ -38,61 +38,62 @@ export default {
           >{{ columnName }} <span class="grandchild-count" >{{ countOfGrandChildrenInStatus(task, columnName) }}</span></h2>
         </div>
       </div>
-      
-      <div class="task"
-        v-for="child in task.children"
-        v-bind:title="child.line"
-        v-bind:class="{ is_done: child.is_done }"
-        v-bind:key="child.id || generateClientUniqueID()"
-      >
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col status" 
-              v-for="columnName in ['new', 'unknown', 'doing', 'done']"
-              v-if="columnName !== 'unknown' || countOfGrandChildrenInStatus(task, 'unknown') > 0" 
-              v-bind:class="[columnName]"
-              v-bind:key="columnName"
-            >
-              <h2 class=metadata 
-                v-if="columnName === 'new'"
-                v-on:click.prevent="toggleCollapsed($event, child)"
+      <div class=board>
+        <div class="task"
+          v-for="child in task.children"
+          v-bind:title="child.line"
+          v-bind:class="{ is_done: child.is_done }"
+          v-bind:key="child.id || generateClientUniqueID()"
+        >
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col status" 
+                v-for="columnName in ['new', 'unknown', 'doing', 'done']"
+                v-if="columnName !== 'unknown' || countOfGrandChildrenInStatus(task, 'unknown') > 0" 
+                v-bind:class="[columnName]"
+                v-bind:key="columnName"
               >
-                <!-- FIXME herf should point to bugtracker url -->
-                <a href="#" class="id" v-text="'#' + child.id"></a>
-                <span class="title" v-text="child.line"></span>
-                <a v-on:click.prevent.stop="browse(child)" href="#" class="browse button" title="Browse grandchildren Tasks">⏎</a>
-                <a v-on:click.prevent.stop="addChildTask(child)" href="#" class="add button" title="Add subtask">+</a>
-              </h2>
+                <h2 class=metadata 
+                  v-if="columnName === 'new'"
+                  v-on:click.prevent="toggleCollapsed($event, child)"
+                >
+                  <!-- FIXME herf should point to bugtracker url -->
+                  <a href="#" class="id" v-text="'#' + child.id"></a>
+                  <span class="title" v-text="child.line"></span>
+                  <a v-on:click.prevent.stop="browse(child)" href="#" class="browse button" title="Browse grandchildren Tasks">⏎</a>
+                  <a v-on:click.prevent.stop="addChildTask(child)" href="#" class="add button" title="Add subtask">+</a>
+                </h2>
 
-              <h2 class=metadata  v-if="columnName === 'done'">
-                <span class=flexspace></span>
-                <span class="stats" v-text="childrenInStatus(child, 'done').length + '/' + child.children.length"></span>
-              </h2>
-              
-              <draggable class="drag-container"
-                v-model="childrenInStatus(child, columnName)"
-                v-bind:options="{ group: String(cuid(child)), sort: false }"
-                v-on:end="onDragEnd"
-                v-bind:data-status="columnName"
-              >
-                <!-- REFACT use v-key to allow animations between orderings and column change (not sure this is possible) -->
-                <div class="col subtask" 
-                  v-for="grandChild in childrenInStatus(child, columnName)" 
-                  v-bind:title="grandChild.line"
-                  v-bind:key="grandChild.id || generateClientUniqueID()"
-              >
-                  <h3>
-                    <span class="metadata">
-                        <a href="#" class="edit button" title="Edit this task">✎</a>
-                        <span class="child-indicator" title="Has child tasks" v-if="grandChild.children.length > 0"></span>
-                        <a href="#" class="id" v-text="'#' + grandChild.id" title="External Link to task"></a>
-                    </span>
-                    <span class="title" v-text="grandChild.line"></span>
-                    <span class="contexts" v-text="grandChild.contexts.join(', ')"></span>
-                  </h3>
-                </div>
-              </draggable>
-              
+                <h2 class=metadata  v-if="columnName === 'done'">
+                  <span class=flexspace></span>
+                  <span class="stats" v-text="childrenInStatus(child, 'done').length + '/' + child.children.length"></span>
+                </h2>
+                
+                <draggable class="drag-container"
+                  v-model="childrenInStatus(child, columnName)"
+                  v-bind:options="{ group: String(cuid(child)), sort: false }"
+                  v-on:end="onDragEnd"
+                  v-bind:data-status="columnName"
+                >
+                  <!-- REFACT use v-key to allow animations between orderings and column change (not sure this is possible) -->
+                  <div class="col subtask" 
+                    v-for="grandChild in childrenInStatus(child, columnName)" 
+                    v-bind:title="grandChild.line"
+                    v-bind:key="grandChild.id || generateClientUniqueID()"
+                >
+                    <h3>
+                      <span class="metadata">
+                          <a href="#" class="edit button" title="Edit this task">✎</a>
+                          <span class="child-indicator" title="Has child tasks" v-if="grandChild.children.length > 0"></span>
+                          <a href="#" class="id" v-text="'#' + grandChild.id" title="External Link to task"></a>
+                      </span>
+                      <span class="title" v-text="grandChild.line"></span>
+                      <span class="contexts" v-text="grandChild.contexts.join(', ')"></span>
+                    </h3>
+                  </div>
+                </draggable>
+                
+              </div>
             </div>
           </div>
         </div>
@@ -139,10 +140,6 @@ export default {
     
     generateClientUniqueID: generateClientUniqueID,
 
-    subtaskCount: function(task) {
-      return task.children.length
-    },
-    
     childrenInStatus: function(task, status) {
       return task.children.filter(child => status === child.status)
     },
