@@ -276,8 +276,14 @@ class MultipleTodosTest(TestCase):
         expect(todo.body) == '        body\n    \n            \n        eats whitespace lines'
         
     
-    def test_expanded_stories_can_be_collapsed(self):
+    def _test_expanded_stories_can_be_collapsed(self):
         r"""
+        Not sure at all that this is a good idea. How do I want to represent collapsed stories?
+        How do I deal with the different storage formats that this requires? Because I need to decide
+        wether to save the expanded version to keep it or wether to give out the condensed version.
+        
+        
+        
         TODO
         The idea here is that we want tasks to be expanded, so we can write their description down.
         
