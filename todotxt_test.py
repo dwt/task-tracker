@@ -5,12 +5,26 @@ from unittest import TestCase
 
 class TodoTest(TestCase):
     
+    def setUp(self):
+        super().setUp()
+        id_generator.counter = 0
+    
     def test_simple(self):
         expect(str(Todo(''))) == ''
         
-        simple = 'I am a simple todo item'
+        simple = 'I am a simple todo item id:1'
         todo = Todo(simple)
         expect(str(todo)) == simple
+    
+    def test_self_assigned_id(self):
+        todo = Todo(line='foo bar:baz')
+        todo.ensure_id()
+        expect(todo.line) == 'foo bar:baz id:-1'
+        expect(todo.id) == '-1'
+        
+        todo = Todo('foo bar:baz')
+        expect(todo.json).has_subdict(id='-2')
+        expect(todo.line) == 'foo bar:baz id:-2'
     
     def test_done_item(self):
         expect(Todo('fnord').is_done).is_false()
@@ -42,8 +56,8 @@ class TodoTest(TestCase):
         expect(Todo('foo bar:baz').has_no_tags('bar:baz')).is_false()
     
     def test_tags_with_spaces(self):
-        expect(Todo('foo foo:bar sprint:"fnordy fnord roughnecks"').tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
-        expect(Todo("foo foo:bar sprint:'fnordy fnord roughnecks'").tags) == { 'sprint': "fnordy fnord roughnecks", 'foo':'bar' }
+        expect(Todo('foo foo:bar sprint:"fnordy fnord roughnecks"').tags).has_subdict(sprint="fnordy fnord roughnecks", foo='bar')
+        expect(Todo("foo foo:bar sprint:'fnordy fnord roughnecks'").tags).has_subdict(sprint="fnordy fnord roughnecks", foo='bar')
     
     def test_status_property(self):
         expect(Todo().status) == 'new'
@@ -57,22 +71,22 @@ class TodoTest(TestCase):
         expect(todo.is_virtual) == True
     
     def test_body(self):
-        todo = Todo(line='foo', body='        foo\n        bar')
+        todo = Todo(line='foo id:3', body='        foo\n        bar')
         expect(todo.body) == '        foo\n        bar'
         
         todo.add_body_line('        baz')
         expect(todo.body) == '        foo\n        bar\n        baz'
         
         expect(str(todo)) == dedent('''
-            foo
+            foo id:3
                     foo
                     bar
                     baz
             ''').strip()
 
     def test_to_json(self):
-        expect(Todo('foo').json) == dict(line='foo', body='', id='', status='new',
-            is_done=False, contexts=[], projects=[], tags={}, children=[])
+        expect(Todo('foo id:1').json) == dict(line='foo id:1', body='', id='1', status='new',
+            is_done=False, contexts=[], projects=[], tags={'id': '1'}, children=[])
         expect(Todo('x foo @context tag:value, +project id:1 status:doing').json).has_subdict(
             line='x foo @context tag:value, +project id:1 status:doing', 
             id='1', is_done=True, contexts=['context'], status='doing',
@@ -82,60 +96,69 @@ class TodoTest(TestCase):
 
         todo = Todo('')
         todo.json = dict(
-            line='foo removed:tag', 
+            line='foo id:1 removed:tag', 
             body='      baz quoox',
             is_done=True, 
-            tags={'key': 'value', 'status': 'done'}, 
+            tags={'id':'1', 'key':'value', 'status':'done'}, 
             children=[],
         )
         expect(todo.is_done).is_true()
-        expect(todo.tags) == {'key': 'value'}
-        expect(todo.line) == 'x foo key:value'
+        expect(todo.tags) == {'id':'1', 'key':'value'}
+        expect(todo.line) == 'x foo id:1 key:value'
         expect(todo.body) == '      baz quoox'
 
         todo = Todo('')
-        todo.json = dict(line='x foo', is_done=False)
-        expect(todo.line) == 'foo'
+        todo.json = dict(line='x foo id:1', is_done=False)
+        expect(todo.line) == 'foo id:1'
     
     def test_from_json(self):
-        todo = Todo('task')
+        todo = Todo('task id:1')
         # Currently have no plan to update ids from client
         # todo.json = dict(id=-3)
         # expect(todo.line) == 'task id:-3'
         
-        todo.json = dict(status='doing')
-        expect(todo.line) == 'task status:doing'
+        todo.json = dict(status='doing', id='1')
+        expect(todo.line) == 'task id:1 status:doing'
         
         # todo.json = dict(status='done')
         # expect(todo.line) == 'x task'
+    
+    def test_ensure_tasks_always_have_an_id(self):
+        expect(lambda: Todo().id).to_raise(AssertionError)
+        expect(Todo('fnord').id) == '-1'
+    
 
 from textwrap import dedent
 class MultipleTodosTest(TestCase):
     
+    def setUp(self):
+        super().setUp()
+        id_generator.counter = 0
+
     def test_multi_lines(self):
         lines = dedent("""
-        first
-        x second
+        first id:1
+        x second id:2
         third id:2346 sprint:'fnordy fnord roughnecks'
         """)
         todo = Todo.from_lines(lines)
         
         expect(todo.is_virtual).is_true()
         expect(todo.children).has_length(3)
-        expect(str(todo.children[0])) == 'first'
+        expect(str(todo.children[0])) == 'first id:1'
         expect(todo.children[1].is_done).is_true()
         expect(todo.children[2].tags) == { 'id': '2346', 'sprint': 'fnordy fnord roughnecks' }
         expect(str(todo)) == lines.strip()
     
     def test_sub_tasks(self):
         lines = dedent("""
-        first
-          x second
+        first id:1
+          x second id:2
           third id:2346 sprint:'fnordy fnord roughnecks'
         """)
         parent = Todo.from_lines(lines)
         
-        expect(parent.line) == 'first'
+        expect(parent.line) == 'first id:1'
         expect(str(parent)) == lines.strip()
         expect(parent.children[0].is_done).is_true()
         expect(parent.children[1].tags) == { 'id': '2346', 'sprint': 'fnordy fnord roughnecks' }
@@ -196,18 +219,18 @@ class MultipleTodosTest(TestCase):
     
     def test_json_serialization(self):
         parent = Todo.from_lines(dedent('''
-            parent
-                child
+            parent id:1
+                child id:2
         '''))
-        expect(parent.json.get('children')[0]).has_subdict(line='    child')
+        expect(parent.json.get('children')[0]).has_subdict(line='    child id:2')
 
 
         todo = Todo.from_lines(dedent('''
-            parent
-                new1
-                new2 @phone
-                doing status:doing
-                x done1
+            parent id:1
+                new1 id:2
+                new2 @phone id:3
+                doing status:doing id:4
+                x done1 id:5
         '''))
         
         recreated_todo = Todo()
@@ -217,39 +240,44 @@ class MultipleTodosTest(TestCase):
         for index, child in enumerate(todo.children):
             expect(recreated_todo.children[index].line) == child.line
     
-    def test_expanded_stories_eat_empty_lines(self):
+    def test_empty_lines_are_attached_as_body_to_tasks(self):
         # Sadly dedent will kill _all_ whitespace in empty lines, so can't use it here
         lines = dedent("""\
-        foo
-            bar
+        foo id:1
+            bar id:2
             
-            baz
+            baz id:3
         
-        quoox
+        quoox id:4
         """).strip()
+        # dedent kills all spaces from empty lines!
         
         virtual = Todo.from_lines(lines)
         foo = virtual.children[0]
+        expect(foo.line) == 'foo id:1'
+        expect(foo.children).has_length(2)
+        
         bar = foo.children[0]
-        # REFACT what should the body be here?
-        # expect(bar.body) == '    '
+        expect(bar.line) == '    bar id:2'
+        expect(bar.body) == ''
         
         baz = foo.children[1]
+        expect(baz.line) == '    baz id:3'
         expect(baz.body) == ''
     
-    def test_expanded_stories_eat_twice_indented_lines(self):
-        todo = Todo.from_lines(dedent('''
-        foo
-                foo body
-                
-                and more body
-            bar
-                    bar content
-        '''))
-        expect(todo.body) == '        foo body\n\n        and more body'
+    def test_expanded_stories_eat_intermitent_empty_lines(self):
+        todo = Todo.from_lines('task\n        double indented body')
+        expect(todo.body) == '        double indented body'
+        
+        todo = Todo.from_lines('task\n        body\n\n        eats empty lines')
+        expect(todo.body) == '        body\n\n        eats empty lines'
+        
+        todo = Todo.from_lines('task\n        body\n    \n            \n        eats whitespace lines')
+        expect(todo.body) == '        body\n    \n            \n        eats whitespace lines'
+        
     
     def test_expanded_stories_can_be_collapsed(self):
-        """
+        r"""
         TODO
         The idea here is that we want tasks to be expanded, so we can write their description down.
         

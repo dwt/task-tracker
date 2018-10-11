@@ -13,6 +13,13 @@ def tupelize(method):
         return tuple(method(*args, **kwargs))
     return wrapper
 
+def id_generator():
+    if not hasattr(id_generator, 'counter'):
+        id_generator.counter = 0
+    
+    id_generator.counter -= 1
+    return id_generator.counter
+
 class FilterableList(list):
     def __init__(self, parent):
         super()
@@ -69,16 +76,18 @@ class Todo:
         # TODO consider allowing escaped ' and " in the strings. Perhaps easier to allow ''' and """.
         TAGS = re.compile(r'''
             (\w+):
-            (?:(?P<simple>\w+)
-            |\'(?P<single>[\w\s]+)\'
-            |\"(?P<double>[\w\s]+)\")
+            (?:(?P<simple>[\-\w]+)
+            |\'(?P<single>[\-\w\s]+)\'
+            |\"(?P<double>[\-\w\s]+)\")
         ''', flags=re.X
         )
     
     def __init__(self, line=None, body=None):
         self.line = line or ''
         self.body = body or ''
+        # REFACT lazy create
         self.children = FilterableList(self)
+        # cannot ensure_id() here, as that would turn all body lines into tasks
     
     @classmethod
     def from_lines(cls, lines):
@@ -117,9 +126,22 @@ class Todo:
     def is_virtual(self):
         return self.line.strip() == ''
     
+    def ensure_id(self):
+        if self.is_virtual:
+            return
+        
+        # REFACT would be nice to use only self.json = dict(...) to modify the line
+        # self.json = dict(id=id_generator())
+        if not 'id' in self.tags:
+            self.line += f' id:{id_generator()!s}'
+    
     @property
     def id(self):
-        return self.tags.get('id', '')
+        assert not self.is_virtual, 'cannot ask for id of virtual task, as it means the insertion code has a bug somewhere' 
+        
+        self.ensure_id()
+        
+        return self.tags['id']
     
     # REFACT consider to remove, self.status should be easier to work with
     @property
@@ -169,10 +191,13 @@ class Todo:
     
     @property
     def json(self):
+        if self.is_virtual:
+            return dict()
+        
         return dict(
             line=self.line, 
-            body=self.body,
             id=self.id,
+            body=self.body,
             is_done=self.is_done, 
             status=self.status,
             contexts=self.contexts, 
@@ -201,8 +226,11 @@ class Todo:
         if 'body' in json:
             self.body = json['body']
         
-        if json.get('status', ''):
+        if 'status' in json:
             json.setdefault('tags', {})['status'] = json.get('status')
+        
+        if 'id' in json:
+            json.setdefault('tags', {})['id'] = json.get('id')
         
         if json.get('tags', {}):
             for existing_key, existing_value in self.tags.items():
@@ -240,6 +268,8 @@ class Todo:
             
             for child, child_json in zip(self.children, json_children):
                 child.json = child_json
+        
+        self.ensure_id()
     
     def edit(self, remove=None, remove_re=None, replace_with=' '):
         if remove is not None:
