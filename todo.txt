@@ -58,7 +58,7 @@ Dogfooding via txt Datei als Storage
         Fix saving API to always send up the root object instead of the current task
         mit monitoring der datei ob sie sich extern ändert
     
-    retain whiteboard navigation across reloads
+    retain whiteboard navigation across reloads @mh status:doing
         jeder task muss immer eine ID haben
             man will aber jederzeit erkennen können ob die id von einem bug-tracker kommt (und dazu eine seite verlinkt ist)
             negative zahlen als inline, aber kind of nicht inline lokale IDs vergeben?
