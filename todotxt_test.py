@@ -159,6 +159,12 @@ class MultipleTodosTest(TestCase):
         expect(todo.children[2].tags) == { 'id': '2346', 'sprint': 'fnordy fnord roughnecks' }
         expect(str(todo)) == lines.strip()
     
+    def test_virtual_root_object_has_only_body_and_children_when_serialized(self):
+        lines = 'first\nsecond'
+        virtual = Todo.from_lines(lines)
+        expect(virtual.is_virtual).is_true()
+        expect(virtual.json).has_key('body', 'children')
+    
     def test_retain_leading_whitespace_lines(self):
         lines = "\n    \n        \ntask"
         virtual = Todo.from_lines(lines)

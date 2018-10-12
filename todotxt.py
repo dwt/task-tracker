@@ -216,7 +216,11 @@ class Todo:
     
     @property
     def json(self):
-        self.ensure_id()
+        if self.is_virtual:
+            return dict(
+                body=self.body,
+                children=[child.json for child in self.children],
+            )
         
         return dict(
             line=self.line, 
@@ -226,7 +230,7 @@ class Todo:
             status=self.status,
             contexts=self.contexts, 
             projects=self.projects, 
-            tags=self.tags, 
+            tags=self.tags,
             children=[child.json for child in self.children],
         )
     
