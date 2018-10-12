@@ -157,7 +157,9 @@ class Todo:
         return f'<Todo(line={self.line!r}, body={self.body!r} children={self.children!r})>'
     
     def ensure_id(self):
-        assert not self.is_virtual, 'Virtual root object cannot have an ID'
+        if self.is_virtual:
+            return
+        # assert not self.is_virtual, 'Virtual root object cannot have an ID'
         
         # REFACT would be nice to use only self.json = dict(...) to modify the line
         # self.json = dict(id=id_generator())
@@ -166,8 +168,6 @@ class Todo:
     
     @property
     def id(self):
-        assert not self.is_virtual, 'cannot ask for id of virtual task, as it means the insertion code has a bug somewhere' 
-        
         self.ensure_id()
         
         return self.tags['id']
@@ -273,16 +273,15 @@ class Todo:
             # normalize status tags
             if self.has_tags('status:new'):
                 self.edit(remove='status:new')
-            if self.has_tags('status:done'):
-                json['is_done'] = True
-        
-        if json.get('is_done', False) or json.get('tags', {}).get('state') == 'done':
+            
             if self.has_tags('status:done'):
                 self.edit(remove='status:done')
-            if not self.is_done:
-                self.line = re.sub(r'(^\s*)(.*$)', r'\1x \2', self.line)
+                json['is_done'] = True
         
-        if not json.get('is_done', False) and self.is_done:
+        if 'is_done' in json:
+            if json['is_done'] and not self.is_done:
+                self.line = re.sub(r'(^\s*)(.*$)', r'\1x \2', self.line)
+            elif not json['is_done'] and self.is_done:
                 self.line = re.sub(r'(^\s*)x\s+\b(.*$)', r'\1\2', self.line)
         
         if json.get('children', []):
@@ -296,6 +295,9 @@ class Todo:
             
             for child, child_json in zip(self.children, json_children):
                 child.json = child_json
+        
+        if self.is_virtual:
+            return
         
         self.ensure_id()
     

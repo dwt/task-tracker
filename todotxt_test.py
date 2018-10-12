@@ -116,17 +116,23 @@ class TodoTest(TestCase):
     def test_from_json(self):
         todo = Todo('task id:1')
         # Currently have no plan to update ids from client
-        # todo.json = dict(id=-3)
-        # expect(todo.line) == 'task id:-3'
+        todo.json = dict(id=-3)
+        expect(todo.line) == 'task id:-3'
         
         todo.json = dict(status='doing', id='1')
-        expect(todo.line) == 'task id:1 status:doing'
+        expect(todo.line) == 'task status:doing id:1'
         
-        # todo.json = dict(status='done')
-        # expect(todo.line) == 'x task'
+        todo.json = dict(status='done')
+        expect(todo.line) == 'x task id:-1'
+        
+        todo = Todo()
+        todo.json = dict(body=None, children=[])
     
     def test_ensure_tasks_always_have_an_id(self):
-        expect(lambda: Todo().id).to_raise(AssertionError)
+        todo = Todo()
+        todo.ensure_id()
+        expect(todo.is_virtual).is_true()
+        
         expect(Todo('fnord').id) == '-1'
     
 
