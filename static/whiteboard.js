@@ -112,20 +112,26 @@ export default {
       breadcrumbs: [this.rootTask]
     };
   },
-  // watch: {
-  //   task: {
-  //     handler: function(val) {
-  //       // TODO replace with fetch()
-  //       $.ajax({
-  //         url: "/api/v1/todos",
-  //         type: "POST",
-  //         data: JSON.stringify(val),
-  //         contentType: "application/json"
-  //       }).then(response => (this.data = response.json));
-  //     },
-  //     deep: true
-  //   }
-  // },
+  watch: {
+    rootTask: {
+      handler: function(val) {
+        // TODO replace with fetch()
+        console.log(val)
+        $.ajax({
+          url: "/api/v1/todos",
+          type: "POST",
+          data: JSON.stringify(val),
+          contentType: "application/json"
+        }).then(response => {
+          debugger
+          this.data.rootTask = response.json
+          this.data.task = this.data.rootTask
+          this.data.breadcrumbs = [this.data.rootTask]
+        });
+      },
+      deep: true
+    }
+  },
   computed: {
     numberOfColumns: function() {
       if (this.countOfGrandChildrenInStatus(this.task, "unknown") > 0) {
