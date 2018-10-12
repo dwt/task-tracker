@@ -61,15 +61,13 @@ class FilterableList(list):
             if child not in known_tagged:
                 yield child
 
+# TODO consider to retain offsets of all matches, so they can easily be used for a highlighter
 class Todo:
     
     "int: how many spaces is one level of indentation."
     INDENT = 4
     
-    # TODO consider to retain offsets of all matches, so they can easily be used for a highlighter
-    
-    class REGEX:
-        # TODO require whitespace at beginning
+    class Parser:
         IS_DONE = re.compile(r'^\s*(x)\s')
         CONTEXTS = re.compile(r'@(\w+)')
         PROJECTS = re.compile(r'\+(\w+)')
@@ -81,10 +79,25 @@ class Todo:
             |\"(?P<double>[\-\w\s]+)\")
         ''', flags=re.X
         )
+        
+        @classmethod
+        def is_whitespace(cls, line):
+            return line.strip() == ''
+        
+        @classmethod
+        def indentation_level(cls, line):
+            if line is None:
+                return -1
+            
+            return len(cls.prefix(line)) // Todo.INDENT
+        
+        @classmethod
+        def prefix(cls, line):
+            return re.match(r'^(\s*)', line).groups()[0] or ''
     
     def __init__(self, line=None, body=None):
-        self.line = line or ''
-        self.body = body or ''
+        self.line = line
+        self.body = body
         # REFACT lazy create
         self.children = FilterableList(self)
         # cannot ensure_id() here, as that would turn all body lines into tasks
@@ -93,42 +106,58 @@ class Todo:
     def from_lines(cls, lines):
         """Tasks become children of Tasks when they are indented by two spaces after another task.
         """
-        todos = []
-        for line in lines.strip().split('\n'):
-            todo = Todo(line)
-            if todo.has_prefix() or todo.is_virtual:
-                todos[-1].add_child(todo)
+        root = Todo(line=None, body=None)
+        for line in lines.split('\n'):
+            root.append_body_or_child(line)
+        
+        if root.body or 1 != len(root.children):
+            return root
+        
+        return root.children[0]
+    
+    def append_body_or_child(self, line):
+        current_indentation_level = self.Parser.indentation_level(self.line)
+        indentation_level = self.Parser.indentation_level(line)
+        is_body_line = indentation_level >  1 + current_indentation_level
+        
+        if self.Parser.is_whitespace(line) or is_body_line:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+            if self.has_children():
+                return self.children[-1].append_body_or_child(line)
             else:
-                todos.append(todo)
-        
-        if len(todos) == 1:
-            return todos[0]
+                return self.add_body_line(line)
         else:
-            virtual_todo = Todo()
-            virtual_todo.children.extend(todos)
-            return virtual_todo
+            return self.children.append(Todo(line))
+    
+    # REFACT consider inlining
+    @property
+    def is_virtual(self):
+        return self.line is None
+    
+    def add_body_line(self, line):
+        if self.body is None:
+            self.body = line
+            return
         
+        self.body += '\n' + line
+    
     def __str__(self):
-        lines = list(map(str, self.children))
+        lines = []
         
-        if not self.is_virtual:
-            lines.insert(0, self.line)
+        if self.line is not None:
+            lines.append(self.line)
         
-        if self.body:
+        if self.body is not None:
             lines.append(self.body)
+        
+        lines.extend(map(str, self.children))
         
         return '\n'.join(lines)
     
     def __repr__(self):
         return f'<Todo(line={self.line!r}, body={self.body!r} children={self.children!r})>'
     
-    @property
-    def is_virtual(self):
-        return self.line.strip() == ''
-    
     def ensure_id(self):
-        if self.is_virtual:
-            return
+        assert not self.is_virtual, 'Virtual root object cannot have an ID'
         
         # REFACT would be nice to use only self.json = dict(...) to modify the line
         # self.json = dict(id=id_generator())
@@ -146,20 +175,20 @@ class Todo:
     # REFACT consider to remove, self.status should be easier to work with
     @property
     def is_done(self):
-        return bool(self.REGEX.IS_DONE.match(self.line)) \
+        return bool(self.Parser.IS_DONE.match(self.line)) \
             or self.has_tags('status:done')
     
     @property
     def contexts(self):
-        return self.REGEX.CONTEXTS.findall(self.line)
+        return self.Parser.CONTEXTS.findall(self.line)
     
     @property
     def projects(self):
-        return self.REGEX.PROJECTS.findall(self.line)
+        return self.Parser.PROJECTS.findall(self.line)
     
     @property
     def tags(self):
-        matches = self.REGEX.TAGS.findall(self.line)
+        matches = self.Parser.TAGS.findall(self.line)
         return dict((
             match[0],
             match[1] or match[2] or match[3]
@@ -182,17 +211,12 @@ class Todo:
         if self.has_no_tags('status:'):
             return 'new'
     
-    @property
-    def prefix(self):
-        return re.match(r'^(\s*)', self.line).groups()[0] or ''
-    
-    def has_prefix(self):
-        return len(self.prefix) > 0
+    def has_children(self):
+        return len(self.children) > 0
     
     @property
     def json(self):
-        if self.is_virtual:
-            return dict()
+        self.ensure_id()
         
         return dict(
             line=self.line, 
@@ -278,39 +302,6 @@ class Todo:
             self.line, ignored = re.subn(remove_re, replace_with, self.line)
         self.line = self.line.rstrip()
     
-    def has_children(self):
-        return len(self.children) > 0
-    
-    def is_body_of(self, other):
-        if other.has_children():
-            return False
-        
-        return self.is_virtual or self.is_twice_more_indented_than(other)
-    
-    def is_child_or_body_of(self, other):
-        return self.is_more_indented_than(other) or self.is_virtual
-    
-    # REFACT rename add_child_or_body
-    def add_child(self, child):
-        if child.is_body_of(self):
-            self.add_body_line(child.line)
-        elif self.has_children() and child.is_child_or_body_of(self.children[-1]):
-            self.children[-1].add_child(child)
-        else:
-            self.children.append(child)
-    
-    @property
-    def indentation_level(self):
-        return (len(self.prefix) // self.INDENT)
-    
-    def is_more_indented_than(self, other):
-        return self.indentation_level \
-            > other.indentation_level
-    
-    def is_twice_more_indented_than(self, other):
-        return self.indentation_level \
-            > 1 + other.indentation_level
-    
     @tupelize
     def children_tagged(self, *tags):
         for child in self.children:
@@ -344,10 +335,4 @@ class Todo:
         
         return True
     
-    def add_body_line(self, line):
-        if '' == self.body:
-            self.body = line
-            return
-        
-        self.body += '\n' + line
 

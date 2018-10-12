@@ -45,6 +45,9 @@ class TodoTest(TestCase):
             id='234',
             tag2='val2',
         )
+        
+        expect(Todo('foo id:-1').id) == '-1'
+        
         expect(Todo('foo').has_tags('tag:')).is_false()
         expect(Todo('foo bar:baz').has_tags('bar:')).is_true()
         expect(Todo('foo bar:baz').has_tags('bar:quoox')).is_false()
@@ -60,7 +63,6 @@ class TodoTest(TestCase):
         expect(Todo("foo foo:bar sprint:'fnordy fnord roughnecks'").tags).has_subdict(sprint="fnordy fnord roughnecks", foo='bar')
     
     def test_status_property(self):
-        expect(Todo().status) == 'new'
         expect(Todo('foo').status) == 'new'
         expect(Todo('x foo').status) == 'done'
         expect(Todo('foo status:doing').status) == 'doing'
@@ -85,7 +87,7 @@ class TodoTest(TestCase):
             ''').strip()
 
     def test_to_json(self):
-        expect(Todo('foo id:1').json) == dict(line='foo id:1', body='', id='1', status='new',
+        expect(Todo('foo id:1').json) == dict(line='foo id:1', body=None, id='1', status='new',
             is_done=False, contexts=[], projects=[], tags={'id': '1'}, children=[])
         expect(Todo('x foo @context tag:value, +project id:1 status:doing').json).has_subdict(
             line='x foo @context tag:value, +project id:1 status:doing', 
@@ -134,13 +136,20 @@ class MultipleTodosTest(TestCase):
     def setUp(self):
         super().setUp()
         id_generator.counter = 0
-
+    
+    def test_only_empty_lines(self):
+        todo = Todo.from_lines('')
+        expect(todo.is_virtual).is_true()
+        expect(todo.line) == None
+        expect(todo.body) == ''
+        
+        todo = Todo.from_lines('\n  \n    \n      ')
+        expect(todo.is_virtual).is_true()
+        expect(todo.line) == None
+        expect(todo.body) == '\n  \n    \n      '
+        
     def test_multi_lines(self):
-        lines = dedent("""
-        first id:1
-        x second id:2
-        third id:2346 sprint:'fnordy fnord roughnecks'
-        """)
+        lines = "first id:1\nx second id:2\nthird id:2346 sprint:'fnordy fnord roughnecks'"
         todo = Todo.from_lines(lines)
         
         expect(todo.is_virtual).is_true()
@@ -150,26 +159,28 @@ class MultipleTodosTest(TestCase):
         expect(todo.children[2].tags) == { 'id': '2346', 'sprint': 'fnordy fnord roughnecks' }
         expect(str(todo)) == lines.strip()
     
+    def test_retain_leading_whitespace_lines(self):
+        lines = "\n    \n        \ntask"
+        virtual = Todo.from_lines(lines)
+        expect(virtual.body) == '\n    \n        '
+        expect(virtual.line) == None
+        # self.fail(repr(virtual))
+        # import sys; sys.stdout = sys.__stdout__; from pdb import set_trace; set_trace()
+        expect(str(virtual)) == lines
+    
     def test_sub_tasks(self):
-        lines = dedent("""
-        first id:1
-          x second id:2
-          third id:2346 sprint:'fnordy fnord roughnecks'
-        """)
+        lines = "task\n    x done subtask\n    complex subtask id:2346 sprint:'fnordy fnord roughnecks'"
         parent = Todo.from_lines(lines)
         
-        expect(parent.line) == 'first id:1'
-        expect(str(parent)) == lines.strip()
+        print(parent, repr(parent.line), parent.children)
+        expect(parent.line) == 'task'
+        expect(str(parent)) == lines
         expect(parent.children[0].is_done).is_true()
+        print(parent.children)
         expect(parent.children[1].tags) == { 'id': '2346', 'sprint': 'fnordy fnord roughnecks' }
     
     def test_sub_sub_tasks(self):
-        parent = Todo.from_lines(dedent("""
-        first
-          x second
-            third id:2346 sprint:'fnordy fnord roughnecks'
-          fourth +project1
-        """))
+        parent = Todo.from_lines("first\n    x second\n        third id:2346 sprint:'fnordy fnord roughnecks'\n    fourth +project1")
         
         expect(parent.line).contains('first')
         expect(parent.children).has_length(2)
@@ -274,7 +285,11 @@ class MultipleTodosTest(TestCase):
         
         todo = Todo.from_lines('task\n        body\n    \n            \n        eats whitespace lines')
         expect(todo.body) == '        body\n    \n            \n        eats whitespace lines'
-        
+    
+    def test_leading_empty_lines_result_in_empty_body_of_virtual_parent(self):
+        virtual = Todo.from_lines('\n\n    \n        \ntask')
+        expect(virtual.is_virtual).is_true()
+        expect(virtual.body) == '\n\n    \n        '
     
     def _test_expanded_stories_can_be_collapsed(self):
         r"""
