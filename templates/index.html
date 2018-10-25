@@ -89,6 +89,28 @@ textarea {
 </script>
 
 <script>
+// consider to store the nav tree in the url, so the board state can be reloaded too
+// restore visible tab from url
+var tabID = window.location.hash;
+if ($('a[href="' + tabID + '"]').length > 0) {
+    $('a[href="' + tabID + '"]').tab('show');
+}
+else {
+    $("a[data-toggle='tab']").first().tab('show');
+}
+$(function() {
+    
+    // save currently selected tab
+    $("a[data-toggle='tab']").on('shown.bs.tab', function() {
+        // save currently selected tab to the URL
+        var tabID = $(this).attr("href").substr(1);
+        // cant assign directly to document.location.hash as that would trigger scrolling to the anchor id
+        window.history.pushState({}, document.title, 
+            document.location.origin + document.location.pathname + '#' + tabID);
+    });
+})
+</script>
+<script>
   // @REFACT kann man das nicht mit protocoll relative link und server relativ link beschrieben? Oder geht das wegen dem Port nicht? --mh
 	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')
 </script>
