@@ -100,6 +100,7 @@ class Todo:
     
     class Parser:
         IS_DONE = re.compile(r'^\s*(x)\s')
+        ID = re.compile(r'#(\d+)')
         CONTEXTS = re.compile(r'@(\w+)')
         PROJECTS = re.compile(r'\+(\w+)')
         # TODO consider allowing escaped ' and " in the strings. Perhaps easier to allow ''' and """.
@@ -188,7 +189,11 @@ class Todo:
     
     @property
     def id(self):
-        return self.tags.get('id', None)
+        ids = self.Parser.ID.findall(self.line)
+        assert len(ids) in (0,1), 'Detected more than one ID for this task'
+        if 0 == len(ids):
+            return
+        return ids[0]
     
     # REFACT consider to remove, self.status should be easier to work with
     @property
@@ -276,7 +281,10 @@ class Todo:
             json.setdefault('tags', {})['status'] = json.get('status')
         
         if 'id' in json:
-            json.setdefault('tags', {})['id'] = json.get('id')
+            if json['id'] and not self.id:
+                self.line += f' #{json["id"]}'
+            else:
+                self.edit(remove=f'#{self.id}', replace_with=f" #{json['id']}")
         
         if json.get('tags', {}):
             for existing_key, existing_value in self.tags.items():

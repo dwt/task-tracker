@@ -36,8 +36,6 @@ class TodoTest(TestCase):
             tag2='val2',
         )
         
-        expect(Todo('foo id:-1').id) == '-1'
-        
         expect(Todo('foo').has_tags('tag:')).is_false()
         expect(Todo('foo bar:baz').has_tags('bar:')).is_true()
         expect(Todo('foo bar:baz').has_tags('bar:quoox')).is_false()
@@ -58,6 +56,10 @@ class TodoTest(TestCase):
         expect(Todo('foo status:doing').status) == 'doing'
         expect(Todo('foo status:something').status) == 'unknown'
     
+    def test_id_property(self):
+        todo = Todo('foo #23')
+        expect(todo.id) == '23'
+    
     def test_empty_todo_knows_it_is_virtual(self):
         todo = Todo()
         expect(todo.is_virtual) == True
@@ -77,12 +79,12 @@ class TodoTest(TestCase):
             ''').strip()
 
     def test_to_json(self):
-        expect(Todo('foo id:1').json) == dict(line='foo id:1', body=None, id='1', status='new',
-            is_done=False, contexts=[], projects=[], tags={'id': '1'}, children=[])
-        expect(Todo('x foo @context tag:value, +project id:1 status:doing').json).has_subdict(
-            line='x foo @context tag:value, +project id:1 status:doing', 
+        expect(Todo('foo #1').json) == dict(line='foo #1', body=None, id='1', status='new',
+            is_done=False, contexts=[], projects=[], tags={}, children=[])
+        expect(Todo('x foo @context tag:value, +project #1 status:doing').json).has_subdict(
+            line='x foo @context tag:value, +project #1 status:doing', 
             id='1', is_done=True, contexts=['context'], status='doing',
-            projects=['project'], tags={'tag': 'value', 'id': '1', 'status': 'doing' }, 
+            projects=['project'], tags={'tag': 'value', 'status': 'doing' }, 
         )
         expect(Todo('foo status:done').json).has_subdict(is_done=True)
 
@@ -100,26 +102,29 @@ class TodoTest(TestCase):
         expect(todo.body) == '      baz quoox'
 
         todo = Todo('')
-        todo.json = dict(line='x foo id:1', is_done=False)
-        expect(todo.line) == 'foo id:1'
+        todo.json = dict(line='x foo #1', is_done=False)
+        expect(todo.line) == 'foo #1'
     
     def test_from_json(self):
-        todo = Todo('task id:1')
+        todo = Todo('task #1')
         # Currently have no plan to update ids from client
-        todo.json = dict(id=-3)
-        expect(todo.line) == 'task id:-3'
+        todo.json = dict(id=3)
+        expect(todo.line) == 'task #3'
         
         todo.json = dict(status='doing', id='1')
-        expect(todo.line) == 'task status:doing id:1'
+        expect(todo.line) == 'task #1 status:doing'
         
         todo.json = dict(status='done')
-        expect(todo.line) == 'x task'
-        # why does this not retain the id fromthe previous test line?
+        expect(todo.line) == 'x task #1'
         
         # todo = Todo()
         # todo.json = dict(body=None, children=[])
         # expect(todo.line) == None
     
+    def test_id_is_ignored_if_none(self):
+        todo = Todo('task id:1')
+        todo.json = dict(id=None)
+        expect(todo.line) == 'task'
     
 
 from textwrap import dedent
