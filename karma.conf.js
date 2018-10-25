@@ -17,8 +17,8 @@ module.exports = function(config) {
     files: [
       { pattern: 'static/vendor/**/*.js', watched: false },
       { pattern: 'static/*.js', type: 'module', included: false },
-      // { pattern: 'static/tests/*.js', type: 'module' },
-      'static/tests/*.js',
+      { pattern: 'static/tests/*.js', type: 'module' },
+      // 'static/tests/*.js',
     ],
 
 

@@ -1,5 +1,8 @@
 Vue.config.productionTip = false; // unit tests != production, but still annyoing
 
+import whiteboard from '../whiteboard.js'
+const Whiteboard = Vue.extend(whiteboard)
+
 describe('Whiteboard', () => {
     
     function task(overrides) {
@@ -15,16 +18,6 @@ describe('Whiteboard', () => {
         }
         return Object.assign({}, standard, overrides)
     }
-    
-    beforeAll(async () => {
-        // this is how modules need to be imported in jasmine tests
-        // as tests cannot themselves be es6 modules (yet?)
-        // my understanding is that if they are modules, then they are executed 
-        // _later_ at a time when jasmine has already closed registration for it's testsuite
-        // which means they are simply not found
-        whiteboard = (await import('../whiteboard.js')).default
-        Whiteboard = Vue.extend(whiteboard)
-    })
     
     it('smoke', () => {
         const vm = new Whiteboard({ propsData: { rootTask: task({line: 'task title'}) }}).$mount()
