@@ -304,6 +304,8 @@ class Todo:
                 self.edit(remove='status:done')
                 json['is_done'] = True
         
+        # REFACT Could be that it is signifficantly easier to just reflect the status 
+        # as it's own syntactic ting instead of hijacking tags
         if 'is_done' in json:
             if json['is_done'] and not self.is_done:
                 self.line = re.sub(r'(^\s*)(.*$)', r'\1x \2', self.line)
