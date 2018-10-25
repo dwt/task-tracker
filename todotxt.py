@@ -131,7 +131,6 @@ class Todo:
         self.body = body
         # REFACT lazy create
         self.children = FilterableList(self)
-        # cannot ensure_id() here, as that would turn all body lines into tasks
     
     @classmethod
     def from_lines(cls, lines):
@@ -187,21 +186,9 @@ class Todo:
     def __repr__(self):
         return f'<Todo(line={self.line!r}, body={self.body!r} children={self.children!r})>'
     
-    def ensure_id(self):
-        if self.is_virtual:
-            return
-        # assert not self.is_virtual, 'Virtual root object cannot have an ID'
-        
-        # REFACT would be nice to use only self.json = dict(...) to modify the line
-        # self.json = dict(id=id_generator())
-        if not 'id' in self.tags:
-            self.line += f' id:{id_generator()!s}'
-    
     @property
     def id(self):
-        self.ensure_id()
-        
-        return self.tags['id']
+        return self.tags.get('id', None)
     
     # REFACT consider to remove, self.status should be easier to work with
     @property
@@ -326,11 +313,6 @@ class Todo:
             
             for child, child_json in zip(self.children, json_children):
                 child.json = child_json
-        
-        if self.is_virtual:
-            return
-        
-        self.ensure_id()
     
     def edit(self, remove=None, remove_re=None, replace_with=' '):
         if remove is not None:
