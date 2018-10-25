@@ -58,7 +58,7 @@ export default {
                   v-on:click.prevent="toggleCollapsed($event, child)"
                 >
                   <!-- FIXME herf should point to bugtracker url -->
-                  <a href="#" class="id" v-text="'#' + child.id"></a>
+                  <a href="#" class="id" v-if="child.id" v-text="'#' + child.id"></a>
                   <span class="title" v-text="child.line"></span>
                   <a v-on:click.prevent.stop="browse(child)" href="#" class="browse button" title="Browse grandchildren Tasks">⏎</a>
                   <a v-on:click.prevent.stop="addChildTask(child)" href="#" class="add button" title="Add subtask">+</a>
@@ -85,7 +85,7 @@ export default {
                       <span class="metadata">
                           <a href="#" class="edit button" title="Edit this task">✎</a>
                           <span class="child-indicator" title="Has child tasks" v-if="grandChild.children.length > 0"></span>
-                          <a href="#" class="id" v-text="'#' + grandChild.id" title="External Link to task"></a>
+                          <a href="#" class="id" v-if="grandChild.id" v-text="'#' + grandChild.id" title="External Link to task"></a>
                       </span>
                       <span class="title" v-text="grandChild.line"></span>
                       <span class="contexts" v-text="grandChild.contexts.join(', ')"></span>
