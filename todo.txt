@@ -1,25 +1,4 @@
-x Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert 
-    x css -> scss und gemeinsamkeiten rausziehen @mh 
-    x Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen @mh 
-
-x setup js unit testing for vue app @mh 
-
 Dogfooding via txt Datei als Storage 
-    
-    x handling von empty lines @mh 
-        x nicht darstellen in der ui 
-        x erhalten zwischen edits, damit die files schön bleiben 
-    
-    x kein reordering via drag'n'drop 
-            default kein reordering via whiteboard
-            nur tagging via drag'n'drop zwischen collumns
-            reordering _nur_ via text-view
-            evtl. später ein 'sort task' button, der zeilen reordered
-            done nach hinten, new nach vorne, in progress dazwischen
-            einfach erweiterbar auf N-Spalten
-        x json format verändern, tasks als normales array, nicht mehr als dict 
-        x vue function um die spalten-tasks zu kriegen (unit test this) 
-        x vue figure out how to integrate the drag'drop component without reordering 
     
     Content von tasks im textformat via zweifacher einrückung @mh 
         x Kären: ist zweifache einrückung klar genug?  status:doing
@@ -43,15 +22,6 @@ Dogfooding via txt Datei als Storage
                 wenn ja wohin? 
                     jeweils ans ende seines containers 
                     vor oder nach schon andere beendete tasks 
-    
-    x Collapse done stories by default @mh 
-        x do status:doing @mh 
-    
-    x render stories in the order they are written in the todotxt file 
-            especially not the done stories at the end
-            But: that could be a really great way to maintain the readability of the todotxt format
-        x research if possible without changing the json format 
-        x research how to represent the children in one list while still getting drag'n'drop to work 
     
     sichern als flat-file nach jeder änderung  status:doing
         x Schreiben der txt Datei aus dem Modell 
@@ -121,3 +91,34 @@ add filters to show
     only tasks that are completely done (children) 
     only tasks that have some done tasks (children) 
     only tasks without content (text format) 
+
+done
+    x Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert 
+        x css -> scss und gemeinsamkeiten rausziehen @mh 
+        x Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen @mh 
+
+    x setup js unit testing for vue app @mh 
+
+        x handling von empty lines @mh 
+        x nicht darstellen in der ui 
+        x erhalten zwischen edits, damit die files schön bleiben 
+    
+    x kein reordering via drag'n'drop 
+            default kein reordering via whiteboard
+            nur tagging via drag'n'drop zwischen collumns
+            reordering _nur_ via text-view
+            evtl. später ein 'sort task' button, der zeilen reordered
+            done nach hinten, new nach vorne, in progress dazwischen
+            einfach erweiterbar auf N-Spalten
+        x json format verändern, tasks als normales array, nicht mehr als dict 
+        x vue function um die spalten-tasks zu kriegen (unit test this) 
+        x vue figure out how to integrate the drag'drop component without reordering 
+
+    x Collapse done stories by default @mh 
+        x do status:doing @mh 
+    
+    x render stories in the order they are written in the todotxt file 
+            especially not the done stories at the end
+            But: that could be a really great way to maintain the readability of the todotxt format
+        x research if possible without changing the json format 
+        x research how to represent the children in one list while still getting drag'n'drop to work 
