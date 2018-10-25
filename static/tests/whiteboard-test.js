@@ -43,6 +43,7 @@ describe('Whiteboard', () => {
     })
     
     describe('rendering', () => {
+        
         beforeEach(function() {
             let data = {
                 propsData: {
@@ -114,7 +115,9 @@ describe('Whiteboard', () => {
             })
             
             it("should update only status, not position when doing drag'n'drop", async function() {
-                
+                // how do I trigger the dragdrop programmatically? 
+                // I can call the event all right, but the trick is to see that <draggable> doesn't interfere
+                // could do it via selenium, but...
             })
         })
     })
