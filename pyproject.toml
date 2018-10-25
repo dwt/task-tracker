@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "task-tracker"
+version = "0.1.0"
+description = "Collaborative task tracking"
+authors = [
+    "Martin Häcker <mhaecker@mac.com>",
+    "Joscha Krutzki <joka@jokasis.de>",
+]
+license = "GPL-3.0+"
+repository = "https://github.com/dwt/task-tracker"
+keywords = []
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">3.5"
+Flask = "*"
+fluentpy = "*" 
+pyexpect = "*" 
+
+[tool.poetry.dev-dependencies]
+pytest = "*" 
+pytest-cov = "*" 
+watching_testrunner = "*"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
