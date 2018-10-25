@@ -116,7 +116,6 @@ export default {
     rootTask: {
       handler: function(val) {
         // TODO replace with fetch()
-        console.log(val)
         $.ajax({
           url: "/api/v1/todos",
           type: "POST",
