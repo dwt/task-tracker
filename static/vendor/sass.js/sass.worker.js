@@ -1,1 +1,1 @@
-../../../vendor/sass.js/dist/sass.worker.js
+../../../node_modules/sass.js/dist/sass.worker.js
