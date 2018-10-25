@@ -84,3 +84,9 @@ Consider using modern js and css standards
 * import and modules to structure js code
 * js template literals to have the html templates together with the js
 * in browser sass compilation for the sass https://github.com/Neos21/in-browser-sass
+
+https://github.com/FirebaseExtended/firepad
+
+https://github.com/ipfs/research-CRDT
+
+https://xotlcrdt.readthedocs.io/en/latest/
