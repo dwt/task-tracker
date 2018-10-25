@@ -4,9 +4,6 @@
 [submodule "vendor/Vue.Draggable"]
 	path = vendor/Vue.Draggable
 	url = https://github.com/SortableJS/Vue.Draggable
-[submodule "vendor/sass.js"]
-	path = vendor/sass.js
-	url = https://github.com/medialize/sass.js
 [submodule "vendor/vue"]
 	path = vendor/vue
 	url = https://github.com/vuejs/vue
