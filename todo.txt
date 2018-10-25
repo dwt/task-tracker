@@ -1,123 +1,123 @@
-x Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert id:-1
-    x css -> scss und gemeinsamkeiten rausziehen @mh id:-2
-    x Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen @mh id:-3
+x Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert 
+    x css -> scss und gemeinsamkeiten rausziehen @mh 
+    x Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen @mh 
 
-x setup js unit testing for vue app @mh id:-4
+x setup js unit testing for vue app @mh 
 
-Dogfooding via txt Datei als Storage id:-5
+Dogfooding via txt Datei als Storage 
     
-    x handling von empty lines @mh id:-6
-        x nicht darstellen in der ui id:-7
-        x erhalten zwischen edits, damit die files schön bleiben id:-8
+    x handling von empty lines @mh 
+        x nicht darstellen in der ui 
+        x erhalten zwischen edits, damit die files schön bleiben 
     
-    x kein reordering via drag'n'drop id:-9
+    x kein reordering via drag'n'drop 
             default kein reordering via whiteboard
             nur tagging via drag'n'drop zwischen collumns
             reordering _nur_ via text-view
             evtl. später ein 'sort task' button, der zeilen reordered
             done nach hinten, new nach vorne, in progress dazwischen
             einfach erweiterbar auf N-Spalten
-        x json format verändern, tasks als normales array, nicht mehr als dict id:-10
-        x vue function um die spalten-tasks zu kriegen (unit test this) id:-11
-        x vue figure out how to integrate the drag'drop component without reordering id:-12
+        x json format verändern, tasks als normales array, nicht mehr als dict 
+        x vue function um die spalten-tasks zu kriegen (unit test this) 
+        x vue figure out how to integrate the drag'drop component without reordering 
     
-    Content von tasks im textformat via zweifacher einrückung @mh id:-13
-        x Kären: ist zweifache einrückung klar genug? id:-14 status:doing
-        x clientsieitig content erst mal nicht darstellen id:-15
-        Darstellung von content auch in der textform clientseitig verhindern können? id:-16
-        expand nur wenn tag gesetzt ist (später wird content vielleicht erst dann aus dem backend gezogen?) id:-17
-        "uid:1...n" serverseitig vergeben wenn es keine id gibt id:-18
-        wenn ein client einen task erstellt, wird serverseitig die uid vergeben id:-19
-        sobald eine echte id existiert wird die uid verworfen id:-20
-        text-modifikationen klären id:-21
-            wie soll sich drag'n'drop auswirken? id:-22
-                reordering sollte gehen id:-23
-                drag in eine andere spalte -> nur tag setzen? id:-24
-                    aber dabei sollte ja auch eine sortierung möglich sein? id:-25
-                alternativ: reordering _nur_ im textfeld (for now) id:-26
-            wird ein task in der datei verschoben wenn er fertig ist? id:-27
-                bin versucht umsortieren erst mal nicht automatisch zu machen id:-28
-                    dann muss ich aber vermutlich die darstellung in json aufgeben id:-29
-                    und es ist immer noch nicht klar wie sich verschieben von doing -> done auf die position auswirkt id:-30
-                ist das ein eigenes kommando? id:-31
-                wenn ja wohin? id:-32
-                    jeweils ans ende seines containers id:-33
-                    vor oder nach schon andere beendete tasks id:-34
+    Content von tasks im textformat via zweifacher einrückung @mh 
+        x Kären: ist zweifache einrückung klar genug?  status:doing
+        x clientsieitig content erst mal nicht darstellen 
+        Darstellung von content auch in der textform clientseitig verhindern können? 
+        expand nur wenn tag gesetzt ist (später wird content vielleicht erst dann aus dem backend gezogen?) 
+        "uid:1...n" serverseitig vergeben wenn es keine id gibt 
+        wenn ein client einen task erstellt, wird serverseitig die uid vergeben 
+        sobald eine echte id existiert wird die uid verworfen 
+        text-modifikationen klären 
+            wie soll sich drag'n'drop auswirken? 
+                reordering sollte gehen 
+                drag in eine andere spalte -> nur tag setzen? 
+                    aber dabei sollte ja auch eine sortierung möglich sein? 
+                alternativ: reordering _nur_ im textfeld (for now) 
+            wird ein task in der datei verschoben wenn er fertig ist? 
+                bin versucht umsortieren erst mal nicht automatisch zu machen 
+                    dann muss ich aber vermutlich die darstellung in json aufgeben 
+                    und es ist immer noch nicht klar wie sich verschieben von doing -> done auf die position auswirkt 
+                ist das ein eigenes kommando? 
+                wenn ja wohin? 
+                    jeweils ans ende seines containers 
+                    vor oder nach schon andere beendete tasks 
     
-    x Collapse done stories by default @mh id:-35
-        x do status:doing @mh id:-36
+    x Collapse done stories by default @mh 
+        x do status:doing @mh 
     
-    x render stories in the order they are written in the todotxt file id:-37
+    x render stories in the order they are written in the todotxt file 
             especially not the done stories at the end
             But: that could be a really great way to maintain the readability of the todotxt format
-        x research if possible without changing the json format id:-38
-        x research how to represent the children in one list while still getting drag'n'drop to work id:-39
+        x research if possible without changing the json format 
+        x research how to represent the children in one list while still getting drag'n'drop to work 
     
-    sichern als flat-file nach jeder änderung id:-40
-        x Schreiben der txt Datei aus dem Modell id:-41
-        Fix saving API to always send up the root object instead of the current task id:-42
-        mit monitoring der datei ob sie sich extern ändert id:-43
+    sichern als flat-file nach jeder änderung  status:doing
+        x Schreiben der txt Datei aus dem Modell 
+        Fix saving API to always send up the root object instead of the current task 
+        mit monitoring der datei ob sie sich extern ändert 
     
-    retain whiteboard navigation across reloads @mh status:doing id:-44
-        jeder task muss immer eine ID haben id:-45
-            man will aber jederzeit erkennen können ob die id von einem bug-tracker kommt (und dazu eine seite verlinkt ist) id:-46
-            negative zahlen als inline, aber kind of nicht inline lokale IDs vergeben? id:-47
-        negative zahlen für lokale ids serverseitig vergeben, sobald ein Task zum ersten mal gesehen wird? id:-48
-        hash-path um bei reload den ausgewählten task beizubehalten id:-49
-        save current path to hash id:-50
-        restore whiteboard state on load from hash id:-51
+    retain whiteboard navigation across reloads @mh status:doing 
+        jeder task muss immer eine ID haben 
+            man will aber jederzeit erkennen können ob die id von einem bug-tracker kommt (und dazu eine seite verlinkt ist) 
+            negative zahlen als inline, aber kind of nicht inline lokale IDs vergeben? 
+        negative zahlen für lokale ids serverseitig vergeben, sobald ein Task zum ersten mal gesehen wird? 
+        hash-path um bei reload den ausgewählten task beizubehalten 
+        save current path to hash 
+        restore whiteboard state on load from hash 
     
-    json talk to async server on each client action id:-52
-        push full json to server id:-53
-        server pushes full json back to all clients id:-54
+    json talk to async server on each client action 
+        push full json to server 
+        server pushes full json back to all clients 
     
-    text edit wird (erstmal) manuell gepusht und pusht dann als json zurück id:-55
-        klassich tabs mit bootstrap zwischen den zwei interfaces id:-56
-        ganz klassisches jquery change basiertes server push id:-57
+    text edit wird (erstmal) manuell gepusht und pusht dann als json zurück 
+        klassich tabs mit bootstrap zwischen den zwei interfaces 
+        ganz klassisches jquery change basiertes server push 
     
-    Allow switching between text and grahpical editor id:-58
-        text editor should load from server (or serialize clientside model) on switching id:-59
-        Explicit submit of text changes (for now) id:-60
-        research if there is an easy way to resolve conflicts id:-61
-            maybe use a linear time stamp? id:-62
+    Allow switching between text and grahpical editor 
+        text editor should load from server (or serialize clientside model) on switching 
+        Explicit submit of text changes (for now) 
+        research if there is an easy way to resolve conflicts 
+            maybe use a linear time stamp? 
     
-    schicker js text editor clientseitig einbinden, damit bearbeiten erst mal spaß macht id:-63
-        markdown als syntax? Vielleicht eigene syntax? todotxt könnte es geben id:-64
+    schicker js text editor clientseitig einbinden, damit bearbeiten erst mal spaß macht 
+        markdown als syntax? Vielleicht eigene syntax? todotxt könnte es geben 
     
-    UI Niceties id:-65
-        dragging a task to in progress should allocate it to me id:-66
-        research does this require a login? Can my git identity be used? id:-67
+    UI Niceties 
+        dragging a task to in progress should allocate it to me 
+        research does this require a login? Can my git identity be used? 
     
-    Change tracking dass tasks die gelöscht werden in einem `trash` bereich verschiebt. id:-68
-        explizites löschen aus dem trasch? Oder doch Zeit-Basiert? id:-69
+    Change tracking dass tasks die gelöscht werden in einem `trash` bereich verschiebt. 
+        explizites löschen aus dem trasch? Oder doch Zeit-Basiert? 
 
-consider change tracking and undo id:-70
-    research good way to actually record changes as objects (server? client?, what about page reloads?) id:-71
-    research operational transforms and how that could go together id:-72
+consider change tracking and undo 
+    research good way to actually record changes as objects (server? client?, what about page reloads?) 
+    research operational transforms and how that could go together 
 
-Trac importer / exporter id:-73
-    ansatz von robert für den daily reporter verwenden? id:-74
-    link generierung in backends konfigurierbar machen id:-75
-    negative (lokale) ids nicht verlinken id:-76
+Trac importer / exporter 
+    ansatz von robert für den daily reporter verwenden? 
+    link generierung in backends konfigurierbar machen 
+    negative (lokale) ids nicht verlinken 
 
-Live Multi-User Web App id:-77
+Live Multi-User Web App 
         Async Flask app und sync mit dem server on browser changes
         socket.io? was benutzt man da am besten für websockets?
 
-Text parsing / Textformat id:-78
-    discuss: Wie escapen wir Symbole mit syntaktischer Bedeuting? (@, +, a:b) id:-79
-    Consider inheriting some things, i.e. if a task is tagged @mh, maybe all children should be auto tagged the same way? id:-80
+Text parsing / Textformat 
+    discuss: Wie escapen wir Symbole mit syntaktischer Bedeuting? (@, +, a:b) 
+    Consider inheriting some things, i.e. if a task is tagged @mh, maybe all children should be auto tagged the same way? 
 
-Tasks bearbeiten mittels content editable auf doppelklick? id:-81
-    ganz klassich, submit on change und/ oder bei enter id:-82
-    in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann id:-83
+Tasks bearbeiten mittels content editable auf doppelklick? 
+    ganz klassich, submit on change und/ oder bei enter 
+    in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann 
 
-Fixup JS Dependencies id:-84
-    Separate out dev and production js dependencies id:-85
-    Fix babel warnings when installing anything id:-86
+Fixup JS Dependencies 
+    Separate out dev and production js dependencies 
+    Fix babel warnings when installing anything 
             warning "@vue/cli-service-global > @vue/babel-preset-app > @babel/preset-env > @babel/plugin-transform-template-literals@7.0.0-beta.47" has incorrect peer dependency "@babel/core@7.0.0-beta.47".
 
-add filters to show id:-87
-    only tasks that are completely done (children) id:-88
-    only tasks that have some done tasks (children) id:-89
-    only tasks without content (text format) id:-90
+add filters to show 
+    only tasks that are completely done (children) 
+    only tasks that have some done tasks (children) 
+    only tasks without content (text format) 
