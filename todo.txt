@@ -1,46 +1,46 @@
-Dogfooding via txt Datei als Storage 
+Dogfooding via txt Datei als Storage
     
     sichern als flat-file nach jeder änderung  status:doing
-        x Schreiben der txt Datei aus dem Modell 
-        Fix saving API to always send up the root object instead of the current task 
-        mit monitoring der datei ob sie sich extern ändert 
+        x Schreiben der txt Datei aus dem Modell
+        Fix saving API to always send up the root object instead of the current task
+        mit monitoring der datei ob sie sich extern ändert
     
-    retain whiteboard navigation across reloads @mh status:doing 
-        jeder task muss immer eine ID haben 
-            man will aber jederzeit erkennen können ob die id von einem bug-tracker kommt (und dazu eine seite verlinkt ist) 
-            negative zahlen als inline, aber kind of nicht inline lokale IDs vergeben? 
-        negative zahlen für lokale ids serverseitig vergeben, sobald ein Task zum ersten mal gesehen wird? 
-        hash-path um bei reload den ausgewählten task beizubehalten 
-        save current path to hash 
-        restore whiteboard state on load from hash 
+    retain whiteboard navigation across reloads @mh status:doing
+        jeder task muss immer eine ID haben
+            man will aber jederzeit erkennen können ob die id von einem bug-tracker kommt (und dazu eine seite verlinkt ist)
+            negative zahlen als inline, aber kind of nicht inline lokale IDs vergeben?
+        negative zahlen für lokale ids serverseitig vergeben, sobald ein Task zum ersten mal gesehen wird?
+        hash-path um bei reload den ausgewählten task beizubehalten
+        save current path to hash
+        restore whiteboard state on load from hash
     
-    json talk to async server on each client action 
-        push full json to server 
-        server pushes full json back to all clients 
+    json talk to async server on each client action
+        push full json to server
+        server pushes full json back to all clients
     
-    text edit wird (erstmal) manuell gepusht und pusht dann als json zurück 
-        klassich tabs mit bootstrap zwischen den zwei interfaces 
-        ganz klassisches jquery change basiertes server push 
+    text edit wird (erstmal) manuell gepusht und pusht dann als json zurück
+        klassich tabs mit bootstrap zwischen den zwei interfaces
+        ganz klassisches jquery change basiertes server push
     
-    Allow switching between text and grahpical editor 
-        text editor should load from server (or serialize clientside model) on switching 
-        Explicit submit of text changes (for now) 
-        research if there is an easy way to resolve conflicts 
-            maybe use a linear time stamp? 
+    Allow switching between text and grahpical editor
+        text editor should load from server (or serialize clientside model) on switching
+        Explicit submit of text changes (for now)
+        research if there is an easy way to resolve conflicts
+            maybe use a linear time stamp?
     
-    schicker js text editor clientseitig einbinden, damit bearbeiten erst mal spaß macht 
-        markdown als syntax? Vielleicht eigene syntax? todotxt könnte es geben 
+    schicker js text editor clientseitig einbinden, damit bearbeiten erst mal spaß macht
+        markdown als syntax? Vielleicht eigene syntax? todotxt könnte es geben
     
-    UI Niceties 
-        dragging a task to in progress should allocate it to me 
-        research does this require a login? Can my git identity be used? 
+    UI Niceties
+        dragging a task to in progress should allocate it to me
+        research does this require a login? Can my git identity be used?
     
-    Change tracking dass tasks die gelöscht werden in einem `trash` bereich verschiebt. 
-        explizites löschen aus dem trasch? Oder doch Zeit-Basiert? 
+    Change tracking dass tasks die gelöscht werden in einem `trash` bereich verschiebt.
+        explizites löschen aus dem trasch? Oder doch Zeit-Basiert?
     
-    Research: Darstellung von content auch in der textform clientseitig verhindern können? 
-        expand nur wenn tag gesetzt ist (später wird content vielleicht erst dann aus dem backend gezogen?) 
-        Research: braucht es ein "uid:1...n" serverseitig vergeben wenn es keine id gibt 
+    Research: Darstellung von content auch in der textform clientseitig verhindern können?
+        expand nur wenn tag gesetzt ist (später wird content vielleicht erst dann aus dem backend gezogen?)
+        Research: braucht es ein "uid:1...n" serverseitig vergeben wenn es keine id gibt
         Research: wenn ein client einen task erstellt, wird serverseitig die uid vergeben. Nötig?
         sobald eine echte id existiert wird die uid verworfen
     
@@ -50,75 +50,75 @@ Dogfooding via txt Datei als Storage
 
 
 
-consider change tracking and undo 
-    research good way to actually record changes as objects (server? client?, what about page reloads?) 
-    research operational transforms and how that could go together 
+consider change tracking and undo
+    research good way to actually record changes as objects (server? client?, what about page reloads?)
+    research operational transforms and how that could go together
 
-Trac importer / exporter 
-    ansatz von robert für den daily reporter verwenden? 
-    link generierung in backends konfigurierbar machen 
-    negative (lokale) ids nicht verlinken 
+Trac importer / exporter
+    ansatz von robert für den daily reporter verwenden?
+    link generierung in backends konfigurierbar machen
+    negative (lokale) ids nicht verlinken
 
-Live Multi-User Web App 
+Live Multi-User Web App
         Async Flask app und sync mit dem server on browser changes
         socket.io? was benutzt man da am besten für websockets?
 
-Text parsing / Textformat 
-    discuss: Wie escapen wir Symbole mit syntaktischer Bedeuting? (@, +, a:b) 
-    Consider inheriting some things, i.e. if a task is tagged @mh, maybe all children should be auto tagged the same way? 
+Text parsing / Textformat
+    discuss: Wie escapen wir Symbole mit syntaktischer Bedeuting? (@, +, a:b)
+    Consider inheriting some things, i.e. if a task is tagged @mh, maybe all children should be auto tagged the same way?
 
-Tasks bearbeiten mittels content editable auf doppelklick? 
-    ganz klassich, submit on change und/ oder bei enter 
-    in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann 
+Tasks bearbeiten mittels content editable auf doppelklick?
+    ganz klassich, submit on change und/ oder bei enter
+    in jedem fall sollte der edit bereich entweder größer oder auto resizing sein, damit man komfortabel tippen kann
 
-Fixup JS Dependencies 
-    Separate out dev and production js dependencies 
-    Fix babel warnings when installing anything 
+Fixup JS Dependencies
+    Separate out dev and production js dependencies
+    Fix babel warnings when installing anything
             warning "@vue/cli-service-global > @vue/babel-preset-app > @babel/preset-env > @babel/plugin-transform-template-literals@7.0.0-beta.47" has incorrect peer dependency "@babel/core@7.0.0-beta.47".
 
-add filters to show 
-    only tasks that are completely done (children) 
-    only tasks that have some done tasks (children) 
-    only tasks without content (text format) 
+add filters to show
+    only tasks that are completely done (children)
+    only tasks that have some done tasks (children)
+    only tasks without content (text format)
 
 done
-    x Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert 
-        x css -> scss und gemeinsamkeiten rausziehen @mh 
-        x Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen @mh 
+    x Vue app aus dem index html irgendwie herausholen, damit highlighting etc. im editor funktioniert
+        x css -> scss und gemeinsamkeiten rausziehen @mh
+        x Wenn möglich ohne gleich eine shitload an JS dependencies und extra prozesse dazu zu kriegen @mh
 
-    x setup js unit testing for vue app @mh 
+    x setup js unit testing for vue app @mh
 
-        x handling von empty lines @mh 
-        x nicht darstellen in der ui 
-        x erhalten zwischen edits, damit die files schön bleiben 
+        x handling von empty lines @mh
+        x nicht darstellen in der ui
+        x erhalten zwischen edits, damit die files schön bleiben
     
-    x kein reordering via drag'n'drop 
+    x kein reordering via drag'n'drop
             default kein reordering via whiteboard
             nur tagging via drag'n'drop zwischen collumns
             reordering _nur_ via text-view
             evtl. später ein 'sort task' button, der zeilen reordered
             done nach hinten, new nach vorne, in progress dazwischen
             einfach erweiterbar auf N-Spalten
-        x json format verändern, tasks als normales array, nicht mehr als dict 
-        x vue function um die spalten-tasks zu kriegen (unit test this) 
-        x vue figure out how to integrate the drag'drop component without reordering 
+        x json format verändern, tasks als normales array, nicht mehr als dict
+        x vue function um die spalten-tasks zu kriegen (unit test this)
+        x vue figure out how to integrate the drag'drop component without reordering
 
-    x Collapse done stories by default @mh 
-        x do status:doing @mh 
+    x Collapse done stories by default @mh
+        x do status:doing @mh
     
-    x render stories in the order they are written in the todotxt file 
+    x render stories in the order they are written in the todotxt file
             especially not the done stories at the end
             But: that could be a really great way to maintain the readability of the todotxt format
-        x research if possible without changing the json format 
-        x research how to represent the children in one list while still getting drag'n'drop to work 
+        x research if possible without changing the json format
+        x research how to represent the children in one list while still getting drag'n'drop to work
 
-    x Content von tasks im textformat via zweifacher einrückung @mh 
+    x Content von tasks im textformat via zweifacher einrückung @mh
         x Kären: ist zweifache einrückung klar genug?  status:doing
-        x clientsieitig content erst mal nicht darstellen 
-        x text-modifikationen klären 
-            wie soll sich drag'n'drop auswirken? 
-                reordering sollte gehen 
-                drag in eine andere spalte -> nur tag setzen? 
-                    aber dabei sollte ja auch eine sortierung möglich sein? 
-                alternativ: reordering _nur_ im textfeld (for now) 
+        x clientsieitig content erst mal nicht darstellen
+        x text-modifikationen klären
+            wie soll sich drag'n'drop auswirken?
+                reordering sollte gehen
+                drag in eine andere spalte -> nur tag setzen?
+                    aber dabei sollte ja auch eine sortierung möglich sein?
+                alternativ: reordering _nur_ im textfeld (for now)
     
