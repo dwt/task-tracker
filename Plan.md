@@ -90,3 +90,5 @@ https://github.com/FirebaseExtended/firepad
 https://github.com/ipfs/research-CRDT
 
 https://xotlcrdt.readthedocs.io/en/latest/
+
+research https://rollupjs.org/guide/en to build bundle?
