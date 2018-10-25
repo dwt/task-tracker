@@ -1,28 +1,5 @@
 Dogfooding via txt Datei als Storage 
     
-    Content von tasks im textformat via zweifacher einrückung @mh 
-        x Kären: ist zweifache einrückung klar genug?  status:doing
-        x clientsieitig content erst mal nicht darstellen 
-        Darstellung von content auch in der textform clientseitig verhindern können? 
-        expand nur wenn tag gesetzt ist (später wird content vielleicht erst dann aus dem backend gezogen?) 
-        "uid:1...n" serverseitig vergeben wenn es keine id gibt 
-        wenn ein client einen task erstellt, wird serverseitig die uid vergeben 
-        sobald eine echte id existiert wird die uid verworfen 
-        text-modifikationen klären 
-            wie soll sich drag'n'drop auswirken? 
-                reordering sollte gehen 
-                drag in eine andere spalte -> nur tag setzen? 
-                    aber dabei sollte ja auch eine sortierung möglich sein? 
-                alternativ: reordering _nur_ im textfeld (for now) 
-            wird ein task in der datei verschoben wenn er fertig ist? 
-                bin versucht umsortieren erst mal nicht automatisch zu machen 
-                    dann muss ich aber vermutlich die darstellung in json aufgeben 
-                    und es ist immer noch nicht klar wie sich verschieben von doing -> done auf die position auswirkt 
-                ist das ein eigenes kommando? 
-                wenn ja wohin? 
-                    jeweils ans ende seines containers 
-                    vor oder nach schon andere beendete tasks 
-    
     sichern als flat-file nach jeder änderung  status:doing
         x Schreiben der txt Datei aus dem Modell 
         Fix saving API to always send up the root object instead of the current task 
@@ -60,6 +37,18 @@ Dogfooding via txt Datei als Storage
     
     Change tracking dass tasks die gelöscht werden in einem `trash` bereich verschiebt. 
         explizites löschen aus dem trasch? Oder doch Zeit-Basiert? 
+    
+    Research: Darstellung von content auch in der textform clientseitig verhindern können? 
+        expand nur wenn tag gesetzt ist (später wird content vielleicht erst dann aus dem backend gezogen?) 
+        Research: braucht es ein "uid:1...n" serverseitig vergeben wenn es keine id gibt 
+        Research: wenn ein client einen task erstellt, wird serverseitig die uid vergeben. Nötig?
+        sobald eine echte id existiert wird die uid verworfen
+    
+    Funktion um fertige tasks weg-zusortieren um große mengen an tasks effizient verwalten zu können
+        Implement sort command that sorts tasks according to a strict rule
+                Start with `new, doing, done`
+
+
 
 consider change tracking and undo 
     research good way to actually record changes as objects (server? client?, what about page reloads?) 
@@ -122,3 +111,14 @@ done
             But: that could be a really great way to maintain the readability of the todotxt format
         x research if possible without changing the json format 
         x research how to represent the children in one list while still getting drag'n'drop to work 
+
+    x Content von tasks im textformat via zweifacher einrückung @mh 
+        x Kären: ist zweifache einrückung klar genug?  status:doing
+        x clientsieitig content erst mal nicht darstellen 
+        x text-modifikationen klären 
+            wie soll sich drag'n'drop auswirken? 
+                reordering sollte gehen 
+                drag in eine andere spalte -> nur tag setzen? 
+                    aber dabei sollte ja auch eine sortierung möglich sein? 
+                alternativ: reordering _nur_ im textfeld (for now) 
+    
