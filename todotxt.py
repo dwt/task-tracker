@@ -1,5 +1,30 @@
 #!/usr/bin/env python3
 
+"""
+This roughly follows the todotxt standard to describe hierarchies of todo items in a flat text file format.
+
+For example
+```
+This is a sprint
+    This is a story
+        This is a (new) task in that story
+        This task is in progress status:doing
+        x This task is done
+        This task is assigned to @martin
+        This Task has it's description included
+                I'm part of the description
+                
+                Which can be multi line of course
+            It can also have child tasks like this
+```
+
+You can assign whatever meaning you want to the nesting, So it might be Sprint / Story / Task 
+for you, or rather Milestone / Epic / Task - whatever you need.
+
+The text format is not yet set in stone, as I'm still trying to find out what works best.
+
+Planning for this project is supposed to happen in the todo.txt file in this directory. Look there for inspiration.
+"""
 
 import re
 from functools import wraps
