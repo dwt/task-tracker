@@ -286,7 +286,7 @@ class Todo:
             else:
                 self.edit(remove=f'#{self.id}', replace_with=f" #{json['id']}")
         
-        if json.get('tags', {}):
+        if json.get('tags', {}) or self.tags:
             for existing_key, existing_value in self.tags.items():
                 if existing_key not in json.get('tags', {}) or existing_value != json.get('tags', {}).get(existing_key):
                     self.edit(remove=f'{existing_key}:{existing_value}') # FIXME handle quoting
