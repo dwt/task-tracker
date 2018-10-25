@@ -2,6 +2,8 @@
 .vscode/
 .coverage
 coverage.xml
+lib64
+pyvenv.cfg
 yarn-error.log
 
 # Generated code
