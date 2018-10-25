@@ -24,6 +24,12 @@ for you, or rather Milestone / Epic / Task - whatever you need.
 The text format is not yet set in stone, as I'm still trying to find out what works best.
 
 Planning for this project is supposed to happen in the todo.txt file in this directory. Look there for inspiration.
+
+Some syntax ideas that are not yet very very final
+- Would it be better to use the established syntax of #234 as a ticket id?
+- Is there a better / cleaner way to display the task status? Currently its nothing for 
+    `new` `status:doing` and `x ...` for done tasks. I could think about going :doing, or *doing* or whatever
+
 """
 
 import re
