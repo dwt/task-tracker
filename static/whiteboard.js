@@ -144,6 +144,10 @@ export default {
 
   methods: {
     
+    $: function(selector) {
+      return $(selector, this.$el)
+    },
+    
     generateClientUniqueID: generateClientUniqueID,
 
     childrenInStatus: function(task, status) {
