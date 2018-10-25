@@ -11,7 +11,8 @@
     "test": "karma start karma.conf.js"
   },
   "dependencies": {
-    "vue": "^2.5.17"
+    "vue": "^2.5.17",
+    "jquery": "3.3.1"
   },
   "devDependencies": {
     "@vue/cli": "^3.0.3",

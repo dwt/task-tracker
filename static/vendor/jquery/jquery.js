@@ -1,1 +1,1 @@
-../../../vendor/jquery-3.3.1.js
+../../../node_modules/jquery/dist/jquery.js
