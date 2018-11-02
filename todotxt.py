@@ -211,6 +211,8 @@ class Todo:
     
     @property
     def tags(self):
+        if not self.line:
+            return dict()
         matches = self.Parser.TAGS.findall(self.line)
         return dict((
             match[0],
