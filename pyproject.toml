@@ -16,6 +16,8 @@ python = ">3.5"
 Flask = "*"
 fluentpy = "*" 
 pyexpect = "*" 
+flask-socketio = "*"
+eventlet = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "*" 
