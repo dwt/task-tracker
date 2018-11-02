@@ -61,7 +61,7 @@ export default {
                   <a href="#" class="id" v-if="child.id" v-text="'#' + child.id"></a>
                   <span class="title" v-text="child.line"></span>
                   <a v-on:click.prevent.stop="browse(child)" href="#" class="browse button" title="Browse grandchildren Tasks">⏎</a>
-                  <a v-on:click.prevent.stop="addChildTask(child)" href="#" class="add button" title="Add subtask">+</a>
+                  <a v-on:click.prevent.stop="onAddChild(child)" href="#" class="add button" title="Add subtask">+</a>
                 </h2>
 
                 <h2 class=metadata  v-if="columnName === 'done'">
@@ -72,7 +72,7 @@ export default {
                 <draggable class="drag-container"
                   v-model="childrenInStatus(child, columnName)"
                   v-bind:options="{ group: String(cuid(child)), sort: false }"
-                  v-on:end="onDragEnd"
+                  v-on:end="onChangeStatus($event.from.__vue__.context.element, $event.to.dataset.status)"
                   v-bind:data-status="columnName"
                 >
                   <!-- REFACT use v-key to allow animations between orderings and column change (not sure this is possible) -->
@@ -104,6 +104,10 @@ export default {
     rootTask: {
       type: Object,
       required: true
+    },
+    socket: {
+      type: Object,
+      required: true,
     }
   },
   data: function() {
@@ -112,25 +116,30 @@ export default {
       breadcrumbs: [this.rootTask]
     };
   },
-  watch: {
-    rootTask: {
-      handler: function(val) {
-        // TODO replace with fetch()
-        $.ajax({
-          url: "/api/v1/todos",
-          type: "POST",
-          data: JSON.stringify(val),
-          contentType: "application/json"
-        }).then(response => {
-          debugger
-          this.data.rootTask = response.json
-          this.data.task = this.data.rootTask
-          this.data.breadcrumbs = [this.data.rootTask]
-        });
-      },
-      deep: true
-    }
-  },
+  // watch: {
+  //   rootTask: {
+  //     handler: function(val) {
+  //       // TODO replace with fetch()
+  //       $.ajax({
+  //         url: "/api/v1/todos",
+  //         type: "POST",
+  //         data: JSON.stringify(val),
+  //         contentType: "application/json"
+  //       }).then(response => {
+  //         // FIXME need to prevent infinite loop when updating from server
+  //         // could disable watch while setting this
+  //         // probably should just switch to crdt like update language
+          
+  //         // For now I just don't update the system with the server answer - still wrong, but don't have a better idea
+  //         // this.rootTask = response.json
+  //         // // FIXME this should find the currently selected task in the new data and select it again
+  //         // this.task = this.rootTask
+  //         // this.breadcrumbs = [this.rootTask]
+  //       });
+  //     },
+  //     deep: true
+  //   }
+  // },
   computed: {
     numberOfColumns: function() {
       if (this.countOfGrandChildrenInStatus(this.task, "unknown") > 0) {
@@ -159,10 +168,10 @@ export default {
         .reduce((accumulator, each) => accumulator + each, 0);
     },
 
-    addChildTask: function(task) {
+    onAddChild: function(task) {
       // TODO add UI to enter text
       // REFACT consider to require using the text interface to do this
-      task.children.new.push({
+      const todo = {
         line: "",
         id: "",
         status: 'new',
@@ -171,7 +180,9 @@ export default {
         contexts: [],
         tags: {},
         children: [],
-      });
+      }
+      task.children.push(todo);
+      this.socket.emit('update_todo', { action: 'add_child', uuid: '' + task.uuid, child: todo });
     },
 
     toggleCollapsed: function($event) {
@@ -179,10 +190,9 @@ export default {
       $task.toggleClass("toggle-collapsed");
     },
     
-    onDragEnd: function(event) {
-      // whats the right way to get at the vue element? __vue__ seems fishy
-      const draggedTask = event.from.__vue__.context.element
-      draggedTask.status = event.to.dataset.status
+    onChangeStatus: function(task, newStatus) {
+      task.status = newStatus
+      this.socket.emit('update_todo', { action: 'change_tag', uuid: '' + task.uuid, tags: { status: newStatus } });
     },
     
     browse: function(task) {

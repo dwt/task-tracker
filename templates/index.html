@@ -36,6 +36,7 @@
   <!-- TODO localize dependency via vendorizing -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 
   <script src=/static/vendor/sass.js/sass.js></script>
 </div>
@@ -75,15 +76,22 @@ textarea {
   
   const taskJSON = {{ task.json | tojson(indent=2) }}
   
+  var socket = io.connect('http://' + document.domain + ':' + location.port);
+  // socket.on('connect', function() {
+  //     socket.emit('change_todo', {action: 'set_tag', id: 'quoox', status:'closed'});
+  // });
+
+  
   var app = new Vue({
     el: '#whiteboard',
     data: {
       task: taskJSON,
+      socket: socket,
     },
     components: {
       'whiteboard': whiteboard,
     },
-    template: '<whiteboard v-bind:rootTask=task></whiteboard>',
+    template: '<whiteboard v-bind:rootTask=task v-bind:socket=socket></whiteboard>',
   })
   
 </script>
@@ -110,6 +118,10 @@ $(function() {
     });
 })
 </script>
+
+<script>
+</script>
+
 <script>
   // @REFACT kann man das nicht mit protocoll relative link und server relativ link beschrieben? Oder geht das wegen dem Port nicht? --mh
 	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')
