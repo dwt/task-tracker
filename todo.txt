@@ -1,5 +1,16 @@
 Dogfooding via txt Datei als Storage
     
+    fix exception on drag stop
+    
+    json talk to async server on each client action
+        start socket.io server (gevent or similar)
+        socket.io connection to server
+        send operation protocoll to server and apply there
+        decide to apply diff locally, or just get new json from server
+        consider how to deal with conflicts between local and server changes
+        receive operations from server and apply locally if there is a diff
+                should operations also be applied locally first? That would probably only work if it is a crdt
+    
     sichern als flat-file nach jeder änderung  status:doing
         x Schreiben der txt Datei aus dem Modell
         Fix saving API to always send up the root object instead of the current task
@@ -13,10 +24,6 @@ Dogfooding via txt Datei als Storage
         hash-path um bei reload den ausgewählten task beizubehalten
         save current path to hash
         restore whiteboard state on load from hash
-    
-    json talk to async server on each client action
-        push full json to server
-        server pushes full json back to all clients
     
     text edit wird (erstmal) manuell gepusht und pusht dann als json zurück
         klassich tabs mit bootstrap zwischen den zwei interfaces

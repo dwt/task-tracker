@@ -92,3 +92,27 @@ https://github.com/ipfs/research-CRDT
 https://xotlcrdt.readthedocs.io/en/latest/
 
 research https://rollupjs.org/guide/en to build bundle?
+
+# Wie könnte das Sync-Protokoll aussehen?
+
+Inspiriert durch CRDTs? Evtl. ist die Datenbasis ganz konkret ein CRDT und wird schlicht nur mit einer Kopie auf dem Server synced? Das hätte den Vorteil das auf client-seite einfach direkt gegen den CRDT die UI läuft. Ob State-Based sync oder operations based sync macht dann nur einen unterschied wie die events angebunden sind.
+
+Es gibt massig große crdt basierte datenbanken die den ganzen sync übernehmen - einige auch open source. @see https://github.com/topics/crdt
+
+Vielleicht reicht es aber auch erst mal ganz einfach anzufangen? Also: Dom Events sind operations, und diese Operation objekte werden an den Server geschickt. Dieser sendet (via socket.io?) auch operation objekte zurück - und wenn diese den state nicht verändern, dann verändern sie ihn eben nicht. Primitiv, aber ganz gut um mit diesem Programmiermodell Erfahrung zu sammeln. Späteres Umstellen auf CRDTs ist vermutlich möglich.
+
+Wenn ich ein CRDT basiertes Modell haben will - so wie jetzt das json nested ist, muss ich spätestens dann eine Art und Weise haben die einzelnen Tasks zu addressieren. Das geht über einen Pfad (mit problemen) oder über die ID (klingt einfacher). Sowohl Server als auch Client müssen dann in der Lage sein solche 'Operations' anzuwenden.
+
+Ziel: socket.io connection zu asynchronem server, darüber id/uuid basierte messages die mutationen ausführen.
+- id:quoox set_tag: status:closed
+- id:foo add_child id:bar line:'hello there what a nice task'
+- id:baz
+- id:baz remove
+- id:foo move_child id:bar offset:10 # later
+
+Consider sending out the normalized json to all clients to normalize the state.
+
+Consider the use of montonous, vector and matrix clocks
+- client can have a data_generation: Int property that gets sent to the server with each change. Thus the server can easily check that the client is on the current data generation and eventually send the client a undo / error message to correct the problem.
+- Client could have a vector clock with a data_generation for each task, so changes to each task individually can be conflict detected.
+- server could use a matrix clock to track the current best known state of each client
