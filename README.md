@@ -3,7 +3,7 @@
 ```
 docker-compose up
 ```
-The app will be running at `http://localhost`
+The app will be running at `http://localhost` 
 
 # Slowstart (manual installation without docker)
 
