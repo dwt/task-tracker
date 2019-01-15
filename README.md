@@ -1,5 +1,11 @@
-# Installation
+# Quickstart (using docker-compose)
 
+```
+docker-compose up
+```
+The app will be running at `http://localhost`
+
+# Slowstart (manual installation without docker)
 
 ## Requirements
 
@@ -25,7 +31,7 @@ Create virtual env:
 Install [poetry](https://poetry.eustace.io/) python installer:
 
 ```
-    bin/pip install -e requirements.txt
+    bin/pip install -r requirements.txt
 ```
 
 Install python and javascript dependencies
