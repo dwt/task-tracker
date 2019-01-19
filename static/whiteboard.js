@@ -3,11 +3,10 @@ importSCSS('/static/whiteboard.scss')
 
 // REFACT consider to allow only viewing either the text or the gui interface - tabbed style?
 
-function generateClientUniqueID() {
-  if (undefined === generateClientUniqueID.cuid) {
-    generateClientUniqueID.cuid = 0;
-  }
-  return generateClientUniqueID.cuid++;
+function uuidv4() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  )
 }
 
 export default {
@@ -20,7 +19,7 @@ export default {
             <li class="breadcrumb-item"
               v-for="crumb in breadcrumbs"
               v-on:click.prevent.stop="browse(crumb)"
-              v-bind:key="crumb.id || generateClientUniqueID()"
+              v-bind:key="crumb.id || uuidv4()"
             >
               <!-- FIXME href should point to actual ticket in tracker -->
               <a href=#><span class=id v-if=crumb.id>#{{ crumb.id }}</span>{{ crumb.line || 'root' }}</a>
@@ -43,7 +42,7 @@ export default {
           v-for="child in task.children"
           v-bind:title="child.line"
           v-bind:class="{ is_done: child.is_done }"
-          v-bind:key="child.id || generateClientUniqueID()"
+          v-bind:key="child.id || uuidv4()"
         >
           <div class="container-fluid">
             <div class="row">
@@ -79,7 +78,7 @@ export default {
                   <div class="col subtask" 
                     v-for="grandChild in childrenInStatus(child, columnName)" 
                     v-bind:title="grandChild.line"
-                    v-bind:key="grandChild.id || generateClientUniqueID()"
+                    v-bind:key="grandChild.id || uuidv4()"
                 >
                     <h3>
                       <span class="metadata">
@@ -152,12 +151,12 @@ export default {
 
   methods: {
     
+    uuidv4: uuidv4,
+    
     $: function(selector) {
       return $(selector, this.$el)
     },
     
-    generateClientUniqueID: generateClientUniqueID,
-
     childrenInStatus: function(task, status) {
       return task.children.filter(child => status === child.status)
     },
@@ -172,6 +171,7 @@ export default {
       // TODO add UI to enter text
       // REFACT consider to require using the text interface to do this
       const todo = {
+        uuid: this.uuidv4(),
         line: "",
         id: "",
         status: 'new',
@@ -210,7 +210,7 @@ export default {
     // i.e. I need a concept to get rid of these asap, even if they are needed as stopgaps
     cuid: function(task) {
       if (undefined === task.cuid) {
-        task.cuid = generateClientUniqueID();
+        task.cuid = uuidv4();
       }
       return task.cuid;
     }
