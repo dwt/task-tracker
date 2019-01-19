@@ -19,7 +19,7 @@ describe('Whiteboard', () => {
         return Object.assign({}, standard, overrides)
     }
     
-    it('smoke', () => {
+    it('smokes', () => {
         const vm = new Whiteboard({ propsData: { rootTask: task({line: 'task title'}) }}).$mount()
         expect(vm.$el.title).toBe('task title')
         expect(vm.$el.className).toBe('whiteboard')
