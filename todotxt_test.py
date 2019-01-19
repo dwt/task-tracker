@@ -79,7 +79,7 @@ class TodoTest(TestCase):
             ''').strip()
 
     def test_to_json(self):
-        expect(Todo('foo #1').json) == dict(line='foo #1', body=None, id='1', status='new',
+        expect(Todo('foo #1').json).has_subdict(line='foo #1', body=None, id='1', status='new',
             is_done=False, contexts=[], projects=[], tags={}, children=[])
         expect(Todo('x foo @context tag:value, +project #1 status:doing').json).has_subdict(
             line='x foo @context tag:value, +project #1 status:doing', 
@@ -345,4 +345,14 @@ class OperationApplication(TestCase):
         expect(child1.line).contains('child1')
         expect(parent.task_by_uuid(child1.uuid)) == child1
     
+    def test_apply_change_tag(self):
+        todo = Todo('fnord')
+        todo.on_operation('change_tag', tags=dict(status='done'))
+        expect(todo.status) == 'done'
+        expect(todo.line) == 'x fnord'
     
+    def test_apply_add_child_task(self):
+        todo = Todo('fnord')
+        todo.on_operation('add_child', child=dict(line='yeehaw'))
+        expect(todo.children).has_length(1)
+        expect(todo.children[0]).line = '    yeehaw'

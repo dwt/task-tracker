@@ -279,6 +279,16 @@ class Todo:
             children=[child.json for child in self.children],
         )
     
+    def on_operation(self, operation_name, **json):
+        if operation_name in ['change_tag']:
+            self.json = json
+        elif operation_name in ['add_child']:
+            child = Todo()
+            child.json = json
+            self.children.append(child)
+        else:
+            assert False, f'operation {operation_name} is not supported'
+    
     @json.setter
     def json(self, json):
         """Updates the line from the json properties
