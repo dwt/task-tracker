@@ -115,6 +115,12 @@ export default {
       breadcrumbs: [this.rootTask]
     };
   },
+  mounted: function() {
+    this.socket.on
+  },
+  beforeDestroy: function() {
+    
+  },
   // watch: {
   //   rootTask: {
   //     handler: function(val) {
@@ -206,8 +212,7 @@ export default {
       this.task = task;
     },
     
-    // REFACT this should be a server side given ID in almost all cases
-    // i.e. I need a concept to get rid of these asap, even if they are needed as stopgaps
+    // REFACT this should go away, each task already has / should have a uuid
     cuid: function(task) {
       if (undefined === task.cuid) {
         task.cuid = uuidv4();
