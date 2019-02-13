@@ -1,5 +1,5 @@
 # This docker compose definition will create application containers for all of
-# the components of the analytics dashboard application
+# the components of the task-tracker application
 #
 # Usage: docker-compose up --build
 
@@ -8,7 +8,8 @@ services:
   backend:
     build: .
     entrypoint: 
-      - ./entrypoint.sh
+      # - ./entrypoint.sh
+      - /bin/bash
     environment:
       - FLASK_DEBUG=1
     hostname: task-tracker
