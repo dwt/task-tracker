@@ -1,9 +1,8 @@
 # Quickstart (using docker-compose)
 
-```
-docker-compose up
-```
-The app will be running at `http://localhost` 
+`docker-compose up --build` or `make docker-build`
+
+The app will be running at http://localhost/
 
 # Slowstart (manual installation without docker)
 
