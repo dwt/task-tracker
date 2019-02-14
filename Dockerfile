@@ -29,6 +29,6 @@ RUN /bin/bash
   #   && poetry install
 #    && pip uninstall --yes poetry
 
-# EXPOSE 8080
+EXPOSE 5000
 
 # RUN ["flask" "run"]

@@ -14,7 +14,7 @@ services:
       - FLASK_DEBUG=1
     hostname: task-tracker
     ports:
-      - "127.0.0.1:8000:80"
+      - "127.0.0.1:80:5000"
     # Currently the entire project directory is exposed into the docker container as
     # a volume -- so any changes to code will be reflected in the container. (also
     # all build output of container will spill out into the project directory :-/) 
