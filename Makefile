@@ -16,4 +16,7 @@ docker-build:
 	docker-compose up --build
 
 docker-debug-shell:
-	docker exec -it task-tracker_backend_1 bash
+	docker-compose exec backend bash
+
+docker-shell:
+	docker run --interactive --tty --rm task-tracker_backend /bin/bash
