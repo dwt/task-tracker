@@ -7,13 +7,10 @@ version: '3'
 services:
   backend:
     build: .
-    # TODO also defined in the dockerfile - where should they live?
-    entrypoint: poetry run flask run
     environment:
-      # TODO also defined in the dockerfile - where should they live?
       - FLASK_DEBUG=1
       - FLASK_RUN_HOST=0.0.0.0
-    hostname: task-tracker
+    entrypoint: poetry run flask run
     ports:
       - "127.0.0.1:80:5000"
     # Currently the entire project directory is exposed into the docker container as
