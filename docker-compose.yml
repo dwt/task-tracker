@@ -21,4 +21,6 @@ services:
     # into the container so that all build output remains isolated within the
     # container.
     volumes:
-      - ./:/task-tracker
+      - .:/task-tracker
+      # this ensures that in-image node_modules aren't hidden by the bind mount
+      - /task-tracker/node_modules
