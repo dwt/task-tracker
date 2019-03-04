@@ -39,15 +39,6 @@ RUN pip3 install poetry \
     && poetry run pip install --upgrade setuptools wheel pip \
     && poetry install
 
-# running stuff
-# TODO These are also defined in docker-compose.yml - not sure where they should better be
-EXPOSE 5000
-ENV FLASK_DEBUG=1 FLASK_RUN_HOST=0.0.0.0
-VOLUME /task-tracker
-# TODSO does it make sense to declare these here?
-# ENTRYPOINT poetry run
-# CMD flask run
-
 
 # TODO find a way to cache downloaded packages (os, python, yarn) so image rebuilds can use those caches
 # maybe use VOLUME @see https://docs.docker.com/engine/reference/builder/#volume ?

@@ -13,7 +13,11 @@ docker:
 docker-build:
 	# use DOCKER_BUILDKIT=1  to switch to buildkit backed buidling 
 	# @see https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/experimental.md
-	docker-compose up --build
+	# doesn't seem to work
+	
+	docker image prune --filter until=12h --force
+	# docker-compose up --build
+	docker-compose up --force-recreate
 
 docker-debug-shell:
 	docker-compose exec backend bash
