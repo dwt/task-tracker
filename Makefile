@@ -17,7 +17,7 @@ docker-build:
 	
 	docker image prune --filter until=12h --force
 	# docker-compose up --build
-	docker-compose up --force-recreate
+	docker-compose up --build --force-recreate
 
 docker-debug-shell:
 	docker-compose exec backend bash
