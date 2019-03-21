@@ -11,3 +11,4 @@ node_modules/
 
 # ignored for now, while I am experimenting
 vendor/codimd
+vendor/xotl.crdt

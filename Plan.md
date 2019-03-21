@@ -116,3 +116,5 @@ Consider the use of montonous, vector and matrix clocks
 - client can have a data_generation: Int property that gets sent to the server with each change. Thus the server can easily check that the client is on the current data generation and eventually send the client a undo / error message to correct the problem.
 - Client could have a vector clock with a data_generation for each task, so changes to each task individually can be conflict detected.
 - server could use a matrix clock to track the current best known state of each client
+
+A simple monotonous clock on the client could allow the server to handle all serializing. That would allow to just send the full json to the client again as there is no trigger cycle.

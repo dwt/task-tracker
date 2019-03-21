@@ -22,6 +22,12 @@ def todos():
             f.write(str(task))
     return jsonify(dict(json=task.json, txt=str(task)))
 
+"""
+https://flask-socketio.readthedocs.io/en/latest/
+
+Login: need to be authenticated against the webapp, protect via decorator
+Later: Multi-User: each user talks to a 'pad' url that represents one taskboard, use rooms to organize this
+"""
 @socketio.on('update_todo')
 def update_todo(json):
     print('received json: ' + str(json))

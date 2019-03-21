@@ -34,8 +34,9 @@ Some syntax ideas that are not yet very very final
 
 import re
 from functools import wraps
+import uuid
+
 import fluentpy as _
-import inspect
 import json
 
 def tupelize(method):
@@ -188,6 +189,24 @@ class Todo:
         return f'<Todo(line={self.line!r}, body={self.body!r} children={self.children!r})>'
     
     @property
+    def uuid(self):
+        if not hasattr(self, '_uuid'):
+            self._uuid = str(uuid.uuid4())
+            
+        return self._uuid
+    
+    # REFACT this should really use a dict as cache or as primary lookup structure
+    def task_by_uuid(self, uuid):
+        if self.uuid == uuid:
+            return self
+        
+        for child in self.children:
+            child_or_none = child.task_by_uuid(uuid)
+            if child_or_none is not None:
+                return child_or_none
+        
+    
+    @property
     def id(self):
         ids = self.Parser.ID.findall(self.line)
         assert len(ids) in (0,1), 'Detected more than one ID for this task'
@@ -248,6 +267,7 @@ class Todo:
             )
         
         return dict(
+            uuid=self.uuid,
             line=self.line, 
             id=self.id,
             body=self.body,
@@ -258,6 +278,16 @@ class Todo:
             tags=self.tags,
             children=[child.json for child in self.children],
         )
+    
+    def on_operation(self, operation_name, **json):
+        if operation_name in ['change_tag']:
+            self.json = json
+        elif operation_name in ['add_child']:
+            child = Todo()
+            child.json = json
+            self.children.append(child)
+        else:
+            assert False, f'operation {operation_name} is not supported'
     
     @json.setter
     def json(self, json):

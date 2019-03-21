@@ -11,21 +11,24 @@
     "test": "karma start karma.conf.js"
   },
   "dependencies": {
+    "jquery": "3.3.1",
+    "socketio": "^1.0.0",
     "vue": "^2.5.17",
-    "jquery": "3.3.1"
+    "vue-socket.io": "^3.0.4"
   },
   "devDependencies": {
     "@vue/cli": "^3.0.3",
     "@vue/cli-service": "^3.0.3",
     "@vue/cli-service-global": "^3.0.3",
+    "browserify": "^16.2.3",
     "jasmine-core": "^3.2.1",
     "karma": "https://github.com/karma-runner/karma",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.2",
     "karma-safari-launcher": "^1.0.0",
     "lodash": "^4.17.10",
-    "sass.js": "0.10.11",
     "node-sass": "^4.9.3",
-    "sass-loader": "^7.1.0"
+    "sass-loader": "^7.1.0",
+    "sass.js": "0.10.11"
   }
 }
