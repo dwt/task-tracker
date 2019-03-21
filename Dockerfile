@@ -13,11 +13,13 @@ RUN apt-get update \
         curl \
         git \
         gnupg2
+# for a non dev run container there should be a cleanup step as the last command in this chain, that removes all caches and thus keeps the image small
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt-get update \
     && apt-get -y install yarn
+# for a non dev run container there should be a cleanup step as the last command in this chain, that removes all caches and thus keeps the image small
 
 WORKDIR /task-tracker
 # for a more release-y image, this would be the right way to go. But it does slow down development
@@ -30,6 +32,7 @@ RUN yarn install
 # TODO consider how much of this could be run on a different / dedicated container
 # Later symlink /tmp/node_packages to wherever they are needed
 # TODO How would I mount a volume to contain the download caches for yarn / pip to speed up image creation?
+# TODO consider how I would update the lock file? Some clever use of docker cp perhaps?
 
 # py dependencies
 COPY pyproject.toml poetry.lock /task-tracker/
