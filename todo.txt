@@ -1,3 +1,13 @@
+Dockerize
+    understand how to use the experimental features to cache build artefacts in docker volumes during a docker build
+    x mount source read only
+    x understand docker image prune / system prune
+    x check what the options exactly do
+    x understand how to clean artefacts only from this dc file
+    x basic development docker file
+
+Understand what firefox doesn't like about the source
+
 Dogfooding via txt Datei als Storage
     
     fix exception on drag stop
