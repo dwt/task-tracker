@@ -3,152 +3,182 @@
   width: 100%;
   font-family: system-ui;
   display: flex;
-  flex-direction: column; }
-  .whiteboard .header .breadcrumb {
-    background-color: #f2f2f2; }
-  .whiteboard .header h1 {
-    font-size: 24px;
-    text-align: center; }
-  .whiteboard .header h2.column {
-    font-size: 12px;
-    color: #666666;
-    display: inline-block;
-    text-align: center; }
-  .whiteboard .board {
-    overflow: scroll;
-    border-top: 1px solid #999999;
-    border-collapse: collapse; }
-    .whiteboard .board .grandchild-count {
-      background-color: #999999;
-      color: white;
-      padding: 0 8px;
-      border-radius: 8px; }
-    .whiteboard .board .task {
-      width: 100%;
-      position: relative; }
-      .whiteboard .board .task.toggle-collapsed, .whiteboard .board .task.is_done {
-        height: 20px;
-        overflow: hidden; }
-      .whiteboard .board .task.is_done.toggle-collapsed {
-        height: 100%;
-        overflow: default; }
-      .whiteboard .board .task .col > .metadata {
-        cursor: ns-resize; }
-      .whiteboard .board .task .status.new {
-        position: relative; }
-      .whiteboard .board .task .metadata {
-        position: absolute;
-        z-index: 100;
-        font-size: 12px;
-        line-height: 18px;
-        height: 18px;
-        text-shadow: white 0px 1px 0px;
-        top: 0;
-        left: 0;
-        right: 0;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        display: flex;
-        /* TODO switch to non absolute layout for the metadata bar and pull out unifications */ }
-        .whiteboard .board .task .metadata .flexspace {
-          flex: auto; }
-        .whiteboard .board .task .metadata .title {
-          flex: 1;
-          overflow: hidden;
-          text-overflow: none;
-          text-overflow: "-"; }
-        .whiteboard .board .task .metadata .id {
-          font-size: 10px;
-          color: #666666;
-          padding: 0px 2px; }
-        .whiteboard .board .task .metadata .stats {
-          color: #999999;
-          margin-right: 10px; }
-        .whiteboard .board .task .metadata .button {
-          height: 14px;
-          line-height: 10px;
-          float: right;
-          padding: 2px 3px;
-          font-size: 12px;
-          color: #6e94b8;
-          box-shadow: inset 0px 0px 4px white;
-          border: 1px solid transparent; }
-        .whiteboard .board .task .metadata .button:hover {
-          border: 1px solid #cdcdcd;
-          box-shadow: inset 0px 0px 4px rgba(153, 153, 153, 0.11); }
-        .whiteboard .board .task .metadata .child-indicator::before {
-          content: "…";
-          width: 14px;
-          height: 14px;
-          line-height: 10px;
-          position: absolute;
-          top: 1px;
-          right: 18px;
-          padding: 2px 3px;
-          font-size: 12px;
-          color: #6e94b8; }
-      .whiteboard .board .task .status {
-        min-height: 100px;
-        border: 1px solid #999999;
-        border-left: none;
-        border-bottom: none;
-        padding-top: 18px;
-        padding-left: 2px;
-        padding-right: 2px; }
-        .whiteboard .board .task .status.new, .whiteboard .board .task .status.done {
-          background-color: #f2f2f2; }
-        .whiteboard .board .task .status.doing {
-          background-color: white; }
-        .whiteboard .board .task .status.done .metadata {
-          justify-content: end; }
-      .whiteboard .board .task .drag-container {
-        width: 100%;
-        min-height: 80px; }
-      .whiteboard .board .task .subtask {
-        display: inline-block;
-        float: left;
-        margin: 2px;
-        height: 80px;
-        width: 104px;
-        cursor: move;
-        border: 1px solid #cccccc;
-        background-color: white;
-        box-shadow: #999999 0px 1px 2px 0px;
-        font-size: 12px;
-        position: relative;
-        padding-top: 20px;
-        padding-left: 5px;
-        padding-right: 5px;
-        padding-bottom: 15px;
-        overflow: hidden; }
-        .whiteboard .board .task .subtask .metadata {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 18px;
-          font-size: 10px;
-          line-height: 18px;
-          display: inline-block;
-          width: 100%;
-          background-color: #f2f2f2; }
-          .whiteboard .board .task .subtask .metadata .id {
-            color: #666666; }
-        .whiteboard .board .task .subtask > * {
-          font-size: 12px;
-          height: 36px;
-          line-height: 18px;
-          text-overflow: ellipsis;
-          overflow: hidden; }
-        .whiteboard .board .task .subtask .contexts {
-          color: #666666;
-          position: absolute;
-          left: 5px;
-          right: 5px;
-          bottom: 5px;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          font-size: 10px;
-          line-height: 18px; }
+  flex-direction: column;
+}
+.whiteboard .header .breadcrumb {
+  background-color: #f2f2f2;
+}
+.whiteboard .header h1 {
+  font-size: 24px;
+  text-align: center;
+}
+.whiteboard .header h2.column {
+  font-size: 12px;
+  color: #666666;
+  display: inline-block;
+  text-align: center;
+}
+.whiteboard .board {
+  overflow: scroll;
+  border-top: 1px solid #999999;
+  border-collapse: collapse;
+}
+.whiteboard .board .grandchild-count {
+  background-color: #999999;
+  color: white;
+  padding: 0 8px;
+  border-radius: 8px;
+}
+.whiteboard .board .task {
+  width: 100%;
+  position: relative;
+}
+.whiteboard .board .task.toggle-collapsed, .whiteboard .board .task.is_done {
+  height: 20px;
+  overflow: hidden;
+}
+.whiteboard .board .task.is_done.toggle-collapsed {
+  height: 100%;
+  overflow: default;
+}
+.whiteboard .board .task .col > .metadata {
+  cursor: ns-resize;
+}
+.whiteboard .board .task .status.new {
+  position: relative;
+}
+.whiteboard .board .task .metadata {
+  position: absolute;
+  z-index: 100;
+  font-size: 12px;
+  line-height: 18px;
+  height: 18px;
+  text-shadow: white 0px 1px 0px;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  /* TODO switch to non absolute layout for the metadata bar and pull out unifications */
+}
+.whiteboard .board .task .metadata .flexspace {
+  flex: auto;
+}
+.whiteboard .board .task .metadata .title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: none;
+  text-overflow: "-";
+}
+.whiteboard .board .task .metadata .id {
+  font-size: 10px;
+  color: #666666;
+  padding: 0px 2px;
+}
+.whiteboard .board .task .metadata .stats {
+  color: #999999;
+  margin-right: 10px;
+}
+.whiteboard .board .task .metadata .button {
+  height: 14px;
+  line-height: 10px;
+  float: right;
+  padding: 2px 3px;
+  font-size: 12px;
+  color: #6e94b8;
+  box-shadow: inset 0px 0px 4px white;
+  border: 1px solid transparent;
+}
+.whiteboard .board .task .metadata .button:hover {
+  border: 1px solid #cdcdcd;
+  box-shadow: inset 0px 0px 4px rgba(153, 153, 153, 0.11);
+}
+.whiteboard .board .task .metadata .child-indicator::before {
+  content: "…";
+  width: 14px;
+  height: 14px;
+  line-height: 10px;
+  position: absolute;
+  top: 1px;
+  right: 18px;
+  padding: 2px 3px;
+  font-size: 12px;
+  color: #6e94b8;
+}
+.whiteboard .board .task .status {
+  min-height: 100px;
+  border: 1px solid #999999;
+  border-left: none;
+  border-bottom: none;
+  padding-top: 18px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+.whiteboard .board .task .status.new, .whiteboard .board .task .status.done {
+  background-color: #f2f2f2;
+}
+.whiteboard .board .task .status.doing {
+  background-color: white;
+}
+.whiteboard .board .task .status.done .metadata {
+  justify-content: end;
+}
+.whiteboard .board .task .drag-container {
+  width: 100%;
+  min-height: 80px;
+}
+.whiteboard .board .task .subtask {
+  display: inline-block;
+  float: left;
+  margin: 2px;
+  height: 80px;
+  width: 104px;
+  cursor: move;
+  border: 1px solid #cccccc;
+  background-color: white;
+  box-shadow: #999999 0px 1px 2px 0px;
+  font-size: 12px;
+  position: relative;
+  padding-top: 20px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 15px;
+  overflow: hidden;
+}
+.whiteboard .board .task .subtask .metadata {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 18px;
+  font-size: 10px;
+  line-height: 18px;
+  display: inline-block;
+  width: 100%;
+  background-color: #f2f2f2;
+}
+.whiteboard .board .task .subtask .metadata .id {
+  color: #666666;
+}
+.whiteboard .board .task .subtask > * {
+  font-size: 12px;
+  height: 36px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.whiteboard .board .task .subtask .contexts {
+  color: #666666;
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 10px;
+  line-height: 18px;
+}
+/*# sourceMappingURL=whiteboard.css.map */
