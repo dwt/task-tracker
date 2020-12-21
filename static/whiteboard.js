@@ -1,5 +1,5 @@
-import importSCSS from './utils.js'
-importSCSS('/static/whiteboard.scss')
+import * as utils from './utils.js'
+utils.importSCSS('/static/whiteboard.scss')
 
 // REFACT consider to allow only viewing either the text or the gui interface - tabbed style?
 
@@ -9,9 +9,11 @@ function uuidv4() {
   )
 }
 
+// REFACT understand how to break this down into smaller vue modules.
+// maybe modeling the row as it's own entity	
 export default {
-    template: `
-    <div class=whiteboard v-bind:title="task.line">
+    template: utils.vueTemplate`
+    <div class="whiteboard" v-bind:title="task.line">
     
       <div class=header>
         <nav aria-label=breadcrumb>
@@ -116,7 +118,7 @@ export default {
     };
   },
   mounted: function() {
-    this.socket.on
+    this.socket.on()
   },
   beforeDestroy: function() {
     
