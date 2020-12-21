@@ -1,5 +1,5 @@
 server:
-	FLASK_DEBUG=1 flask run
+	FLASK_DEBUG=1 FLASK_RELOAD=1 flask run
 
 pytest:
 	watching_testrunner -- pytest todotxt_test.py
@@ -8,13 +8,10 @@ jstests:
 	npx karma start karma.conf.js
 
 docker:
-	docker-compose up --force-recreate --abort-on-container-exit
+	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up --force-recreate --abort-on-container-exit
 
 docker-build: 
-	# use DOCKER_BUILDKIT=1  to switch to buildkit backed building 
-	# @see https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/experimental.md
-	# doesn't seem to work
-	docker-compose up --build --force-recreate --abort-on-container-exit
+	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up --build --force-recreate --abort-on-container-exit
 
 docker-shell-attach:
 	# requires a running container started via `make docker` or `make docker-build`
