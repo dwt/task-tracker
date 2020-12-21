@@ -4,6 +4,14 @@ simplify text-only interaction
   when adding @user or @role switch status to status:doing
   consider a as short as possible status task display. maybe is:doing is better than status:doing?
 
+Wie könnte man den text-storage besser machen?
+- locked file interaction from semantic changes Lock, parse, modify, save
+- how to do slow / long lastinig text changes without acquiring a long lasting file lock?
+    - could use generation, and then show merge view if neccessary? (smells like lots of work)
+    - could do crdt based live edting (hard?)
+
+Wei kann man das system zu einem multi-backend single frontend machen? I.e. ich muss mit x bugtrackern / task managern interagieren, habe ein frontend in dem ich alles planen kann und das bestmöglichst status / prioritäten in die einzelnen bug tracker zurück spiegelt?
+
 tree hierarchy navigation plan
   die Anzeige das ein Task kinder hat ist in der metadata bar der subtasks
   das ist momentan etwas komisch, weil alle anderen elemente dort buttons sind
