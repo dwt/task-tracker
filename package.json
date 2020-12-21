@@ -11,7 +11,7 @@
     "test": "karma start karma.conf.js"
   },
   "dependencies": {
-    "jquery": "3.3.1",
+    "jquery": "3.5.0",
     "socketio": "^1.0.0",
     "vue": "^2.5.17",
     "vue-socket.io": "^3.0.4"
