@@ -1,4 +1,4 @@
-Vue.config.productionTip = false; // unit tests != production, but still annyoing
+Vue.config.productionTip = false // unit tests != production, but still annyoing
 
 import whiteboard from '../whiteboard.js'
 const Whiteboard = Vue.extend(whiteboard)
@@ -18,21 +18,25 @@ describe('Whiteboard', () => {
         }
         return Object.assign({}, standard, overrides)
     }
+	
+	function socketMock() {
+		return {}
+	}
     
     it('smokes', () => {
-        const vm = new Whiteboard({ propsData: { rootTask: task({line: 'task title'}) }}).$mount()
+        const vm = new Whiteboard({ propsData: { rootTask: task({line: 'task title'}), socket: socketMock() }}).$mount()
         expect(vm.$el.title).toBe('task title')
         expect(vm.$el.className).toBe('whiteboard')
     })
 
     it('should not explode with an empty task', () => {
-        const vm = new Whiteboard({ propsData: { rootTask: {} }}).$mount()
+        const vm = new Whiteboard({ propsData: { rootTask: {}, socket: socketMock() }}).$mount()
     })
     
     describe('data access functions', () => {
         
         it('should access children by status', () => {
-            let board = new Whiteboard({ propsData: { rootTask: task() } }).$mount()
+            let board = new Whiteboard({ propsData: { rootTask: task(), socket: socketMock() } }).$mount()
             expect(board.childrenInStatus(task(), 'new')).toEqual([])
             expect(board.childrenInStatus(task(), 'doing')).toEqual([])
             expect(board.childrenInStatus(task(), 'done')).toEqual([])
@@ -53,7 +57,8 @@ describe('Whiteboard', () => {
                             task({ children: [task(), task({ status: 'doing' })] }),
                             task(),
                         ],
-                    })
+                    }),
+                    socket: socketMock()
                 }
             }
             this.board = new Whiteboard(data).$mount()

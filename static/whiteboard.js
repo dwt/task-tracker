@@ -118,7 +118,7 @@ export default {
     };
   },
   mounted: function() {
-    this.socket.on()
+    // this.socket.on
   },
   beforeDestroy: function() {
     
