@@ -1,3 +1,4 @@
+# Requires env variables `COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1`
 # This docker compose definition will create application containers for all of
 # the components of the task-tracker application
 #
@@ -9,6 +10,7 @@ services:
     build: .
     environment:
       - FLASK_DEBUG=1
+      - FLASK_DEBUGGER=1
       - FLASK_RUN_HOST=0.0.0.0
     command:
       poetry run flask run
