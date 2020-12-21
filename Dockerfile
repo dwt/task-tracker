@@ -45,9 +45,10 @@ RUN --mount=type=cache,target=/usr/local/share/.cache/yarn/ \
 # TODO How would I mount a volume to contain the download caches for yarn / pip to speed up image creation?
 # TODO consider how I would update the lock file? Some clever use of docker cp perhaps?
 
+
 # py dependencies
 COPY pyproject.toml poetry.lock /task-tracker/
-RUN --mount=type=cache,target=/root/.cache/pip --mount=type=cache,target=/root/.cache/pypoetry \
-    pip3 install poetry \
-    && poetry run pip install --upgrade setuptools wheel pip \
+ENV POETRY_VIRTUALENVS_PATH=/root/poetry-venvs
+RUN --mount=type=cache,target=/root/.cache/pip --mount=type=cache,target=/root/.cache/pypoetry/ \
+    pip3 install --upgrade setuptools wheel pip poetry \
     && poetry install
