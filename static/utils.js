@@ -49,3 +49,9 @@ export function importCSS(cssFileName) {
 export function vueTemplate(templateString) {
     return String.raw(templateString)
 }
+
+// TODO build a function that 
+// 1) compiles scss and inserts it into the dom
+// 2) compiles templates and inserts them into the dom or attaches them to a vue object
+// 3) prepares and exports a vue object
+// All in all, this should give the feeling (and provide the highlighter with enough clues so it can highlight) of a .vue file that contains styles, templates and code for a module
