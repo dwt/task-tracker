@@ -28,10 +28,15 @@
   
 <div class="scripts-wrapper" style="display: none">
   <!-- development version, includes helpful console warnings -->
-  <script src=/static/vendor/vue/vue.js></script>
-  <script src="/static/vendor/jquery/jquery.js"></script>
-  <script src="/static/vendor/Sortable.js"></script>
-  <script src="/static/vendor/vuedraggable.js"></script>
+  <!-- TODO localize dependencies again -->
+  <!-- <script src=/static/vendor/vue/vue.js></script> -->
+  <script src="https://unpkg.com/vue@next"></script>
+  <!-- <script src="/static/vendor/jquery/jquery.js"></script> -->
+  <script src="https://unpkg.com/jquery"></script>>
+  <!-- <script src="/static/vendor/Sortable.js"></script> -->
+  <!-- <script src="https://unpkg.com/sortable"></script> -->
+  <!-- <script src="/static/vendor/vuedraggable.js"></script> -->
+  <script src="https://unpkg.com/vuedraggable@next"></script>
 
   <!-- TODO localize dependency via vendorizing -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -85,20 +90,19 @@ textarea {
   // socket.on('connect', function() {
   //     socket.emit('change_todo', {action: 'set_tag', id: 'quoox', status:'closed'});
   // });
-
   
-  var app = new Vue({
-    el: '#whiteboard',
-    data: {
+  var app = Vue.createApp({
+    data: () => ({
       task: taskJSON,
       socket: socket,
-    },
+    }),
     components: {
       'whiteboard': whiteboard,
     },
     template: '<whiteboard v-bind:rootTask=task v-bind:socket=socket></whiteboard>',
   })
-  
+  app.mount('#whiteboard')
+    
 </script>
 
 <script>
