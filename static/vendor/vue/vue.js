@@ -1,1 +1,0 @@
-../../../vendor/vue/dist/vue.js

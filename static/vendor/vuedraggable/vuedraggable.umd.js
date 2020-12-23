@@ -1,0 +1,1 @@
+../../../node_modules/vuedraggable/dist/vuedraggable.umd.js

@@ -1,1 +1,0 @@
-../../vendor/Vue.Draggable/dist/vuedraggable.js

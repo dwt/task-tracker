@@ -11,10 +11,11 @@
     "test": "karma start karma.conf.js"
   },
   "dependencies": {
-    "jquery": "3.5.1",
-    "socketio": "^1.0.0",
-    "vue": "^2.5.17",
-    "vue-socket.io": "^3.0.4"
+    "bootstrap": "^4.0",
+    "jquery": "latest",
+    "popper.js": "^1.0",
+    "vue": "next",
+    "vuedraggable": "next"
   },
   "devDependencies": {
     "@vue/cli": "^4.5.9",
