@@ -2,7 +2,8 @@
 
 simplify text-only interaction
   when adding @user or @role switch status to status:doing
-  consider a as short as possible status task display. maybe is:doing is better than status:doing?
+  consider a as short as possible status task display. maybe is:doing is better than status:doing? Maybe just prefix with +
+      that could allow to prefix a task with +@mh to mark it as in progress. Maybe @mh+ is nicer to type? Something like that
 
 Wie könnte man den text-storage besser machen?
 - locked file interaction from semantic changes Lock, parse, modify, save

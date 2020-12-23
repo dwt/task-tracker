@@ -1,11 +1,10 @@
-Understand what current firefox doesn't like about the source
-
-Dogfooding via txt Datei als Storage
-    
-    fix exception on drag stop
-    
-    switch to yarn provided dependencies
+rework yarn usage
+    switch to yarn provided dependencies status:doing @mh 
+    switch to https://yarnpkg.com/package/socket.io-client
     minimize yarn loading of dependencies - it really guzzles in way too much stuff for what I'm using it for.
+    fix docker build to use minimized dependencies
+    
+Dogfooding via txt Datei als Storage
     
     UI refinements
         support sorting of tasks via UI
@@ -165,3 +164,6 @@ done
         x find out how to upgrade core vue
         x upgrade draggable (my only dependency afaik?) https://github.com/SortableJS/vue.draggable.next
 
+    x fix exception on drag stop
+    
+    x Understand what current firefox doesn't like about the source
