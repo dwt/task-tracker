@@ -12,6 +12,7 @@ function uuidv4() {
 // REFACT understand how to break this down into smaller vue modules.
 // maybe modeling the row as it's own entity	
 export default {
+  name: 'whiteboard',
     template: utils.vueTemplate`
     <div class="whiteboard" v-bind:title="task.line">
     
@@ -31,8 +32,7 @@ export default {
         <h1 v-if="(task.line || '').length"><a v-if="task.id" href="#" class="id" v-text="'#' + task.id"></a>{{ task.line }}</h1>
         <div class="column-headers">
           <h2 class="column header" 
-            v-for="columnName in ['new', 'unknown', 'doing', 'done']"
-            v-if="columnName !== 'unknown' || countOfGrandChildrenInStatus(task, 'unknown') > 0" 
+            v-for="columnName in visibleColumnNames"
             v-bind:class="[columnName]"
             v-bind:style="{ width: Math.floor(100 / numberOfColumns) + '%' }"
             v-bind:key="columnName"
@@ -49,8 +49,7 @@ export default {
           <div class="container-fluid">
             <div class="row">
               <div class="col status" 
-                v-for="columnName in ['new', 'unknown', 'doing', 'done']"
-                v-if="columnName !== 'unknown' || countOfGrandChildrenInStatus(task, 'unknown') > 0" 
+                v-for="columnName in visibleColumnNames"
                 v-bind:class="[columnName]"
                 v-bind:key="columnName"
               >
@@ -70,30 +69,31 @@ export default {
                   <span class="stats" v-text="childrenInStatus(child, 'done').length + '/' + child.children.length"></span>
                 </h2>
                 
+                <!-- REFACT try using the cuid as the item key -->
                 <draggable class="drag-container"
-                  v-model="childrenInStatus(child, columnName)"
-                  v-bind:options="{ group: String(cuid(child)), sort: false }"
-                  v-on:end="onChangeStatus($event.from.__vue__.context.element, $event.to.dataset.status)"
-                  v-bind:data-status="columnName"
+                  :list="childrenInStatus(child, columnName)"
+                  :item-key="grandChild => ( grandChild.id || uuidv4() )"
+                  :group="String(cuid(child))"
+                  :sort="false"
+                  @end="onChangeStatus"
+                  :data-status="columnName"
                 >
-                  <!-- REFACT use v-key to allow animations between orderings and column change (not sure this is possible) -->
-                  <div class="col subtask" 
-                    v-for="grandChild in childrenInStatus(child, columnName)" 
-                    v-bind:title="grandChild.line"
-                    v-bind:key="grandChild.id || uuidv4()"
-                >
-                    <h3>
-                      <span class="metadata">
-                          <a href="#" class="edit button" title="Edit this task">✎</a>
-                          <span class="child-indicator" title="Has child tasks" v-if="grandChild.children.length > 0"></span>
-                          <a href="#" class="id" v-if="grandChild.id" v-text="'#' + grandChild.id" title="External Link to task"></a>
-                      </span>
-                      <span class="title" v-text="grandChild.line"></span>
-                      <span class="contexts" v-text="grandChild.contexts.join(', ')"></span>
-                    </h3>
-                  </div>
+                  <template #item="{ element: grandChild }">
+                    <div class="col subtask" 
+                      v-bind:title="grandChild.line"
+                    >
+                      <h3>
+                        <span class="metadata">
+                            <a href="#" class="edit button" title="Edit this task">✎</a>
+                            <span class="child-indicator" title="Has child tasks" v-if="grandChild.children.length > 0"></span>
+                            <a href="#" class="id" v-if="grandChild.id" v-text="'#' + grandChild.id" title="External Link to task"></a>
+                        </span>
+                        <span class="title" v-text="grandChild.line"></span>
+                        <span class="contexts" v-text="grandChild.contexts.join(', ')"></span>
+                      </h3>
+                    </div>
+                  </template>
                 </draggable>
-                
               </div>
             </div>
           </div>
@@ -120,7 +120,7 @@ export default {
   mounted: function() {
     // this.socket.on
   },
-  beforeDestroy: function() {
+  beforeUnmount: function() {
     
   },
   // watch: {
@@ -154,7 +154,12 @@ export default {
       } else {
         return 3;
       }
-    }
+    },
+    visibleColumnNames: function() {
+      return ['new', 'unknown', 'doing', 'done'].filter((each) =>
+        each !== 'unknown' || this.countOfGrandChildrenInStatus(this.task, 'unknown') > 0
+      )
+    },
   },
 
   methods: {
@@ -194,13 +199,16 @@ export default {
     },
 
     toggleCollapsed: function($event) {
+      // REFACT reformulate that using vue custom events
       var $task = $($event.currentTarget).closest(".task");
       $task.toggleClass("toggle-collapsed");
     },
     
-    onChangeStatus: function(task, newStatus) {
+    onChangeStatus: function(event) {
+      const task = event.item.__draggable_context.element
+      const newStatus = event.to.dataset.status
       task.status = newStatus
-      this.socket.emit('update_todo', { action: 'change_tag', uuid: '' + task.uuid, tags: { status: newStatus } });
+      // this.socket.emit('update_todo', { action: 'change_tag', uuid: '' + task.uuid, tags: { status: newStatus } });
     },
     
     browse: function(task) {

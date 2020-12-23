@@ -32,9 +32,9 @@
   <!-- <script src=/static/vendor/vue/vue.js></script> -->
   <script src="https://unpkg.com/vue@next"></script>
   <!-- <script src="/static/vendor/jquery/jquery.js"></script> -->
-  <script src="https://unpkg.com/jquery"></script>>
+  <script src="https://unpkg.com/jquery@latest"></script>>
   <!-- <script src="/static/vendor/Sortable.js"></script> -->
-  <!-- <script src="https://unpkg.com/sortable"></script> -->
+  <script src="https://unpkg.com/sortablejs@latest"></script>
   <!-- <script src="/static/vendor/vuedraggable.js"></script> -->
   <script src="https://unpkg.com/vuedraggable@next"></script>
 
@@ -91,16 +91,19 @@ textarea {
   //     socket.emit('change_todo', {action: 'set_tag', id: 'quoox', status:'closed'});
   // });
   
-  var app = Vue.createApp({
+  // debugger
+  const app = Vue.createApp({
     data: () => ({
       task: taskJSON,
       socket: socket,
     }),
     components: {
-      'whiteboard': whiteboard,
+      // vuedraggable,
+      whiteboard,
     },
     template: '<whiteboard v-bind:rootTask=task v-bind:socket=socket></whiteboard>',
   })
+  app.component('draggable', vuedraggable)
   app.mount('#whiteboard')
     
 </script>
