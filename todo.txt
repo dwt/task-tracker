@@ -1,10 +1,17 @@
 Understand what current firefox doesn't like about the source
 
-Upgrade to Vue 3
-    find out how to upgrade core vue
-    upgrade draggable (my only dependency afaik?) https://github.com/SortableJS/vue.draggable.next
-
 Dogfooding via txt Datei als Storage
+    
+    fix exception on drag stop
+    
+    switch to yarn provided dependencies
+    minimize yarn loading of dependencies - it really guzzles in way too much stuff for what I'm using it for.
+    
+    UI refinements
+        support sorting of tasks via UI
+        support dropping tasks into a specific location
+        show nice animation when sorting
+        show nice animation on drop
     
     consider a shell tool to simplify working with hierarchical todo.txt files
         ideal would be a daemon that watches a file as it is being written and adds metadata / sorting to it
@@ -16,8 +23,6 @@ Dogfooding via txt Datei als Storage
             consider where to move done tasks, bottom, before first done task?
             consider 
             consider if all of that is really helpfull to work with the text interface
-    
-    fix exception on drag stop
     
     json talk to async server on each client action
         start socket.io server (gevent or similar)
@@ -146,13 +151,17 @@ done
                     aber dabei sollte ja auch eine sortierung möglich sein?
                 alternativ: reordering _nur_ im textfeld (for now)
     
-x Dockerize
-    x make the docker image smaller (currently ~800mb, while base image is moore around ~30mb) (actual package data is what makes it large so less packages, smaller distribution could help, but image is already pretty soundly built)
-    x fix docker image build not starting up correctly
-    x understand how to use the experimental features to cache build artefacts in docker volumes during a docker build
-    x mount source read only
-    x understand docker image prune / system prune
-    x check what the options exactly do
-    x understand how to clean artefacts only from this dc file
-    x basic development docker file
+    x Dockerize
+        x make the docker image smaller (currently ~800mb, while base image is moore around ~30mb) (actual package data is what makes it large so less packages, smaller distribution could help, but image is already pretty soundly built)
+        x fix docker image build not starting up correctly
+        x understand how to use the experimental features to cache build artefacts in docker volumes during a docker build
+        x mount source read only
+        x understand docker image prune / system prune
+        x check what the options exactly do
+        x understand how to clean artefacts only from this dc file
+        x basic development docker file
+
+    x Upgrade to Vue 3
+        x find out how to upgrade core vue
+        x upgrade draggable (my only dependency afaik?) https://github.com/SortableJS/vue.draggable.next
 
