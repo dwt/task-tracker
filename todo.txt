@@ -1,7 +1,7 @@
 rework yarn usage
     x switch to yarn provided dependencies
     x switch to yarn provided socket.io-client
-    update to latest bootstrap   version
+    update to latest bootstrap       version
     minimize yarn loading of dependencies - it really guzzles in way too much stuff for what I'm using it for.
     fix docker build to use minimized dependencies
     
@@ -77,8 +77,6 @@ Dogfooding via txt Datei als Storage
         Implement sort command that sorts tasks according to a strict rule
                 Start with `new, doing, done`
 
-
-
 consider change tracking and undo
     research good way to actually record changes as objects (server? client?, what about page reloads?)
     research operational transforms and how that could go together
@@ -89,8 +87,9 @@ Trac importer / exporter
     negative (lokale) ids nicht verlinken
 
 Live Multi-User Web App
-        Async Flask app und sync mit dem server on browser changes
-        socket.io? was benutzt man da am besten für websockets?
+    Async Flask app und sync mit dem server on browser changes
+    socket.io? was benutzt man da am besten für websockets?
+    async collaborative text editor, to allow all persons to work simultaneously on the text portion of the tasks as well as on the structured view codimd or something similar could be the key to success here?
 
 Text parsing / Textformat
     discuss: Wie escapen wir Symbole mit syntaktischer Bedeuting? (@, +, a:b)
