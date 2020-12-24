@@ -14,7 +14,7 @@
     "bootstrap": "^4.0",
     "jquery": "latest",
     "popper.js": "^1.0",
-    "sass.js": "^0.11.1",
+    "sass.js": "latest",
     "socket.io-client": "latest",
     "vue": "next",
     "vuedraggable": "next"
