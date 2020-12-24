@@ -1,6 +1,7 @@
 rework yarn usage
-    switch to yarn provided dependencies status:doing @mh 
-    switch to https://yarnpkg.com/package/socket.io-client
+    x switch to yarn provided dependencies
+    x switch to yarn provided socket.io-client
+    update to latest bootstrap   version
     minimize yarn loading of dependencies - it really guzzles in way too much stuff for what I'm using it for.
     fix docker build to use minimized dependencies
     

@@ -14,22 +14,18 @@
     "bootstrap": "^4.0",
     "jquery": "latest",
     "popper.js": "^1.0",
+    "sass.js": "^0.11.1",
+    "socket.io-client": "latest",
     "vue": "next",
     "vuedraggable": "next"
   },
   "devDependencies": {
-    "@vue/cli": "^4.5.9",
-    "@vue/cli-service": "^4.5.9",
-    "@vue/cli-service-global": "^4.5.9",
     "browserify": "^17.0.0",
     "jasmine-core": "^3.2.1",
     "karma": "^5.2.3",
     "karma-chrome-launcher": "^3.1.0",
     "karma-jasmine": "^4.0.1",
     "karma-safari-launcher": "^1.0.0",
-    "lodash": "^4.17.10",
-    "node-sass": "^5.0.0",
-    "sass-loader": "^10.1.0",
-    "sass.js": "0.11.1"
+    "lodash": "^4.17.10"
   }
 }
