@@ -11,9 +11,8 @@
     "test": "karma start karma.conf.js"
   },
   "dependencies": {
-    "bootstrap": "^4.0",
+    "bootstrap": "next",
     "jquery": "latest",
-    "popper.js": "^1.0",
     "sass.js": "latest",
     "socket.io-client": "latest",
     "vue": "next",
