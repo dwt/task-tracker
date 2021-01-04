@@ -2,7 +2,8 @@ rework yarn usage
     x switch to yarn provided dependencies
     x switch to yarn provided socket.io-client
     x update to latest sass version
-    update to latest bootstrap version status:doing
+    x update to latest bootstrap version
+    update python components status:doing
     update socketio server side version
     minimize yarn loading of dependencies - it really guzzles in way too much stuff for what I'm using it for.
     fix docker build to use minimized dependencies

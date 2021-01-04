@@ -4,6 +4,15 @@ simplify text-only interaction
   when adding @user or @role switch status to status:doing
   consider a as short as possible status task display. maybe is:doing is better than status:doing? Maybe just prefix with +
       that could allow to prefix a task with +@mh to mark it as in progress. Maybe @mh+ is nicer to type? Something like that
+  todotxt kind of uses the line number as an id of the todo. can that be applicable for me? Might be simple (until it changes…)
+  look at todotxt format definitions and extensions more closely
+  pomodoro integration https://github.com/metalelf0/pomodori-todo.txt
+  hierarchical todos via outline plugin https://github.com/samuelsnyder/outline-todo.txt
+    especially their handling of ids and how tasks are extracted from outlines
+  notes: https://github.com/mgarrido/todo.txt-cli/tree/note/todo.actions.d
+  projects plugin: https://github.com/the1ts/todo.txt-plugins/blob/master/README.projects
+  donow: https://github.com/todotxt/todo.txt-cli/wiki/Todo.sh-Add-on-Directory#donow--activity-time-tracker
+  many https://github.com/todotxt/todo.txt-cli/wiki/Todo.sh-Add-on-Directory#many
 
 Wie könnte man den text-storage besser machen?
 - locked file interaction from semantic changes Lock, parse, modify, save
