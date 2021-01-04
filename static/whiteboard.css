@@ -44,9 +44,6 @@
 .whiteboard .board .task .col > .metadata {
   cursor: ns-resize;
 }
-.whiteboard .board .task .status.new {
-  position: relative;
-}
 .whiteboard .board .task .metadata {
   position: absolute;
   z-index: 100;
@@ -118,6 +115,7 @@
 }
 .whiteboard .board .task .status.new, .whiteboard .board .task .status.done {
   background-color: #f2f2f2;
+  position: relative;
 }
 .whiteboard .board .task .status.doing {
   background-color: white;

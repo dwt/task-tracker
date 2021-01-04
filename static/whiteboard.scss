@@ -49,20 +49,16 @@ $accent_background_color: #f2f2f2;
         height: 20px;
         overflow: hidden;
       }
-  
+      
       &.is_done.toggle-collapsed {
         height: 100%;
         overflow: default;
       }
-  
+      
       .col > .metadata {
         cursor: ns-resize;
       }
-  
-      .status.new {
-        position: relative;
-      }
-  
+      
       .metadata {
         position: absolute;
         z-index: 100;
@@ -133,7 +129,7 @@ $accent_background_color: #f2f2f2;
           color: $button_color;
         }
       }
-  
+      
       .status {
         min-height: 100px;
         border: 1px solid $light_grey;
@@ -146,6 +142,8 @@ $accent_background_color: #f2f2f2;
         &.new,
         &.done {
           background-color: $accent_background_color;
+          // ensure to open a new stacking context, so the contained .metadata can be positioned correctly
+          position: relative;
         }
   
         &.doing {
