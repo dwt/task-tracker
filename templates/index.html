@@ -3,7 +3,7 @@
   <title>Task Tracker</title>
   <link rel="stylesheet" href="/static/vendor/bootstrap/css/bootstrap.css">
 </head>
-<body>
+<body data-bs-no-jquery>
   <nav>
     <div class="nav nav-tabs" id="text-board-interface-switcher" role="tablist">
       <a class="nav-item nav-link active" id="text-tab" data-toggle="tab" href="#text" role="tab" aria-controls="text" aria-selected="true">Text</a>
@@ -28,8 +28,7 @@
   <script src="/static/vendor/sortablejs/Sortable.js"></script>
   <script src="/static/vendor/vuedraggable/vuedraggable.umd.js"></script>
 
-  <script src="/static/vendor/popper.js/popper.js"></script>
-  <script src="/static/vendor/bootstrap/js/bootstrap.js "></script>
+  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.js "></script>
   
   <script src="/static/vendor/socket.io-client/socket.io.js"></script>
 
@@ -101,24 +100,22 @@ textarea {
 
 <script>
 // consider to store the nav tree in the url, so the board state can be reloaded too
-// restore visible tab from url
-var tabID = window.location.hash;
-if ($('a[href="' + tabID + '"]').length > 0) {
-    $('a[href="' + tabID + '"]').tab('show');
-}
-else {
-    $("a[data-toggle='tab']").first().tab('show');
-}
 $(function() {
-    
-    // save currently selected tab
-    $("a[data-toggle='tab']").on('shown.bs.tab', function() {
-        // save currently selected tab to the URL
-        var tabID = $(this).attr("href").substr(1);
-        // cant assign directly to document.location.hash as that would trigger scrolling to the anchor id
-        window.history.pushState({}, document.title, 
-            document.location.origin + document.location.pathname + '#' + tabID);
-    });
+  // Enable tags
+  $('a[data-toggle="tab"]').each(function () {
+    var tabTrigger = new bootstrap.Tab(this)
+
+    this.addEventListener('click', function (event) {
+      tabTrigger.show()
+    })
+  })
+  
+  // show urls selected tab by default
+  var tabID = window.location.hash;
+  if ($('a[href="' + tabID + '"]').length > 0) {
+    bootstrap.Tab.getInstance($('a[href="' + tabID + '"]')[0]).show()
+    $('body').scrollTop(0)
+  }
 })
 </script>
 
