@@ -12,7 +12,7 @@ keywords = []
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">3.5"
+python = ">=3.8,<4"
 Flask = "*"
 fluentpy = "*" 
 pyexpect = "*" 
