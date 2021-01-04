@@ -80,7 +80,7 @@ class FilterableList(list):
     @property
     @tupelize
     def done(self):
-        done_tasks = _(self._parent.children).filter(_.each.is_done)._ + self._parent.children_tagged('status:done')
+        done_tasks = _(self._parent.children).filter(_.each.is_done._)._ + self._parent.children_tagged('status:done')
         for child in self._parent.children:
             if child in done_tasks:
                 yield child
