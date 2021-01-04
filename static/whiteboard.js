@@ -57,7 +57,7 @@ export default {
                   v-if="columnName === 'new'"
                   v-on:click.prevent="toggleCollapsed($event, child)"
                 >
-                  <!-- FIXME herf should point to bugtracker url -->
+                  <!-- FIXME href should point to bugtracker url -->
                   <a href="#" class="id" v-if="child.id" v-text="'#' + child.id"></a>
                   <span class="title" v-text="child.line"></span>
                   <a v-on:click.prevent.stop="browse(child)" href="#" class="browse button" title="Browse grandchildren Tasks">⏎</a>
